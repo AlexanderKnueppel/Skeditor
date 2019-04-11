@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <extension
+      point="org.eclipse.graphiti.ui.diagramTypes">
+    <diagramType
+      description="Skill Graphs Description"
+      id="de.tubs.skeditor.diagram.SkillGraphDiagramType"
+      name="Skill Graph"
+      type="SkillGraph">
+    </diagramType>
+  </extension>
+
+  <extension
+      point="org.eclipse.graphiti.ui.diagramTypeProviders">
+    <diagramTypeProvider
+      class="de.tubs.skeditor.diagram.DiagramTypeProvider"
+      id="de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"
+      name="skeditor Diagram Type Provider">
+      <diagramType
+        id="de.tubs.skeditor.diagram.SkillGraphDiagramType">
+      </diagramType>
+      <imageProvider
+            id="de.tubs.skeditor.SkillGraphImageProvider">
+      </imageProvider>
+    </diagramTypeProvider>
+  </extension>
+
+
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated SkillGraph -->
+      <package
+            uri="www.thisisnotarealuri.de"
+            class="SkillGraph.SkillGraphPackage"
+            genModel="model/SkillGraph.genmodel"/>
+   </extension>
+   <extension
+         point="org.eclipse.graphiti.ui.imageProviders">
+      <imageProvider
+            class="de.tubs.skeditor.ImageProvider"
+            id="de.tubs.skeditor.SkillGraphImageProvider">
+      </imageProvider>
+   </extension>
+   <extension point="org.eclipse.ui.views">
+   <view
+         class="de.tubs.skeditor.views.SafetyGoalsView"
+         id="de.tubs.skeditor.views.SafetyGoalsView"
+         name="Safety Goals"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="de.tubs.skeditor.views.ParameterListView"
+            id="de.tubs.skeditor.views.ParameterListView"
+            name="Parameter List">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="de.tubs.skeditor.views.DynamicModelView"
+            id="de.tubs.skeditor.views.DifferentialEquationView"
+            name="Dynamic Model">
+      </view>
+   </extension>
+
+</plugin>

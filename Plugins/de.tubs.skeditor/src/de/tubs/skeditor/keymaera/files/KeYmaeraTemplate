@@ -1,0 +1,33 @@
+Functions.
+  %%constants%%
+  
+  /*B bounds() <-> (
+  	%%bounds%%
+  ).
+  
+  B initialState() <-> (
+  	%%init%%
+  ).
+  B assumptions() <-> (bounds() & initialState()). */
+End.
+
+ProgramVariables.
+  %%variables%%
+End.
+
+Problem.
+  /*assumptions()*/
+  %%init%%
+  & %%precondition%%
+->
+[
+	/*Program*/
+    {
+    	%%program%%
+    };
+    /* dynamic */ 
+    { 
+  		%%dynamic%%
+  	}
+](%%postcondition%%)
+End.
