@@ -1,0 +1,94 @@
+Functions.
+  R b(). /* minimum */
+  R B().
+  R A().  /* Maximum acceleration */
+  R ep().
+  R lw(). /*lane width (max distance) */
+  R ly(). /* center of the lane */
+  R W().       /* maximum steering rate */
+  R abs(R).    /* predefined function of absolute value */
+  R caf.
+  R lf.
+  R lr.
+  R m.
+  R Jz.
+  R car.
+
+  /* Initial states */
+  B initial() <-> (
+    b()>=5 &    B() > b() &                                                                      /* brakes are working */
+    A()>0 & A() <= 4 &  lw() > 0 &
+    y = ly() & (v^2)/(2*b) < lw()/2 & /* safe state */
+    v>=0 & v <= 2.7 & ep() > 0 & W() <= 0.3 & caf = 90000 & lf = 1.073 &  lr = 1.667 & m = 2045 & Jz = 4115 & car = 86915
+   & beta = 0 & dPsi = 0 & Psi2 = 0  /*inital state -> just straight line*/
+  ).
+
+ B safe(R y, R v) <-> (
+    abs(y-ly()) + (v^2)/(2*b())+(A()/b() + 1)*((A()/2)*ep()^2 + ep()*v) < lw()/2
+  ).
+
+ HP ctrl::= {
+  { a:=*; ?-B() <= a & a <= A();
+    K:=*; ?(-0.008 <= K & K <= 0.008 & K != 0);
+    delta:= (lr+lf)/K; ?-W()<=delta & delta<=W();
+    ?safe(y,v);
+  }
+  ++ {?v=0; a:=0; delta:=0;}
+  /*++ {a:=*; ?-B() <= a & a <= -b();}*/
+}.
+
+ HP drive ::= {                                               
+    {x'=v,  v' = a,/*longitudinal*/                         
+     beta' = -beta*(caf+car)/(m*v) + Psi2*(-1 - (caf*lf-car*lr)/(m*v*v)) + caf/(m*v)*delta,
+     Psi2' = (-1*(caf*lf - car*lr)/Jz)*beta + (-1* (caf*lf*lf - car*lr*lr)/(Jz*v))*Psi2 + (caf*lf/Jz)*delta,
+     y' = v*(beta + dPsi),
+     dPsi' = -Psi2 + v*K, t' = 1 &  t <= ep() & v >= 0}                       
+  }.
+
+End.
+
+ProgramVariables. /* program variables may change their value over time */
+  R x.
+  R y.
+  R v.
+  R a.
+  R Psi2.
+  R dPsi.
+  R beta.
+  R delta.
+  R K.
+  R t.            /* clock variable */
+End.
+
+
+Problem.          /* differential dynamic logic formula */
+    initial()
+ -> [
+      {
+        ctrl;
+        t:= 0;  
+        drive;
+      }*@invariant(v >= 0  & abs(y-ly()) + (v^2)/(2*b) < lw()/2)
+    ] (ly()-lw()/2 < y & y < ly()+lw()/2)
+End.
+
+
+Tactic "Automated proof"
+master ; loop({`abs(y-ly())+v^2/(2*b()) < lw()/2`}, 1) ; <(
+  master,
+  master,
+  master ; <(
+    master ; GV(1) ; allR(1) ; allR(1) ; master,
+    dC({`y=old(y)`}, 1) ; <(
+      master ; master ; dC({`v<=0`}, 1) ; <(
+        master,
+        master
+        ),
+      master ; dC({`v=0`}, 1) ; <(
+        master,
+        master
+        )
+      )
+    )
+  )
+End.
