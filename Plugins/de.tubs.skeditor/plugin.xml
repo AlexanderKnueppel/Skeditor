@@ -64,5 +64,14 @@
             name="Dynamic Model">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            default="false"
+            icon="icons/skeditor.png"
+            id="de.tubs.skeditor.editor"
+            name="Skeditor">
+      </editor>
+   </extension>
 
 </plugin>
