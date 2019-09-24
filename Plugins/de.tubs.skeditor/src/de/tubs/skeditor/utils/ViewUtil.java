@@ -15,7 +15,7 @@ public class ViewUtil {
 	public static void updateSafetyGoalsView() {
 		IViewReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
 		for (IViewReference iViewReference : ref) {
-			if (iViewReference.getId().equals("de.tubs.skilledit.views.SafetyGoalsView")) {// TODO rework, bit too hacky
+			if (iViewReference.getId().equals("de.tubs.skeditor.views.SafetyGoalsView")) {// TODO rework, bit too hacky
 				((SafetyGoalsView) iViewReference.getView(true)).getViewer().refresh();
 			}
 		}
@@ -24,7 +24,7 @@ public class ViewUtil {
 	public static void updateDiffView(Node node) {
 		IViewReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
 		for (IViewReference iViewReference : ref) {
-			if (iViewReference.getId().equals("de.tubs.skilledit.views.DifferentialEquationView")) {
+			if (iViewReference.getId().equals("de.tubs.skeditor.views.DifferentialEquationView")) {
 				TableViewer view = ((DynamicModelView) iViewReference.getView(true)).getViewer();
 				if (view.getInput() == null || !view.getInput().equals(node)) {
 					view.setInput(node);
@@ -39,13 +39,13 @@ public class ViewUtil {
 	public static void updateViews(Graph graph) {
 		IViewReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
 		for (IViewReference iViewReference : ref) {
-			if (iViewReference.getId().equals("de.tubs.skilledit.views.SafetyGoalsView")) {// TODO rework, bit too hacky
+			if (iViewReference.getId().equals("de.tubs.skeditor.views.SafetyGoalsView")) {// TODO rework, bit too hacky
 				TreeViewer view = ((SafetyGoalsView) iViewReference.getView(true)).getViewer();
 				if (view.getInput() == null || !view.getInput().equals(graph)) {
 					view.setInput(graph);
 				}
 				view.refresh();
-			} else if (iViewReference.getId().equals("de.tubs.skilledit.views.ParameterListView")) {
+			} else if (iViewReference.getId().equals("de.tubs.skeditor.views.ParameterListView")) {
 				TableViewer view = ((ParameterListView) iViewReference.getView(true)).getViewer();
 				if (view.getInput() == null || !view.getInput().equals(graph)) {
 					view.setInput(graph);
