@@ -70,6 +70,9 @@ public class AddNodeFeature extends AbstractAddFeature {
 		createService.createChopboxAnchor(containerShape);
 
 		layoutPictogramElement(containerShape);
+		
+		//Add fonts to be used for the tool tip
+		gaService.manageFont(diagram, "Verdana", 9, true, false);
 
 		return containerShape;
 	}
