@@ -67,9 +67,12 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            default="false"
-            icon="icons/skeditor.png"
+            class="de.tubs.skeditor.diagram.SkeditorDiagramEditor"
+            default="true"
+            extensions="sked"
+            icon="icons/skeditor16.png"
             id="de.tubs.skeditor.editor"
+            matchingStrategy="org.eclipse.graphiti.ui.editor.DiagramEditorMatchingStrategy"
             name="Skeditor">
       </editor>
    </extension>
@@ -85,6 +88,13 @@
             icon="icons/project16.png"
             id="de.tubs.skeditor.newproject"
             name="Skeditor Project">
+      </wizard>
+      <wizard
+            category="de.tubs.skeditor.category.skeditor"
+            class="de.tubs.skeditor.wizards.NewGraphWizard"
+            icon="icons/skeditor16.png"
+            id="de.tubs.skeditor.newgraph"
+            name="Skeditor file">
       </wizard>
    </extension>
 
