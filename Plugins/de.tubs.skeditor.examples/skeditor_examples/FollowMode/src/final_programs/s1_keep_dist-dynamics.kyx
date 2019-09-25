@@ -1,0 +1,60 @@
+Definitions
+  /*** Required definitions. Provided by child skills. ***/
+  Real A;
+  Real B;
+  Real b;
+  Real ep;
+  
+  /*** New definitions. ***/
+  
+  
+  B initial() <-> (   
+   /* Generate init... */
+   v >= 0 & vl >= 0 & A > 0 & A <= 4 & B >= b & b > 5 & x+v^2/(2*b) + dist <= xl + vl^2/(2*b) & dist = 10 & ep > 0
+  ).
+  
+  HP ctrl::= { 
+  	{?x+v^2/(2*b) + (A/b+1)*(A/2*ep^2+ep*v) + dist <= xl + vl^2/(2*b); a :=*; ?-B <= a & a <= A;
+         ++ ?v=0; a := 0;
+         ++ a :=*; ?-B <=a & a <= -b;
+    }
+  }.
+  
+  HP drive::= {
+  	t := 0;
+    {xl' = vl, vl' = al, x' = v, v' = a, t' = 1 & v >= 0 & vl >= 0 & t <= ep}
+  }.
+  
+  HP leader::= {al := *;  ?-b <= al & al <= A;}.
+  
+End.
+
+ProgramVariables
+  /*** Required variables. ***/
+  
+  /*** Skill: s_6_control_longitudinal ***/
+  Real x;
+  Real v;
+  Real a;
+  Real dist; /*maximum distance to leading vehicle*/
+  Real xl; /*position of leading vehicle (stationary)*/
+  Real vl;
+  Real al;
+  
+  /*** New variables. ***/
+  /* ... */
+  
+  /* clock */
+  Real t;
+End.
+
+Problem
+    initial()
+ -> [
+      { 
+        leader;
+        ctrl;
+        drive;
+      }*@invariant(v >= 0 & vl >= 0 & x+v^2/(2*b) + dist <= xl + vl^2/(2*b))
+    ] (x + dist <= xl)
+End.

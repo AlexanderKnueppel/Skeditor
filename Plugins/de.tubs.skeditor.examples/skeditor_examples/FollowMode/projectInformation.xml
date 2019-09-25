@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<exampleWizard>
+	<contentProvider name="General">
+		<path>Simple</path>
+	</contentProvider>
+	<description>
+		Example implements a simple vehicle follow mode without connection to an implementation.
+	</description>
+</exampleWizard>

@@ -22,5 +22,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: SkillGraph,
  SkillGraph.impl,
- SkillGraph.util
+ SkillGraph.util,
+ de.tubs.skeditor
 Bundle-Activator: de.tubs.skeditor.Activator

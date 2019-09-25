@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="de.tubs.skeditor.examples"
+            name="ContractIDE"
+            parentCategory="org.eclipse.ui.Examples">
+      </category>
+      <wizard
+            category="org.eclipse.ui.Examples/de.tubs.skeditor.examples"
+            class="de.tubs.skeditor.examples.wizards.ExampleNewWizard"
+            id="de.tubs.skeditor.examples.SampleNewWizard"
+            name="Skeditor Examples">
+      </wizard>
+   </extension>
+
+</plugin>
