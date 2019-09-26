@@ -9,6 +9,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import SkillGraph.Equation;
 import SkillGraph.Node;
 import SkillGraph.Requirement;
+import de.tubs.skeditor.contracting.Contract;
+import de.tubs.skeditor.contracting.ContractPropagator;
 import de.tubs.skeditor.utils.GraphUtil;
 
 public class ContentProvider implements IStructuredContentProvider {
@@ -18,8 +20,15 @@ public class ContentProvider implements IStructuredContentProvider {
 		EList<Equation> eqList = new BasicEList<Equation>();
 		eqList.addAll(node.getEquations());
 		eqList.addAll(GraphUtil.getPropagatedEquations(node));
+		
+		//Contract c = ContractPropagator.computeContract(node);
+		
 		EList<Requirement> preCondList = GraphUtil.getPreConditionRequirements(node);
 		EList<Requirement> postCondList = node.getRequirements();
+		
+		//old version
+		//EList<Requirement> preCondList = GraphUtil.getPreConditionRequirements(node);
+		//EList<Requirement> postCondList = node.getRequirements();
 		
 		int listSize = Math.max(eqList.size(), Math.max(preCondList.size(), postCondList.size()));
 

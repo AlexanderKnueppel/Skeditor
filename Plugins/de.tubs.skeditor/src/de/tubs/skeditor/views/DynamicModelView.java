@@ -45,11 +45,11 @@ public class DynamicModelView extends ViewPart {
 
 		TableViewerColumn columnPreConditions = new TableViewerColumn(viewer, SWT.NONE);
 		columnPreConditions.getColumn().setWidth(200);
-		columnPreConditions.getColumn().setText("PreConditions");
+		columnPreConditions.getColumn().setText("Assume");
 
 		TableViewerColumn columnPostConditions = new TableViewerColumn(viewer, SWT.NONE);
 		columnPostConditions.getColumn().setWidth(200);
-		columnPostConditions.getColumn().setText("PostConditions");
+		columnPostConditions.getColumn().setText("Guarantee");
 
 		TableViewerColumn columnFileLink = new TableViewerColumn(viewer, SWT.NONE);
 		columnFileLink.getColumn().setWidth(300);
