@@ -1,8 +1,12 @@
-package de.tubs.skeditor.propagator;
+package de.tubs.skeditor.contracting;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import SkillGraph.Graph;
 import SkillGraph.Node;
+import SkillGraph.Parameter;
 import de.tubs.skeditor.utils.GraphUtil;
 
 public class ContractPropagator {
@@ -31,5 +35,15 @@ public class ContractPropagator {
 		}
 
 		return new Contract(assume, safe);
+	}
+	
+	public static Set<String> getParameters(Graph g, String equation) {
+		Set<String> result = new HashSet<String>();
+		
+		for(Parameter p : g.getParameterList()) {
+			//needs parser right,...
+		}
+		
+		return result;
 	}
 }

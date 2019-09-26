@@ -37,12 +37,12 @@ import SkillGraph.Category;
 import SkillGraph.Graph;
 import SkillGraph.Node;
 import de.tubs.skeditor.ImageProvider;
+import de.tubs.skeditor.contracting.Contract;
+import de.tubs.skeditor.contracting.ContractPropagator;
 import de.tubs.skeditor.features.AddSafetyRequirementsFeature;
 import de.tubs.skeditor.features.ChangeCategoryFeature;
 import de.tubs.skeditor.features.ExportFeature;
 import de.tubs.skeditor.features.RunKeymaeraCheckFeature;
-import de.tubs.skeditor.propagator.Contract;
-import de.tubs.skeditor.propagator.ContractPropagator;
 import de.tubs.skeditor.utils.ConstraintUtil;
 import de.tubs.skeditor.utils.ViewUtil;
 

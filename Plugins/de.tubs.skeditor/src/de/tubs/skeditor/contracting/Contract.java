@@ -1,4 +1,4 @@
-package de.tubs.skeditor.propagator;
+package de.tubs.skeditor.contracting;
 
 public class Contract {
 	private String assumption;
