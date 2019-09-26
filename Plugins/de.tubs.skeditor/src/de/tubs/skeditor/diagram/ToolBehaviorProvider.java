@@ -147,12 +147,12 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 
 	@Override
 	public ICustomFeature getDoubleClickFeature(IDoubleClickContext context) {
-		if (getFeatureProvider()
-				.getBusinessObjectForPictogramElement(context.getInnerPictogramElement()) instanceof Node) {
-			Node node = (Node) getFeatureProvider()
-					.getBusinessObjectForPictogramElement(context.getInnerPictogramElement());
-			ViewUtil.updateDiffView(node);
-		}
+//		if (getFeatureProvider()
+//				.getBusinessObjectForPictogramElement(context.getInnerPictogramElement()) instanceof Node) {
+//			Node node = (Node) getFeatureProvider()
+//					.getBusinessObjectForPictogramElement(context.getInnerPictogramElement());
+//			ViewUtil.updateDiffView(node);
+//		}
 		return super.getDoubleClickFeature(context);
 	}
 
