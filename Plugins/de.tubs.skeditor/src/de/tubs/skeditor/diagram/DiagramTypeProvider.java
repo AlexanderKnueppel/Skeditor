@@ -49,6 +49,10 @@ public class DiagramTypeProvider extends AbstractDiagramTypeProvider {
 				}
 			});
 		}
-		ViewUtil.updateViews((Graph) getFeatureProvider().getBusinessObjectForPictogramElement(diagram));
+		try {
+			ViewUtil.updateViews((Graph) getFeatureProvider().getBusinessObjectForPictogramElement(diagram));
+		} catch(NullPointerException e) {
+			// do nothing...
+		}
 	}
 }

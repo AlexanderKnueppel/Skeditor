@@ -14,9 +14,10 @@
   <extension
       point="org.eclipse.graphiti.ui.diagramTypeProviders">
     <diagramTypeProvider
-      class="de.tubs.skeditor.diagram.DiagramTypeProvider"
-      id="de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"
-      name="skeditor Diagram Type Provider">
+          class="de.tubs.skeditor.diagram.DiagramTypeProvider"
+          context="de.tubs.skeditor.editor"
+          id="de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"
+          name="skeditor Diagram Type Provider">
       <diagramType
         id="de.tubs.skeditor.diagram.SkillGraphDiagramType">
       </diagramType>

@@ -20,6 +20,11 @@ public class SkeditorDiagramEditor extends DiagramEditor {
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		super.selectionChanged(part, selection);
+		
+		if(!(selection instanceof IStructuredSelection)) {
+			return;
+		}
+		
 		IStructuredSelection sel = (IStructuredSelection) selection;
 		if (selection instanceof IStructuredSelection) {
 			if (!sel.isEmpty() && sel.getFirstElement() instanceof GraphitiShapeEditPart) {
@@ -34,4 +39,5 @@ public class SkeditorDiagramEditor extends DiagramEditor {
 			}
 		}
 	}
+	
 }

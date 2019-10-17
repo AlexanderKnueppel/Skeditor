@@ -168,8 +168,8 @@ public class DynamicModel {
 		contents = contents.replace("%%variables%%", vars);
 		contents = contents.replace("%%constvalues%%", constvalues);
 		contents = contents.replace("%%dynamic%%", dynamic);
-		contents = contents.replace("%%precondition%%", precondition);
-		contents = contents.replace("%%postcondition%%", postcondition);
+		contents = contents.replace("%%assume%%", precondition);
+		contents = contents.replace("%%safe%%", postcondition);
 		//System.out.println(contents);
 		return contents;
 	}

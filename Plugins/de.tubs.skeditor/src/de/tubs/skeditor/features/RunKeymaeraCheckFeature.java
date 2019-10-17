@@ -17,6 +17,8 @@ import SkillGraph.Graph;
 import SkillGraph.Node;
 import SkillGraph.Parameter;
 import SkillGraph.Requirement;
+import de.tubs.skeditor.contracting.Contract;
+import de.tubs.skeditor.contracting.ContractPropagator;
 import de.tubs.skeditor.keymaera.DynamicModel;
 import de.tubs.skeditor.keymaera.KeYmaeraBridge;
 import de.tubs.skeditor.keymaera.ValuedParameter;
@@ -101,6 +103,11 @@ public class RunKeymaeraCheckFeature extends AbstractCustomFeature {
 		try {
 			String preCondition = buildPreCondition(node);
 			String postCondition = buildPostCondition(node);
+			
+			// New version:
+			Contract c = ContractPropagator.computeContract(node);
+			preCondition = c.getAssumption();
+			postCondition = c.getGuarantee();
 
 			String dynamicModelString = dynamicModel.createKeYmaeraProgram(preCondition, postCondition);
 			System.out.println(dynamicModelString);

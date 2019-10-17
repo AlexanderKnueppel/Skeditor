@@ -14,20 +14,32 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.graphiti.dt.IDiagramTypeProvider;
+import org.eclipse.graphiti.features.IAddFeature;
+import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramLink;
+import org.eclipse.graphiti.mm.pictograms.PictogramsFactory;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.ui.services.GraphitiUi;
+import org.eclipse.graphiti.ui.services.IExtensionManager;
+
+import SkillGraph.Category;
+import SkillGraph.Graph;
+import SkillGraph.Node;
+import SkillGraph.SkillGraphFactory;
 
 public class CreateFileOperation extends RecordingCommand {
 	private TransactionalEditingDomain editingDomain;
 	private String diagramName;
-	//private URI path;
 	private String containerName;
 
 	public CreateFileOperation(TransactionalEditingDomain domain, String containerName, String name) {
 		super(domain);
 		this.editingDomain = domain;
 		this.diagramName = name;
-		//this.path = path;
 		this.containerName = containerName;
 	}
 
@@ -45,50 +57,42 @@ public class CreateFileOperation extends RecordingCommand {
 		final IFile file = container.getFile(new Path(diagramName));
 
 		URI uri = URI.createFileURI(file.getFullPath().toString());
-
-		if (file == null || !file.exists()) {
-			Resource createResource = rSet.createResource(uri);
-			try {
-				createResource.save(new HashMap());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		final Resource resource2 = rSet.getResource(uri, true);
+		Resource resource2 = rSet.createResource(uri);
 		resource2.getContents().add(diagram);
-//		IDiagramTypeProvider dtp = GraphitiUi.getExtensionManager().createDiagramTypeProvider(diagram,
-//				"de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"); //$NON-NLS-1$
-//		IFeatureProvider featureProvider = dtp.getFeatureProvider();
-//		AddContext addcontext = new AddContext();
-//
-//		int dot = file.getName().lastIndexOf(".");
-//		Graph g = SkillGraphFactory.eINSTANCE.createGraph();
-//		Node node = SkillGraphFactory.eINSTANCE.createNode();
-//		node.setName(file.getName().substring(0, dot));
-//		node.setCategory(Category.MAIN);
-//
-//		g.setRootNode(node);
-//		
-//		resource2.getContents().add(g);
-//		resource2.getContents().add(node);
-//
-//		addcontext.setNewObject(node);
-//
-//		addcontext.setTargetContainer(diagram);
-//
-//		addcontext.setX(100);
-//		addcontext.setY(100);
-//
-//		IAddFeature add = featureProvider.getAddFeature(addcontext);
-//
-//		if (add.canAdd(addcontext)) {
-//			add.add(addcontext);
-//		}
+		
+		// Get the dtp
+		IDiagramTypeProvider dtp = GraphitiUi.getExtensionManager().createDiagramTypeProvider(diagram,
+				"de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"); //$NON-NLS-1$
+		IFeatureProvider featureProvider = dtp.getFeatureProvider();
 
+		// The dtp already creates a new graph in its init method; so get it here
+		Graph g = (Graph) featureProvider.getBusinessObjectForPictogramElement(diagram);
+		
+		// Create a new main node
+		int name = file.getName().lastIndexOf(".");
+		Node node = SkillGraphFactory.eINSTANCE.createNode();
+		node.setName(file.getName().substring(0, name));
+		node.setCategory(Category.MAIN);
+
+		g.setRootNode(node);
+
+		// Add graphical representation of the newly created node
+		AddContext addcontext = new AddContext();
+		addcontext.setNewObject(node);
+		addcontext.setTargetContainer(diagram);
+
+		addcontext.setX(100);
+		addcontext.setY(100);
+
+		IAddFeature add = featureProvider.getAddFeature(addcontext);
+
+		if (add.canAdd(addcontext)) {
+			add.add(addcontext);
+		}
+
+		// Save resource to disk
 		try {
-			resource2.save(null);
+			resource2.save(new HashMap());
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
