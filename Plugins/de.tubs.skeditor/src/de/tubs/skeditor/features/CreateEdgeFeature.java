@@ -79,7 +79,7 @@ public class CreateEdgeFeature extends AbstractCreateConnectionFeature {
 	 *            is the "child" of the source
 	 * @return the created Edge
 	 */
-	private Edge createEdge(Node parent, Node child) {
+	public Edge createEdge(Node parent, Node child) {
 		Edge edge = SkillGraphFactory.eINSTANCE.createEdge();
 		edge.setParentNode(parent);
 		edge.setChildNode(child);

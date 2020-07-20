@@ -42,6 +42,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Node/childEdges"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Node/parentNodes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Node/requirements"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Node/controller"/>
     </genClasses>
     <genClasses ecoreClass="SkillGraph.ecore#//Requirement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Requirement/comment"/>
@@ -56,6 +57,10 @@
     <genClasses ecoreClass="SkillGraph.ecore#//Edge">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Edge/parentNode"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Edge/childNode"/>
+    </genClasses>
+    <genClasses ecoreClass="SkillGraph.ecore#//Controller">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Controller/ctrl"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Controller/node"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

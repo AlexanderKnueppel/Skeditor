@@ -1,3 +1,12 @@
+/**
+* The New Compose Wizard. 
+* 
+*
+* @author  Arne Windeler
+* @version 1.0
+* @since   2020-01-14 
+*/
+
 package de.tubs.skeditor.wizards;
 
 import java.io.ByteArrayInputStream;
@@ -25,38 +34,45 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-public class NewGraphWizard  extends Wizard implements INewWizard {
-	private NewGraphWizardPage page;
+import de.tubs.skeditor.compositionality.CreateFileOperationCompose;
+import de.tubs.skeditor.views.SafetyGoalsView;
+
+public class NewComposeWizard extends Wizard implements INewWizard {
+	private NewComposeWizardPage page;
 	private ISelection selection;
-	
-	public NewGraphWizard() {
+
+	public NewComposeWizard() {
 		super();
 		setNeedsProgressMonitor(true);
 	}
-	
+
 	/**
 	 * Adding the page to the wizard.
 	 */
 	@Override
 	public void addPages() {
-		page = new NewGraphWizardPage(selection);
+		page = new NewComposeWizardPage(selection);
 		addPage(page);
 	}
-	
+
 	@Override
 	public boolean performFinish() {
 		final String containerName = page.getContainerName();
 		final String fileName = page.getFileName();
+		final String GraphAName = page.getGrapAName();
+		final String GraphBName = page.getGrapBName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, fileName, monitor);
+					doFinish(containerName, fileName, monitor, GraphAName, GraphBName);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -75,14 +91,14 @@ public class NewGraphWizard  extends Wizard implements INewWizard {
 		}
 		return true;
 	}
-	
 
 	/**
 	 * The worker method. It will find the container, create the file if missing or
 	 * just replace its contents, and open the editor on the newly created file.
 	 */
 
-	private void doFinish(String containerName, String fileName, IProgressMonitor monitor) throws CoreException {
+	private void doFinish(String containerName, String fileName, IProgressMonitor monitor, String GraphA, String GraphB)
+			throws CoreException {
 		// create a sample file
 		monitor.beginTask("Creating " + fileName, 2);
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -103,18 +119,28 @@ public class NewGraphWizard  extends Wizard implements INewWizard {
 			editingDomain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain(rSet);
 		}
 
-		CreateFileOperation operation = new CreateFileOperation(editingDomain, containerName, fileName);
+		CreateFileOperationCompose operation = new CreateFileOperationCompose(editingDomain, containerName, fileName,
+				GraphA, GraphB);
 		editingDomain.getCommandStack().execute(operation);
-		
+
 		// Dispose the editing domain to eliminate memory leak
 		editingDomain.dispose();
-		
+
 		monitor.worked(1);
 		monitor.setTaskName("Opening file for editing...");
 
 		getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				IViewReference[] ref = page.getViewReferences();
+
+				for (IViewReference iViewReference : ref) {
+					if (iViewReference.getId().equals("de.tubs.skeditor.views.SafetyGoalsView")) {// TODO rework, bit
+																									// too hacky
+						((SafetyGoalsView) iViewReference.getView(true)).getViewer().refresh();
+					}
+				}
+
 				try {
 					IDE.openEditor(page, file, true);
 				} catch (PartInitException e) {
@@ -122,6 +148,7 @@ public class NewGraphWizard  extends Wizard implements INewWizard {
 			}
 		});
 		monitor.worked(1);
+
 	}
 
 	/**
@@ -142,6 +169,7 @@ public class NewGraphWizard  extends Wizard implements INewWizard {
 	 * We will accept the selection in the workbench to see if we can initialize
 	 * from it.
 	 * 
+	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {

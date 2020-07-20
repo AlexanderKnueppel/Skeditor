@@ -41,8 +41,11 @@ import de.tubs.skeditor.contracting.Contract;
 import de.tubs.skeditor.contracting.ContractPropagator;
 import de.tubs.skeditor.features.AddSafetyRequirementsFeature;
 import de.tubs.skeditor.features.ChangeCategoryFeature;
+import de.tubs.skeditor.features.CreateKeymaeraFileFeature;
+import de.tubs.skeditor.features.EditControllerFeature;
 import de.tubs.skeditor.features.ExportFeature;
 import de.tubs.skeditor.features.RunKeymaeraCheckFeature;
+import de.tubs.skeditor.features.SetRootNodeFeature;
 import de.tubs.skeditor.utils.ConstraintUtil;
 import de.tubs.skeditor.utils.ViewUtil;
 
@@ -60,8 +63,15 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof RunKeymaeraCheckFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
-			}
+			} else if (customFeature instanceof EditControllerFeature) {
+				entries.add(new ContextMenuEntry(customFeature, context));
+			} else if (customFeature instanceof CreateKeymaeraFileFeature) {
+				entries.add(new ContextMenuEntry(customFeature, context));
+			} else if (customFeature instanceof SetRootNodeFeature) {
+				entries.add(new ContextMenuEntry(customFeature, context));
+			} 
 		}
+		
 		return entries.toArray(new IContextMenuEntry[entries.size()]);
 	}
 
@@ -97,7 +107,8 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 
 			}
 
-			if (iCustomFeature instanceof AddSafetyRequirementsFeature && node.getCategory() != Category.MAIN) {
+//			if (iCustomFeature instanceof AddSafetyRequirementsFeature && node.getCategory() != Category.MAIN) {
+			if (iCustomFeature instanceof AddSafetyRequirementsFeature) {
 				AddSafetyRequirementsFeature reqFeature = (AddSafetyRequirementsFeature) iCustomFeature;
 				ContextButtonEntry addReqButton = new ContextButtonEntry(reqFeature, customCatButtonContext);
 				addReqButton.setText("New Requirement");

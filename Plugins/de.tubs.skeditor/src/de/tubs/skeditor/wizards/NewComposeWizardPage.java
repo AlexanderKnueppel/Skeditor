@@ -1,3 +1,12 @@
+/**
+* The interface for the Composition Function. 
+* 
+*
+* @author  Arne Windeler
+* @version 1.0
+* @since   2020-01-14 
+*
+*/
 package de.tubs.skeditor.wizards;
 
 import org.eclipse.core.resources.IContainer;
@@ -19,20 +28,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 
-public class NewGraphWizardPage extends WizardPage {
+public class NewComposeWizardPage extends WizardPage {
 	private Text containerText;
+	private Text resourceTextA;
+	private Text resourceTextB;
 	private Text fileText;
 	private ISelection selection;
 
 	/**
-	 * Constructor for NewGraphWizardPage.
+	 * Constructor for NewComposeWizardPage.
 	 * 
 	 */
-	public NewGraphWizardPage(ISelection selection) {
+	public NewComposeWizardPage(ISelection selection) {
 		super("wizardPage");
-		setTitle("Skill Graph Creation");
-		setDescription("This wizard creates a new skill graph file.");
+		setTitle("Skill Graph Composition");
+		setDescription("This wizard composes two Skill Graphs.");
 		this.selection = selection;
 	}
 
@@ -60,8 +72,51 @@ public class NewGraphWizardPage extends WizardPage {
 		button.setText("Browse...");
 		button.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				handleBrowse();
+				handleBrowseContainer();
 			}
+		});
+
+		label = new Label(container, SWT.NULL);
+		label.setText("&Skill Graph A:");
+
+		resourceTextA = new Text(container, SWT.BORDER | SWT.SINGLE);
+		GridData gdA = new GridData(GridData.FILL_HORIZONTAL);
+		resourceTextA.setLayoutData(gdA);
+		resourceTextA.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				dialogChanged();
+			}
+		});
+
+		Button buttonA = new Button(container, SWT.PUSH);
+		buttonA.setText("Browse...");
+		buttonA.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent b) {
+				handleBrowseResource(resourceTextA);
+			}
+
+		});
+		label = new Label(container, SWT.NULL);
+		label.setText("&Skill Graph B:");
+
+		resourceTextB = new Text(container, SWT.BORDER | SWT.SINGLE);
+		GridData gdB = new GridData(GridData.FILL_HORIZONTAL);
+		resourceTextB.setLayoutData(gdB);
+		resourceTextB.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				dialogChanged();
+			}
+		});
+
+		Button buttonB = new Button(container, SWT.PUSH);
+		buttonB.setText("Browse...");
+		buttonB.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent c) {
+				handleBrowseResource(resourceTextB);
+			}
+
 		});
 		label = new Label(container, SWT.NULL);
 		label.setText("&Name:");
@@ -84,8 +139,7 @@ public class NewGraphWizardPage extends WizardPage {
 	 */
 
 	private void initialize() {
-		if (selection != null && selection.isEmpty() == false
-				&& selection instanceof IStructuredSelection) {
+		if (selection != null && selection.isEmpty() == false && selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
 			if (ssel.size() > 1)
 				return;
@@ -103,18 +157,28 @@ public class NewGraphWizardPage extends WizardPage {
 	}
 
 	/**
-	 * Uses the standard container selection dialog to choose the new value for
-	 * the container field.
+	 * Uses the standard container selection dialog to choose the new value for the
+	 * container field.
 	 */
 
-	private void handleBrowse() {
-		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
-				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
-				"Select new file container");
+	private void handleBrowseContainer() {
+		ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(),
+				ResourcesPlugin.getWorkspace().getRoot(), false, "Select new file container");
 		if (dialog.open() == ContainerSelectionDialog.OK) {
 			Object[] result = dialog.getResult();
 			if (result.length == 1) {
 				containerText.setText(((Path) result[0]).toString());
+			}
+		}
+	}
+
+	private void handleBrowseResource(Text text) {
+		ResourceSelectionDialog dialog = new ResourceSelectionDialog(getShell(),
+				ResourcesPlugin.getWorkspace().getRoot(), "Select Skill Graph");
+		if (dialog.open() == ResourceSelectionDialog.OK) {
+			Object[] result = dialog.getResult();
+			if (result.length != 0) {
+				text.setText((result[0]).toString());
 			}
 		}
 	}
@@ -124,16 +188,14 @@ public class NewGraphWizardPage extends WizardPage {
 	 */
 
 	private void dialogChanged() {
-		IResource container = ResourcesPlugin.getWorkspace().getRoot()
-				.findMember(new Path(getContainerName()));
+		IResource container = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(getContainerName()));
 		String fileName = getFileName();
 
 		if (getContainerName().length() == 0) {
 			updateStatus("File container must be specified");
 			return;
 		}
-		if (container == null
-				|| (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
+		if (container == null || (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
 			updateStatus("File container must exist");
 			return;
 		}
@@ -171,5 +233,13 @@ public class NewGraphWizardPage extends WizardPage {
 
 	public String getFileName() {
 		return fileText.getText();
+	}
+
+	public String getGrapAName() {
+		return resourceTextA.getText();
+	}
+
+	public String getGrapBName() {
+		return resourceTextB.getText();
 	}
 }

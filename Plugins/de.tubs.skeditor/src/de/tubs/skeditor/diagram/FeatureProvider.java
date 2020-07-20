@@ -31,13 +31,16 @@ import de.tubs.skeditor.features.AddNodeFeature;
 import de.tubs.skeditor.features.AddSafetyRequirementsFeature;
 import de.tubs.skeditor.features.ChangeCategoryFeature;
 import de.tubs.skeditor.features.CreateEdgeFeature;
+import de.tubs.skeditor.features.CreateKeymaeraFileFeature;
 import de.tubs.skeditor.features.CreateNodeFeature;
 import de.tubs.skeditor.features.DeleteFeature;
 import de.tubs.skeditor.features.DirectEditingNodeFeature;
+import de.tubs.skeditor.features.EditControllerFeature;
 import de.tubs.skeditor.features.ExportFeature;
 import de.tubs.skeditor.features.LayoutNodeFeature;
 import de.tubs.skeditor.features.ReconnectionFeature;
 import de.tubs.skeditor.features.RunKeymaeraCheckFeature;
+import de.tubs.skeditor.features.SetRootNodeFeature;
 import de.tubs.skeditor.features.UpdateFeature;
 
 public class FeatureProvider extends DefaultFeatureProvider {
@@ -117,6 +120,9 @@ public class FeatureProvider extends DefaultFeatureProvider {
 		customFeatures.add(new ExportFeature(this));
 		customFeatures.add(new AddSafetyRequirementsFeature(this));
 		customFeatures.add(new RunKeymaeraCheckFeature(this));
+		customFeatures.add(new EditControllerFeature(this));
+		customFeatures.add(new CreateKeymaeraFileFeature(this));
+		customFeatures.add(new SetRootNodeFeature(this));
 		return customFeatures.toArray(new ICustomFeature[customFeatures.size()]);
 	}
 

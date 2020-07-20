@@ -19,6 +19,10 @@ public class ContentProvider implements ITreeContentProvider {
 	@Override
 	public Object[] getElements(Object object) {
 		ArrayList<Node> nodes = new ArrayList<Node>();
+		Node root = ((Graph) object).getRootNode();
+		if (root.getRequirements().size() > 0) {
+			nodes.add(root);
+		}
 		for (Node node : ((Graph) object).getNodes()) {
 			if (node.getRequirements().size() > 0) {
 				nodes.add(node);
