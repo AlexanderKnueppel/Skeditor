@@ -9,6 +9,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 
@@ -17,10 +18,14 @@ import SkillGraph.Graph;
 import SkillGraph.Node;
 import SkillGraph.Parameter;
 import SkillGraph.Requirement;
+import de.tubs.skeditor.compositionality.KeymaeraString;
+import de.tubs.skeditor.contracting.Contract;
+import de.tubs.skeditor.contracting.ContractPropagator;
 import de.tubs.skeditor.keymaera.DynamicModel;
 import de.tubs.skeditor.keymaera.KeYmaeraBridge;
 import de.tubs.skeditor.keymaera.ValuedParameter;
 import de.tubs.skeditor.utils.GraphUtil;
+import de.tubs.skeditor.features.CreateKeymaeraFileFeature;
 import edu.cmu.cs.ls.keymaerax.pt.ProvableSig;
 
 public class RunKeymaeraCheckFeature extends AbstractCustomFeature {
@@ -50,10 +55,11 @@ public class RunKeymaeraCheckFeature extends AbstractCustomFeature {
 		Graph graph = (Graph) getBusinessObjectForPictogramElement(getDiagram());
 		Node node = (Node) getBusinessObjectForPictogramElement(context.getInnerPictogramElement());
 		String template = "";
-		try {
-			template = new String(Files.readAllBytes(Paths.get(node.getProgramPath())));
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		PictogramElement[] pes = context.getPictogramElements();
+		if (pes != null && pes.length == 1) {
+            Object bo = getBusinessObjectForPictogramElement(pes[0]);
+            KeymaeraString ks = new KeymaeraString(bo);
+            template = new String(ks.getString());
 		}
 		DynamicModel dynamicModel = new DynamicModel(template);
 
@@ -101,8 +107,17 @@ public class RunKeymaeraCheckFeature extends AbstractCustomFeature {
 		try {
 			String preCondition = buildPreCondition(node);
 			String postCondition = buildPostCondition(node);
-
-			String dynamicModelString = dynamicModel.createKeYmaeraProgram(preCondition, postCondition);
+			
+			// New version:
+			Contract c = ContractPropagator.computeContract(node);
+			preCondition = c.getAssumption();
+			postCondition = c.getGuarantee();
+			Object bo = null;
+			if (pes != null && pes.length == 1) {
+	            bo = getBusinessObjectForPictogramElement(pes[0]);
+	            }
+			KeymaeraString keyString = new KeymaeraString(bo);
+			String dynamicModelString = keyString.getString();
 			System.out.println(dynamicModelString);
 			KeYmaeraBridge bridge = new KeYmaeraBridge();
 			ProvableSig f = bridge.prove(KeYmaeraBridge.parseProgram(dynamicModelString));

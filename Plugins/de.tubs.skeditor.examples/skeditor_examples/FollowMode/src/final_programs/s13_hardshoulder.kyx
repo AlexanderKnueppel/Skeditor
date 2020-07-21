@@ -1,0 +1,81 @@
+Definitions
+  /*** Required definitions. Provided by child skills. ***/
+  Real A;
+  Real B;
+  Real b;
+  Real ep;
+  
+  /*** New definitions. ***/
+
+  
+  B initial() <-> (   
+   /* Generate init... */
+   v >= 0 & v <= 2.7 & A > 0 & A <= 4 & B >= b & b >= 5 & lw > 0 & y = ly & r != 0 & dx^2 + dy^2 = 1
+           & abs(y-ly) + v^2/(2*b) < lw
+  ).
+  
+  HP ctrl::= { 
+   ?abs(y-ly) + v^2/(2*b) + (A/b+1)*(A/2*ep^2+ep*v) < lw;
+            a :=*; ?-B <= a & a <= A;
+            w :=*; r :=*; ?r != 0 & w*r = v;
+         ++ ?v=0; a := 0; w := 0;
+         ++ a :=*; ?-B <=a & a <= -b;
+  }.
+  
+  HP drive::= {
+  	t := 0;
+    {
+        { x' = v*dx, y' = v*dy, v' = a, dx' = -dy*w, dy' = dx*w, w'=a/r, t' = 1 & v >= 0 & t <= ep }
+        @invariant(t>=0, dx^2+dy^2=1,
+          (v'=a -> v=old(v)+a*t),
+          (v'=a -> -t*(v-a/2*t) <= y - old(y) & y - old(y) <= t*(v-a/2*t)),
+          (v'=0 -> v=old(v)),
+          (v'=0 -> -t*v <= y - old(y) & y - old(y) <= t*v)
+        )
+    }
+  }.
+  
+  
+End.
+
+ProgramVariables
+  /*** Required variables. ***/
+  
+  /*** Skill: s_6_control_longitudinal ***/
+  Real x;
+  Real v;
+  Real a;
+  
+  /*** Skill: s_14_control_lateral ***/
+  Real r;
+  Real dx;
+  Real dy;
+  Real w;
+  Real y;
+  
+  /*** New variables. ***/
+  /* ... */
+  
+    Real lw;
+  Real ly;
+  
+  /* clock */
+  Real t;
+End.
+
+/*** Inspired by: 
+
+"Jan-David Quesel, Stefan Mitsch, Sarah Loos, Nikos Aréchiga, and André Platzer. How to model and prove hybrid systems with KeYmaera: A tutorial on safety. STTT, 18(1), pp. 67-91, 2016.".
+Link "http://symbolaris.com/pub/KeYmaera-tutorial.pdf#page=20".
+
+***/
+
+Problem
+    initial()
+ -> [
+      { 
+        ctrl;
+		drive;
+      }*@invariant(v >= 0 & dx^2+dy^2 = 1 & r != 0 & abs(y-ly) + v^2/(2*b) < lw)
+    ] abs(y-ly) < lw
+End.

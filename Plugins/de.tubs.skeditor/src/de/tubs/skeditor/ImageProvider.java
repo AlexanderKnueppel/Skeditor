@@ -4,7 +4,7 @@ import org.eclipse.graphiti.ui.platform.AbstractImageProvider;
 
 public class ImageProvider extends AbstractImageProvider {
 
-	protected static final String PREFIX = "de.tubs.skilledit.";
+	protected static final String PREFIX = "de.tubs.skeditor.";
 
 	public static final String IMG_ARROW_HEAD = PREFIX + "arrowHead";
 	public static final String IMG_EDIT_PEN = PREFIX + "editpen";

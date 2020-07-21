@@ -1,0 +1,51 @@
+Definitions
+  /*** Required definitions. Provided by child skills. ***/
+  Real A;
+  Real B;
+  Real b;
+  Real ep;
+  
+  /*** New definitions. ***/
+  /* ... */
+  
+  B initial() <-> (   
+   /* Generate init... */
+   v >= 0 & v <= vmax & A > 0 & A <= 4 & B >= b & b >= 5 & vmax = 2.7 & a = 0
+  ).
+                   
+  R margin() = (ep*A).    
+  
+  HP ctrl::= { 
+  	?vmax - v <= margin(); a := *; ?-b <= a & a <= 0;
+  	++ ?vmax - v >= margin(); a := *; ?-b <= a & a <= A;
+  }.
+  
+  HP drive::= {
+  	t := 0;
+    { x' = v, v' = a, t' = 1 & v >= 0 & t <= ep}
+  }.
+End.
+
+ProgramVariables
+  /*** Required variables. ***/
+  /* ... */
+  
+  /*** New variables. ***/
+  Real a.
+  Real v.
+  Real x.
+  Real vmax;
+  
+  /* clock */
+  Real t;
+End.
+
+Problem
+    initial()
+ -> [
+      { 
+        ctrl;
+		drive;
+      }*@invariant(v >= 0 & v <= vmax)
+    ] (v <= vmax)
+End.

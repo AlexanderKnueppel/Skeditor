@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SkillGraph="www.thisisnotarealuri.de" xmlns:al="http://eclipse.org/graphiti/mm/algorithms" xmlns:pi="http://eclipse.org/graphiti/mm/pictograms">
+  <pi:Diagram visible="true" gridUnit="10" diagramTypeId="SkillGraph" name="FollowMode" snapToGrid="true" pictogramLinks="/0/@children.0/@link /0/@children.0/@children.0/@link /0/@children.1/@link /0/@children.1/@children.0/@link /0/@connections.0/@link /0/@children.2/@link /0/@children.2/@children.0/@link /0/@children.3/@link /0/@children.3/@children.0/@link /0/@connections.1/@link /0/@connections.2/@link /0/@children.4/@link /0/@children.4/@children.0/@link /0/@connections.3/@link" version="0.16.0">
+    <graphicsAlgorithm xsi:type="al:Rectangle" background="/0/@colors.1" foreground="/0/@colors.0" lineWidth="1" transparency="0.0" width="1000" height="1000"/>
+    <link businessObjects="/1"/>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.5" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="149" y="190" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.0"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.0" incomingConnections="/0/@connections.3"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Select target object"/>
+        <link businessObjects="/1/@nodes.0"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.7" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="149" y="280" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.1"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.1 /0/@connections.2" incomingConnections="/0/@connections.0"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Perceive movable objects"/>
+        <link businessObjects="/1/@nodes.1"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.8" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="268" y="400" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.2"/>
+      <anchors xsi:type="pi:ChopboxAnchor" incomingConnections="/0/@connections.1"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Camera"/>
+        <link businessObjects="/1/@nodes.2"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.8" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="30" y="410" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.3"/>
+      <anchors xsi:type="pi:ChopboxAnchor" incomingConnections="/0/@connections.2"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Radar"/>
+        <link businessObjects="/1/@nodes.3"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.3" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="149" y="100" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@rootNode"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.3"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Keep distance to leading vehicle"/>
+        <link businessObjects="/1/@rootNode"/>
+      </children>
+    </children>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.0/@anchors.0" end="/0/@children.1/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.0/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.1/@anchors.0" end="/0/@children.2/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.1/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.1/@anchors.0" end="/0/@children.3/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.1/@childEdges.1"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.4/@anchors.0" end="/0/@children.0/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@rootNode/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <colors red="227" green="238" blue="249"/>
+    <colors red="255" green="255" blue="255"/>
+    <colors/>
+    <colors red="187" green="187" blue="187"/>
+    <colors red="255" green="255"/>
+    <colors red="102" green="217" blue="255"/>
+    <colors red="255" green="179"/>
+    <colors green="230" blue="173"/>
+    <colors green="128" blue="255"/>
+    <colors red="204" green="51" blue="51"/>
+    <fonts name="Arial" size="8" bold="true"/>
+    <fonts name="Verdana" size="9" italic="true"/>
+  </pi:Diagram>
+  <SkillGraph:Graph>
+    <nodes category="lightblue" name="Select target object" parentNodes="/1/@rootNode">
+      <childEdges parentNode="/1/@nodes.0" childNode="/1/@nodes.1"/>
+      <requirements comment="New Requirement Comment" term="x+v^2/(2*b) + dist &lt;= xl + vl^2/(2*b)"/>
+      <requirements comment="New Requirement Comment" term="dist = 10 "/>
+      <requirements comment="New Requirement Comment" term="ep > 0"/>
+      <requirements comment="New Requirement Comment" term="vl >= 0"/>
+    </nodes>
+    <nodes category="green" name="Perceive movable objects" parentNodes="/1/@nodes.0">
+      <childEdges parentNode="/1/@nodes.1" childNode="/1/@nodes.2"/>
+      <childEdges parentNode="/1/@nodes.1" childNode="/1/@nodes.3"/>
+    </nodes>
+    <nodes category="blue" name="Camera" parentNodes="/1/@nodes.1"/>
+    <nodes category="blue" name="Radar" parentNodes="/1/@nodes.1"/>
+    <rootNode name="Keep distance to leading vehicle">
+      <childEdges parentNode="/1/@rootNode" childNode="/1/@nodes.0"/>
+      <requirements comment="New Requirement Comment" term="x + dist &lt;= xl"/>
+      <controller ctrl="  HP drive::= {&#xD;&#xA;  &#x9;t := 0;&#xD;&#xA;    {xl'= vl, vl' = al, t' = 1 &amp;  vl >= 0 &amp; t &lt;= ep}&#xD;&#xA;  }.  &#xD;&#xA;  HP leader::= {al := *;  ?-b &lt;= al &amp; al &lt;= A;}.&#xD;&#xA;  &#xD;&#xA;  HP main ::= {leader; drive;}."/>
+    </rootNode>
+    <parameterList name="Braking Force Range" abbreviation="B" unit="m/s&#xb2;" defaultValue=""/>
+    <parameterList name="Acceleration Range" abbreviation="A" unit="m/s&#xb2;" defaultValue="[0:4]"/>
+    <parameterList name="Reaction Time" abbreviation="ep" unit="s" defaultValue=""/>
+    <parameterList name="Minimum Following Distance" abbreviation="minDist" unit="m" defaultValue="10"/>
+    <parameterList name="Position" abbreviation="x" unit="m" defaultValue="" variable="true"/>
+    <parameterList name="Velocity sensing error" abbreviation="Verror" unit="m/s" defaultValue="0.03"/>
+    <parameterList name="Desired speed " abbreviation="Vset" unit="m/s" defaultValue=""/>
+    <parameterList name="Max Steering Rate" abbreviation="W" unit="rad" defaultValue="0.5"/>
+    <parameterList name="Lane Width " abbreviation="lw" unit="m" defaultValue="" variable="true"/>
+    <parameterList name="Center of Lane" abbreviation="ly" unit="m" defaultValue="" variable="true"/>
+    <parameterList name="Clock" abbreviation="t" unit="s" defaultValue="" variable="true"/>
+    <parameterList name="Tire stiffness" abbreviation="caf" unit="N/rad" defaultValue="75000"/>
+    <parameterList name="Tire stiffness" abbreviation="car" unit="N/rad" defaultValue="75000"/>
+    <parameterList name="Length from center of gravity to front " abbreviation="lf" unit="m" defaultValue="3.647"/>
+    <parameterList name="Length from center of gravity to rear " abbreviation="lr" unit="m" defaultValue="1.118"/>
+    <parameterList name="Mass" abbreviation="m" unit="kg" defaultValue="2240"/>
+    <parameterList name="Moment of Inertia" abbreviation="Jz" unit="kg*m^2" defaultValue="2100"/>
+    <parameterList name="Slideslip angle" abbreviation="beta" unit="m/s&#xb2;" defaultValue="0" variable="true"/>
+    <parameterList name="Heading deviation from reference" abbreviation="dPsi" unit="m/s&#xb2;" defaultValue="0" variable="true"/>
+    <parameterList name="Yaw rate" abbreviation="Psi2" unit="m/s&#xb2;" defaultValue="0" variable="true"/>
+    <parameterList name="Acceleration" abbreviation="a" unit="m/s&#xb2;" defaultValue="" variable="true"/>
+    <parameterList name="Deceleration" abbreviation="b" unit="m/s&#xb2;" defaultValue=""/>
+    <parameterList name="Speed" abbreviation="v" unit="m/s" defaultValue="" variable="true"/>
+    <parameterList name="Max Speed" abbreviation="vmax" unit="m/s" defaultValue="" variable="true"/>
+    <parameterList name="Distance" abbreviation="dist" unit="m" defaultValue="" variable="true"/>
+    <parameterList name="Position leading vehicle" abbreviation="xl" unit="m" defaultValue="" variable="true"/>
+    <parameterList name="dx" abbreviation="dx" unit="m/s&#xb2;" defaultValue="" variable="true"/>
+    <parameterList name="dy" abbreviation="dy" unit="m/s&#xb2;" defaultValue="" variable="true"/>
+    <parameterList name="r" abbreviation="r" unit="m/s&#xb2;" defaultValue="" variable="true"/>
+    <parameterList name="w" abbreviation="w" unit="m/s&#xb2;" defaultValue="" variable="true"/>
+    <parameterList name="y" abbreviation="y" unit="m/s&#xb2;" defaultValue="" variable="true"/>
+    <parameterList name="Speed leader" abbreviation="vl" unit="m/s" defaultValue="" variable="true"/>
+    <parameterList name="Acceleration leader" abbreviation="al" unit="m/s&#xb2;" defaultValue="" variable="true"/>
+  </SkillGraph:Graph>
+</xmi:XMI>

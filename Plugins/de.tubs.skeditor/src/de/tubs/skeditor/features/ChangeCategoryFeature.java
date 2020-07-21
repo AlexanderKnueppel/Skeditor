@@ -9,6 +9,7 @@ import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 
 import SkillGraph.Category;
 import SkillGraph.Node;
+import SkillGraph.Graph;
 import de.tubs.skeditor.ImageProvider;
 import de.tubs.skeditor.utils.ColorUtil;
 

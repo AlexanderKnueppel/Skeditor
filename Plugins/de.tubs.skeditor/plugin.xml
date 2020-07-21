@@ -14,9 +14,10 @@
   <extension
       point="org.eclipse.graphiti.ui.diagramTypeProviders">
     <diagramTypeProvider
-      class="de.tubs.skeditor.diagram.DiagramTypeProvider"
-      id="de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"
-      name="skeditor Diagram Type Provider">
+          class="de.tubs.skeditor.diagram.DiagramTypeProvider"
+          context="de.tubs.skeditor.editor"
+          id="de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"
+          name="skeditor Diagram Type Provider">
       <diagramType
         id="de.tubs.skeditor.diagram.SkillGraphDiagramType">
       </diagramType>
@@ -63,6 +64,46 @@
             id="de.tubs.skeditor.views.DifferentialEquationView"
             name="Dynamic Model">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="de.tubs.skeditor.diagram.SkeditorDiagramEditor"
+            default="true"
+            extensions="sked"
+            icon="icons/skeditor16.png"
+            id="de.tubs.skeditor.editor"
+            matchingStrategy="org.eclipse.graphiti.ui.editor.DiagramEditorMatchingStrategy"
+            name="Skeditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="de.tubs.skeditor.category.skeditor"
+            name="Skeditor">
+      </category>
+      <wizard
+            category="de.tubs.skeditor.category.skeditor"
+            class="de.tubs.skeditor.wizards.NewProjectWizard"
+            icon="icons/project16.png"
+            id="de.tubs.skeditor.newproject"
+            name="Skeditor Project">
+      </wizard>
+      <wizard
+            category="de.tubs.skeditor.category.skeditor"
+            class="de.tubs.skeditor.wizards.NewGraphWizard"
+            icon="icons/skeditor16.png"
+            id="de.tubs.skeditor.newgraph"
+            name="Skeditor file">
+      </wizard>
+      <wizard
+            category="de.tubs.skeditor.category.skeditor"
+            class="de.tubs.skeditor.wizards.NewComposeWizard"
+            icon="icons/skeditor16.png"
+            id="de.tubs.skeditor.newcompose"
+            name="Skeditor Compose">
+      </wizard>
    </extension>
 
 </plugin>

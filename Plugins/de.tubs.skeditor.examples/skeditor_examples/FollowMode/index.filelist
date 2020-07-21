@@ -1,0 +1,6 @@
+.project
+src/graphs/FollowMode.sked
+src/final_programs/s1_keep_dist-dynamics.kyx
+src/final_programs/s1_keep_dist.kyx
+src/final_programs/s6_control_longitudinal.kyx
+src/final_programs/s13_hardshoulder.kyx

@@ -13,13 +13,20 @@ import org.eclipse.graphiti.features.context.impl.CreateConnectionContext;
 import org.eclipse.graphiti.features.context.impl.CustomContext;
 import org.eclipse.graphiti.features.context.impl.DirectEditingContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.MultiText;
+import org.eclipse.graphiti.mm.algorithms.Text;
+import org.eclipse.graphiti.mm.algorithms.styles.Font;
+import org.eclipse.graphiti.mm.algorithms.styles.TextStyle;
+import org.eclipse.graphiti.mm.algorithms.styles.TextStyleRegion;
+import org.eclipse.graphiti.mm.algorithms.styles.UnderlineStyle;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.tb.ContextButtonEntry;
 import org.eclipse.graphiti.tb.ContextMenuEntry;
 import org.eclipse.graphiti.tb.DefaultToolBehaviorProvider;
@@ -30,10 +37,15 @@ import SkillGraph.Category;
 import SkillGraph.Graph;
 import SkillGraph.Node;
 import de.tubs.skeditor.ImageProvider;
+import de.tubs.skeditor.contracting.Contract;
+import de.tubs.skeditor.contracting.ContractPropagator;
 import de.tubs.skeditor.features.AddSafetyRequirementsFeature;
 import de.tubs.skeditor.features.ChangeCategoryFeature;
+import de.tubs.skeditor.features.CreateKeymaeraFileFeature;
+import de.tubs.skeditor.features.EditControllerFeature;
 import de.tubs.skeditor.features.ExportFeature;
 import de.tubs.skeditor.features.RunKeymaeraCheckFeature;
+import de.tubs.skeditor.features.SetRootNodeFeature;
 import de.tubs.skeditor.utils.ConstraintUtil;
 import de.tubs.skeditor.utils.ViewUtil;
 
@@ -51,8 +63,15 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof RunKeymaeraCheckFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
-			}
+			} else if (customFeature instanceof EditControllerFeature) {
+				entries.add(new ContextMenuEntry(customFeature, context));
+			} else if (customFeature instanceof CreateKeymaeraFileFeature) {
+				entries.add(new ContextMenuEntry(customFeature, context));
+			} else if (customFeature instanceof SetRootNodeFeature) {
+				entries.add(new ContextMenuEntry(customFeature, context));
+			} 
 		}
+		
 		return entries.toArray(new IContextMenuEntry[entries.size()]);
 	}
 
@@ -70,12 +89,14 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		changeCatButton.setIconId(ImageProvider.IMG_CHANGE_CAT);
 		data.getGenericContextButtons().add(changeCatButton);
 
-		Graph graph = (Graph) getFeatureProvider().getBusinessObjectForPictogramElement(getDiagramTypeProvider().getDiagram());
+		Graph graph = (Graph) getFeatureProvider()
+				.getBusinessObjectForPictogramElement(getDiagramTypeProvider().getDiagram());
 		boolean mainFound = graph.getRootNode() != null;
 		for (ICustomFeature iCustomFeature : customFeatures) {
 			if (iCustomFeature instanceof ChangeCategoryFeature) {
 				ChangeCategoryFeature changeCatFeature = (ChangeCategoryFeature) iCustomFeature;
-				if ((changeCatFeature.getCATEGORY() == Category.MAIN && mainFound) || !ConstraintUtil.areConstraintsValid(node, changeCatFeature.getCATEGORY())) {
+				if ((changeCatFeature.getCATEGORY() == Category.MAIN && mainFound)
+						|| !ConstraintUtil.areConstraintsValid(node, changeCatFeature.getCATEGORY())) {
 					continue;
 				}
 				ContextButtonEntry changeButton = new ContextButtonEntry(changeCatFeature, customCatButtonContext);
@@ -86,7 +107,8 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 
 			}
 
-			if (iCustomFeature instanceof AddSafetyRequirementsFeature && node.getCategory() != Category.MAIN) {
+//			if (iCustomFeature instanceof AddSafetyRequirementsFeature && node.getCategory() != Category.MAIN) {
+			if (iCustomFeature instanceof AddSafetyRequirementsFeature) {
 				AddSafetyRequirementsFeature reqFeature = (AddSafetyRequirementsFeature) iCustomFeature;
 				ContextButtonEntry addReqButton = new ContextButtonEntry(reqFeature, customCatButtonContext);
 				addReqButton.setText("New Requirement");
@@ -99,7 +121,8 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 			ContainerShape containerShape = (ContainerShape) pictogramElement;
 			EList<Shape> containerChildren = containerShape.getChildren();
 			if (containerChildren.size() > 0 && containerChildren.get(0).getGraphicsAlgorithm() instanceof MultiText) {
-				DirectEditingContext editContext = new DirectEditingContext(containerChildren.get(0), containerChildren.get(0).getGraphicsAlgorithm());
+				DirectEditingContext editContext = new DirectEditingContext(containerChildren.get(0),
+						containerChildren.get(0).getGraphicsAlgorithm());
 				IDirectEditingFeature editFeature = getFeatureProvider().getDirectEditingFeature(editContext);
 
 				ContextButtonEntry editButton = new ContextButtonEntry(editFeature, context);
@@ -135,11 +158,49 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 
 	@Override
 	public ICustomFeature getDoubleClickFeature(IDoubleClickContext context) {
-		if (getFeatureProvider().getBusinessObjectForPictogramElement(context.getInnerPictogramElement()) instanceof Node) {
-			Node node = (Node) getFeatureProvider().getBusinessObjectForPictogramElement(context.getInnerPictogramElement());
-			ViewUtil.updateDiffView(node);
-		}
+//		if (getFeatureProvider()
+//				.getBusinessObjectForPictogramElement(context.getInnerPictogramElement()) instanceof Node) {
+//			Node node = (Node) getFeatureProvider()
+//					.getBusinessObjectForPictogramElement(context.getInnerPictogramElement());
+//			ViewUtil.updateDiffView(node);
+//		}
 		return super.getDoubleClickFeature(context);
+	}
+
+	@Override
+	public Object getToolTip(GraphicsAlgorithm graphicsAlgorithm) {
+		PictogramElement pe = graphicsAlgorithm.getPictogramElement();
+		Object bo = getFeatureProvider().getBusinessObjectForPictogramElement(pe);
+		if (bo instanceof Node) {
+
+			Contract c = ContractPropagator.computeContract((Node) bo);
+
+			String assume = "Assume:";
+			String safe = "Safe:";
+			String toolTip = assume + "\n" + c.getAssumption() + "\n" + safe + "\n" + c.getGuarantee();
+
+			IGaService gaService = Graphiti.getGaService();
+			Text text = gaService.createPlainText(null, toolTip);
+//
+//			TextStyleRegion textStyleRegion = gaService.createTextStyleRegion(text, 0, assume.length());
+//			gaService.createTextStyle(textStyleRegion, true, false, UnderlineStyle.UNDERLINE_SINGLE);
+//
+//			TextStyleRegion textStyleRegion2 = gaService.createTextStyleRegion(text,
+//					assume.length() + c.getAssumption().length() + 2,
+//					assume.length() + c.getAssumption().length() + 2 + safe.length());
+//			gaService.createTextStyle(textStyleRegion2, true, false, UnderlineStyle.UNDERLINE_SINGLE);
+//
+//			TextStyle textStyle1 = gaService.createTextStyle(textStyleRegion);
+//			TextStyle textStyle2 = gaService.createTextStyle(textStyleRegion2);
+//
+//			Font font = gaService.manageFont(getDiagramTypeProvider().getDiagram(), "Verdana", 9, true, false);
+//
+//			textStyle1.setFont(font);
+//			textStyle2.setFont(font);
+
+			return text;
+		}
+		return super.getToolTip(graphicsAlgorithm);
 	}
 
 }
