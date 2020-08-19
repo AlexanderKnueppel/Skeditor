@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 
+import SkillGraph.Node;
 import SkillGraph.Parameter;
 
 public class VariableInputDialog extends ListSelectionDialog {
@@ -37,6 +38,7 @@ public class VariableInputDialog extends ListSelectionDialog {
 		reqRadio = new Button(parent, SWT.RADIO);
 		reqRadio.setText("required");
 		reqRadio.setSelection(true);
+		variableType = REQUIRED;
 		provRadio = new Button(parent, SWT.RADIO);
 		provRadio.setText("provided");
 		super.createButtonsForButtonBar(parent);
@@ -63,10 +65,26 @@ public class VariableInputDialog extends ListSelectionDialog {
 			MessageDialog.openError(getShell(), "Error", "You must at least check one variable");
 			return;
 		}
+		
+		Parameter param;
         if(reqRadio.getSelection()) {
         	variableType = REQUIRED;
+        	for(Object elem : getViewer().getCheckedElements() ) {
+        		param = (Parameter) elem;
+        		if(((Node)getViewer().getInput()).getProvidedVariables().contains(param.getAbbreviation())) {
+        			MessageDialog.openError(getShell(), "Error", "variable \""+param.getAbbreviation()+"\" already provided!");
+        			return;
+        		}
+        	}
         } else if(provRadio.getSelection()) {
         	variableType = PROVIDED;
+        	for(Object elem : getViewer().getCheckedElements() ) {
+        		param = (Parameter) elem;
+        		if(((Node)getViewer().getInput()).getRequiredVariables().contains(param.getAbbreviation())) {
+        			MessageDialog.openError(getShell(), "Error", "variable \""+param.getAbbreviation()+"\" already required!");
+        			return;
+        		}
+        	}
         }
         super.okPressed();
     }

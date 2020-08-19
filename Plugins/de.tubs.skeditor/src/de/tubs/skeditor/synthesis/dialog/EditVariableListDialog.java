@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
 
@@ -37,7 +38,7 @@ import org.eclipse.swt.widgets.Shell;
 public class EditVariableListDialog extends ListDialog {
 	
 	static final int ADD_ID = 32; //ID for add button
-	static final int ADDPRESSED = 35; //return code when add button was pressed
+	static final int DELETE_ID = 35; //return code when add button was pressed
 	Node node;
 	
 	public EditVariableListDialog(Shell shell, Node node) {
@@ -48,6 +49,7 @@ public class EditVariableListDialog extends ListDialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, ADD_ID, "Add", false);
+		createButton(parent, DELETE_ID, "Delete", false);
 		super.createButtonsForButtonBar(parent);
 		/*addButton.addSelectionListener(new SelectionAdapter(){
 			@Override
@@ -171,6 +173,16 @@ public class EditVariableListDialog extends ListDialog {
 			if(node.eContainer() instanceof Graph) {
 				System.out.println("eResource ist Graph ");
 			}
+		} else if(buttonID == DELETE_ID) {
+			IStructuredSelection iselection = getTableViewer().getStructuredSelection();
+			VariableRow row = (VariableRow) iselection.getFirstElement();
+			switch(row.getType()) {
+				case REQUIRED: node.getRequiredVariables().remove(row.getName());
+						       break;
+				case PROVIDED: node.getProvidedVariables().remove(row.getName());
+						       break;
+			}
+			
 		}
 		getTableViewer().refresh();
 		super.buttonPressed(buttonID);
