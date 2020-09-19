@@ -1,5 +1,6 @@
 package de.tubs.skeditor.wizards;
 
+import java.util.List;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +36,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 import de.tubs.skeditor.synthesis.Requirement;
+import de.tubs.skeditor.synthesis.SynthesisOperation;
 import de.tubs.skeditor.views.SafetyGoalsView;
 
 public class GraphSynthesisWizard extends Wizard implements INewWizard {
@@ -74,13 +76,14 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 	@Override
 	public boolean performFinish() {
 		final String containerName = newGraphPage.getContainerName();
-		final Set<Requirement> requirements = requirementPage.getRequirements();
+		final List<Requirement> requirements = requirementPage.getRequirements();
 		final String filename = newGraphPage.getFileName();
+		final String repoName = requirementPage.getRepositoryName();
 		//final String GraphBName = page.getGrapBName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, filename, requirements, monitor);
+					doFinish(containerName, filename, requirements, repoName, monitor);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -105,7 +108,7 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 	 * just replace its contents, and open the editor on the newly created file.
 	 */
 
-	private void doFinish(String containerName, String filename, Set<Requirement> requirements, IProgressMonitor monitor)
+	private void doFinish(String containerName, String filename, List<Requirement> requirements, String repoName, IProgressMonitor monitor)
 			throws CoreException {
 		// create a sample file
 		monitor.beginTask("Creating " + filename, 2);
@@ -127,7 +130,7 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 			editingDomain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain(rSet);
 		}
 
-		CreateFileOperation operation = new CreateFileOperation(editingDomain, containerName, filename);
+		SynthesisOperation operation = new SynthesisOperation(editingDomain, containerName, filename, repoName);
 		editingDomain.getCommandStack().execute(operation);
 
 		// Dispose the editing domain to eliminate memory leak

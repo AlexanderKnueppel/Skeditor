@@ -15,24 +15,32 @@ public class Requirement {
 	public void setFormula(String formula) {
 		this.formula = formula;
 	}
-	
-	@Override
-	public boolean equals(Object other) {
-		if(other instanceof Requirement) {
-			Requirement otherReq = (Requirement) other;
-			if(this.formula.equals(otherReq.getFormula())) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
+
 	@Override
 	public int hashCode() {
-		int hash = 17;
-		int multi = 31;
-		hash = hash*multi + this.formula.hashCode()*multi;
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((formula == null) ? 0 : formula.hashCode());
+		return result;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Requirement other = (Requirement) obj;
+		if (formula == null) {
+			if (other.formula != null)
+				return false;
+		} else if (!formula.equals(other.formula))
+			return false;
+		return true;
+	}
+	
+	
 	
 }
