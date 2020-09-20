@@ -70,28 +70,36 @@ public class SkillSearch {
 				}
 				i++;
 			} while(!stack.isEmpty());
+			restFilter = filter.substring(i);
 			skills = searchSkills(filter.substring(1, i-1));
+			
 		} else if(filter.startsWith(NAME_STRING)){ //name argument
+			System.out.println("Namen argument");
 			String[] filterArray = filter.split("\"", 3);
 			String name = filterArray[1]; // name argument should be in double quotes
+			System.out.println("Name: "+name);
 			restFilter = filterArray[2];
+			System.out.println("Rest: "+restFilter);
+			System.out.println("Anzahl nodes: "+nodeRepo.size());
 			for(Node node : nodeRepo) {
-				if (node.getName().equals(name)) {
+				if (node.getName().equalsIgnoreCase(name)) {
 					skills.add(node);
 				}
+				System.out.println(node.getName()+" und "+name);
 			}
 		} else if(filter.startsWith(CATEGORY_STRING)){ //category argument
 			String[] filterArray = filter.split("\"", 3);
 			String category = filterArray[1]; // name argument should be in double quotes
+			if (!isValidCategory(category)) {
+				throw new FilterFormatException("unknown category \""+category+"\"");
+			}
 			restFilter = filterArray[2];
 			for(Node node : nodeRepo) {
 				if(isValidCategory(category)) {
 					if(node.getCategory().getName().equalsIgnoreCase(category)) {
 						skills.add(node);
 					}
-				} else {
-					throw new FilterFormatException("unknown category \""+category+"\"");
-				}
+				} 
 			}
 		} else if(filter.startsWith(PROVIDED_STRING)){ //provided variable argument
 			return Collections.emptySet();
@@ -126,16 +134,22 @@ public class SkillSearch {
 		}
 		if(!restFilter.equals("")) {
 			switch(restFilter.charAt(0)) {
-			case '&': //AND operator
-				for (Node node : skills) {
-					if(!(searchSkills(restFilter.substring(1))).contains(node)) {
-						skills.remove(node);
-					}
-				}
+			case '&': //AND operator 
+				System.out.println("AND operation");
+				System.out.println("SKILLS vor UND:");
+				printNodes(skills);
+				skills.retainAll(searchSkills(restFilter.substring(1))); // intersect of both sets
+				System.out.println("SKILLS nach UND:");
+				printNodes(skills);
+				break;
 			case '|': // OR operator
-				for (Node node : searchSkills(restFilter.substring(1))) {
-					skills.add(node);
-				}
+				System.out.println("OR operation");
+				System.out.println("Skills vor ODER:");
+				printNodes(skills);
+				skills.addAll(searchSkills(restFilter.substring(1))); // union of sets
+				System.out.println("SKILLS nach ODER:");
+				printNodes(skills);
+				break;
 			default:
 				throw new FilterFormatException("unknown operation \""+restFilter.charAt(0)+"\"");
 			}
@@ -177,5 +191,12 @@ public class SkillSearch {
 			return false;
 		}
 		return true;
+	}
+	
+	private void printNodes(Set<Node> nodes) {
+		for(Node node : nodes) {
+			System.out.print(node.getName()+", ");
+		}
+		System.out.println(".");
 	}
 }

@@ -138,7 +138,7 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 
 		monitor.worked(1);
 		monitor.setTaskName("Opening file for editing...");
-
+		/*
 		getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -157,7 +157,7 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 				}
 			}
 		});
-		monitor.worked(1);
+		monitor.worked(1);*/
 
 	}
 

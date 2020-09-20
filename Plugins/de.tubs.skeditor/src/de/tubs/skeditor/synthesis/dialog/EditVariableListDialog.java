@@ -39,11 +39,13 @@ public class EditVariableListDialog extends ListDialog {
 	
 	static final int ADD_ID = 32; //ID for add button
 	static final int DELETE_ID = 35; //return code when add button was pressed
-	Node node;
+	private Node node;
+	private boolean changed;
 	
 	public EditVariableListDialog(Shell shell, Node node) {
 		super(shell);
 		this.node = node;
+		this.changed = false;
 	}
 	
 	@Override
@@ -156,6 +158,7 @@ public class EditVariableListDialog extends ListDialog {
 						node.getProvidedVariables().add(param.getAbbreviation()); 
 						break;
 					}
+					this.changed = true;
 				}
 				/*Parameter param = (Parameter) results[0];
 				switch(dialog.getVariableType()) {
@@ -176,15 +179,27 @@ public class EditVariableListDialog extends ListDialog {
 		} else if(buttonID == DELETE_ID) {
 			IStructuredSelection iselection = getTableViewer().getStructuredSelection();
 			VariableRow row = (VariableRow) iselection.getFirstElement();
-			switch(row.getType()) {
+			if(row != null) {
+				switch(row.getType()) {
 				case REQUIRED: node.getRequiredVariables().remove(row.getName());
 						       break;
 				case PROVIDED: node.getProvidedVariables().remove(row.getName());
 						       break;
+				}
+				changed = true;
 			}
+			
 			
 		}
 		getTableViewer().refresh();
 		super.buttonPressed(buttonID);
+	}
+	
+	/**
+	 * indicates whether this dialog changed variables of skill
+	 * @return changed, indicator whether variables changed
+	 */
+	public boolean hasChanged() {
+		return changed;
 	}
 }

@@ -112,7 +112,12 @@ public class SynthesisOperation extends RecordingCommand{
 		//init repository for SkillSearch
 		SkillSearch.getInstance().initializeRepository(graphs);
 		
-			printNodes(SkillSearch.getInstance().getAllSkills());
+			try {
+				printNodes(SkillSearch.getInstance().searchSkills("(name=\"Accelerate\"&required=\"A\")|required=\"B\"|category=\"sensor\""));
+			} catch (FilterFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 		/*Diagram dA = getDiagram(GraphAName, root, resource, rSet);
 		Diagram dB = getDiagram(GraphBName, root, resource, rSet);

@@ -63,7 +63,7 @@ public class EditVariableFeature extends AbstractCustomFeature{
 			if (bo instanceof Node) {
 				Node node = (Node) bo;
 				//System.out.println("eResource: "+node.eResource().);
-				ListDialog ldialog = new EditVariableListDialog(getShell(), node);
+				EditVariableListDialog ldialog = new EditVariableListDialog(getShell(), node);
 				ldialog.setTitle("Edit required and provided variables");
 				ldialog.setContentProvider(new VariableContentProvider());
 				ldialog.setLabelProvider(new ColumnLabelProvider() {
@@ -80,6 +80,9 @@ public class EditVariableFeature extends AbstractCustomFeature{
 				});
 				ldialog.setInput(node);
 				ldialog.open();
+				this.hasDoneChanges = ldialog.hasChanged();
+				updatePictogramElement(((Shape) pes[0]).getContainer());
+				getFeatureProvider().getDiagramTypeProvider().getDiagramBehavior().refresh();
 			}
 
 		}
