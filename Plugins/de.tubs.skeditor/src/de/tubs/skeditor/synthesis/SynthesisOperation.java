@@ -42,40 +42,26 @@ public class SynthesisOperation extends RecordingCommand{
 	private String diagramName;
 	private String containerName;
 	private String repoName;
+	private List<Requirement> requirements;
 
-	public SynthesisOperation(TransactionalEditingDomain domain, String containerName, String name, String repo) {
+	public SynthesisOperation(TransactionalEditingDomain domain, String containerName, String name, String repo, List<Requirement> requirements) {
 		super(domain);
 		this.editingDomain = domain;
 		this.diagramName = name;
 		this.containerName = containerName;
 		this.repoName = repo;
+		this.requirements = requirements;
 	}
 
 	@Override
 	protected void doExecute() {
-		String diagramTypeId = "SkillGraph";
-		Diagram diagram = Graphiti.getPeCreateService().createDiagram(diagramTypeId, this.diagramName, true);
+		
 		ResourceSet rSet = editingDomain.getResourceSet();
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IResource resource = root.findMember(new Path(containerName));
 		if (!resource.exists() || !(resource instanceof IContainer)) {
-
+			return;
 		}
-		IContainer container = (IContainer) resource;
-		/*final IFile file = container.getFile(new Path(diagramName));
-
-		URI uri = URI.createFileURI(file.getFullPath().toString());
-		Resource resource2 = rSet.createResource(uri);
-		resource2.getContents().add(diagram);
-		
-		// Get the dtp
-		IDiagramTypeProvider dtp = GraphitiUi.getExtensionManager().createDiagramTypeProvider(diagram,
-				"de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"); //$NON-NLS-1$
-		IFeatureProvider featureProvider = dtp.getFeatureProvider();
-
-		// The dtp already creates a new graph in its init method; so get it here
-		Graph g = (Graph) featureProvider.getBusinessObjectForPictogramElement(diagram);
-		*/
 		//get graphs of folder
 		Set<Graph> graphs = new HashSet<Graph>();
 		IResource repoResource = root.findMember(new Path(repoName));
@@ -112,12 +98,34 @@ public class SynthesisOperation extends RecordingCommand{
 		//init repository for SkillSearch
 		SkillSearch.getInstance().initializeRepository(graphs);
 		
-			try {
-				printNodes(SkillSearch.getInstance().searchSkills("(name=\"Accelerate\"&required=\"A\")|required=\"B\"|category=\"sensor\""));
-			} catch (FilterFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			printNodes(SkillSearch.getInstance().searchSkills("(name=\"Accelerate\"&required=\"A\")|required=\"B\"|category=\"sensor\""));
+		} catch (FilterFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		//create new diagram for skillgraph synthesis
+		String diagramTypeId = "SkillGraph";
+		Diagram diagram = Graphiti.getPeCreateService().createDiagram(diagramTypeId, this.diagramName, true);
+		
+		IContainer container = (IContainer) resource;
+		final IFile file = container.getFile(new Path(diagramName));
+
+		URI uri = URI.createFileURI(file.getFullPath().toString());
+		Resource resource2 = rSet.createResource(uri);
+		resource2.getContents().add(diagram);
+		
+		// Get the dtp
+		IDiagramTypeProvider dtp = GraphitiUi.getExtensionManager().createDiagramTypeProvider(diagram,
+				"de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"); //$NON-NLS-1$
+		IFeatureProvider featureProvider = dtp.getFeatureProvider();
+
+		// The dtp already creates a new graph in its init method; so get it here
+		Graph g = (Graph) featureProvider.getBusinessObjectForPictogramElement(diagram);
+		Synthesis syn = new Synthesis(g);
+		syn.synthesizeGraph(requirements);
+		
 		
 		/*Diagram dA = getDiagram(GraphAName, root, resource, rSet);
 		Diagram dB = getDiagram(GraphBName, root, resource, rSet);

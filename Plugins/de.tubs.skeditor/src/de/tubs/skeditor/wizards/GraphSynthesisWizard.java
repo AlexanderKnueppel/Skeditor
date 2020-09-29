@@ -130,7 +130,7 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 			editingDomain = TransactionalEditingDomain.Factory.INSTANCE.createEditingDomain(rSet);
 		}
 
-		SynthesisOperation operation = new SynthesisOperation(editingDomain, containerName, filename, repoName);
+		SynthesisOperation operation = new SynthesisOperation(editingDomain, containerName, filename, repoName, requirements);
 		editingDomain.getCommandStack().execute(operation);
 
 		// Dispose the editing domain to eliminate memory leak
