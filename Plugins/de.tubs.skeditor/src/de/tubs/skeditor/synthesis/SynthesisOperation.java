@@ -36,6 +36,7 @@ import SkillGraph.Node;
 import SkillGraph.SkillGraphFactory;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
 import de.tubs.skeditor.synthesis.search.SkillSearch;
+import de.tubs.skeditor.utils.SynthesisUtil;
 
 public class SynthesisOperation extends RecordingCommand{
 	private TransactionalEditingDomain editingDomain;
@@ -98,15 +99,27 @@ public class SynthesisOperation extends RecordingCommand{
 		//init repository for SkillSearch
 		SkillSearch.getInstance().initializeRepository(graphs);
 		
-		try {
-			printNodes(SkillSearch.getInstance().searchSkills("(name=\"Accelerate\"&required=\"A\")|required=\"B\"|category=\"sensor\""));
+		/*try {
+			for(Node node : SkillSearch.getInstance().searchSkills("defined=\"a\"|!(category=\"observable_external_behavior\")")){
+				
+				System.out.println(node);
+			}
 		} catch (FilterFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}*/
+		String[] forbidden = {};
+		String[] required = {"ep"};
+		SkillProvider provider = new RequirementSkillProvider(new Requirement("ep>4"));
+		Node myNode = provider.getNext();
+		int i = 0;
+		while(myNode != null) {
+			System.out.println(SynthesisUtil.childsToString(myNode));
+			myNode = provider.getNext();
+			i++;
 		}
-				
 		//create new diagram for skillgraph synthesis
-		String diagramTypeId = "SkillGraph";
+		/*String diagramTypeId = "SkillGraph";
 		Diagram diagram = Graphiti.getPeCreateService().createDiagram(diagramTypeId, this.diagramName, true);
 		
 		IContainer container = (IContainer) resource;
@@ -124,7 +137,7 @@ public class SynthesisOperation extends RecordingCommand{
 		// The dtp already creates a new graph in its init method; so get it here
 		Graph g = (Graph) featureProvider.getBusinessObjectForPictogramElement(diagram);
 		Synthesis syn = new Synthesis(g);
-		syn.synthesizeGraph(requirements);
+		syn.synthesizeGraph(requirements);*/
 		
 		
 		/*Diagram dA = getDiagram(GraphAName, root, resource, rSet);

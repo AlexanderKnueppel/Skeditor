@@ -10,12 +10,13 @@ import SkillGraph.Edge;
 import SkillGraph.Node;
 import SkillGraph.SkillGraphFactory;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
+import de.tubs.skeditor.utils.SynthesisUtil;
 
-public class DependencySkillProvider extends SkillProvider {
+public class VariableSkillProvider extends SkillProvider {
 
 	private String[] requiredVars;
 	private String[] forbiddenVars;
-	public DependencySkillProvider(String[] requiredVars, String[] forbiddenVars) {
+	public VariableSkillProvider(String[] requiredVars, String[] forbiddenVars) {
 		super();
 		this.requiredVars = requiredVars;
 		this.forbiddenVars = forbiddenVars;
@@ -68,6 +69,9 @@ public class DependencySkillProvider extends SkillProvider {
 				providedVars.addAll(node.getProvidedVariables());
 				providedVars.addAll(node.getRequiredVariables());
 				String searchString = "";
+				for (String var : requiredVars) { //remove all 
+					providedVars.remove(var);
+				}
 				for (String var : providedVars) {
 					if(searchString.length() == 0) {
 						searchString = "required=\""+var+"\"";
@@ -76,7 +80,7 @@ public class DependencySkillProvider extends SkillProvider {
 					}
 					
 				}
-				System.out.println(searchString);
+				System.out.println("SUCHE "+searchString);
 				try {
 					boolean forbidden = false;
 					for(Node n : searcher.searchSkills(searchString)) {
@@ -87,14 +91,17 @@ public class DependencySkillProvider extends SkillProvider {
 							}
 						}
 						if (! forbidden) {
-							Node parent = EcoreUtil.copy(n);
-							Node child = EcoreUtil.copy(node);
-							Edge e = SkillGraphFactory.eINSTANCE.createEdge();
-							e.setChildNode(child);
-							e.setParentNode(parent);
-							parent.getChildEdges().add(e);
-							child.getParentNodes().add(parent);
-							nodeList.add(parent);
+							if(SynthesisUtil.canCreateEdge(n, node)) {
+								Node parent = EcoreUtil.copy(n);
+								Node child = EcoreUtil.copy(node);
+								Edge e = SkillGraphFactory.eINSTANCE.createEdge();
+								e.setChildNode(child);
+								e.setParentNode(parent);
+								parent.getChildEdges().add(e);
+								child.getParentNodes().add(parent);
+								nodeList.add(parent);
+							}
+							
 						} else {
 							forbidden = false; //reset flag 
 						}

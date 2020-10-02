@@ -1,7 +1,10 @@
 package de.tubs.skeditor.synthesis;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,15 +16,18 @@ import SkillGraph.Edge;
 import SkillGraph.Graph;
 import SkillGraph.Node;
 import SkillGraph.SkillGraphFactory;
+import de.tubs.skeditor.utils.SynthesisUtil;
 
 public class Synthesis {
 
 	private Graph graph;
-	private Map<String, SkillProvider> providerMap;
+	//private Map<String, SkillProvider> providerMap;
+	private Deque<SkillProvider> providerStack;
 	
 	public Synthesis(Graph g) {
 		this.graph = g;
-		this.providerMap = new HashMap<>();
+		//this.providerMap = new HashMap<>();
+		providerStack = new ArrayDeque<>();
 	}
 	
 	public void synthesizeGraph(List<Requirement> requirements) {
@@ -48,7 +54,7 @@ public class Synthesis {
 								break;
 							}
 						}
-						if(!forbidden && canCreateEdge(node, n)) { // Node n is fine as dependency for Node node so add an Edge from node to n
+						if(!forbidden && SynthesisUtil.isValidCategoryChild(node, n)) { // Node n is fine as dependency for Node node so add an Edge from node to n
 							Edge e = SkillGraphFactory.eINSTANCE.createEdge();
 							e.setChildNode(n);
 							e.setParentNode(node);
@@ -64,11 +70,37 @@ public class Synthesis {
 				}
 				// dependency not found in Graph, get it from repo
 				if (unsatisfiedDependencies.contains(var)) {
-					String[] variable = {var};
-					SkillProvider sp = new DependencySkillProvider(variable, (String[])node.getProvidedVariables().toArray());
+					String[] variable = new String[1];
+					variable[0] = var;
+					SkillProvider sp = new VariableSkillProvider(variable, (String[])node.getProvidedVariables().toArray());
 					Node dep = sp.getNext();
 					while(dep != null) {
-						
+						if(SynthesisUtil.canCreateEdge(node, dep)) {
+							//check if graph contains dep
+							boolean contained = false;
+							for(Node n : graph.getNodes()) {
+								if(n.getName().equals(dep.getName())) {
+									contained = true;
+									break;
+								}
+							}
+							Node temp = dep;
+							while(!temp.getChildEdges().isEmpty()) {
+								Edge e = temp.getChildEdges().get(0);
+								for(Node n : graph.getNodes()) {
+									if(n.getName().equals(temp.getName())) {
+										contained = true;
+										temp.getChildEdges().remove(0);
+										break;
+									}
+								}
+							}
+						} else {
+							dep = sp.getNext();
+						}
+					}
+					if(dep == null) {
+						return false;
 					}
 				}
 				
@@ -84,7 +116,7 @@ public class Synthesis {
 	
 	private void initialize(List<Requirement> requirements) {
 		for(Requirement req : requirements) {
-			providerMap.put(req.getFormula(), new RequirementSkillProvider(req));
+			//providerMap.put(req.getFormula(), new RequirementSkillProvider(req));
 		}
 	}
 	
@@ -100,6 +132,9 @@ public class Synthesis {
 		return providedVars;
 	}
 	
+	private void createEdge(Node parent, Node child) {
+		
+	}
 	/*
 	 * checks if an edge can be created from parent to child
 	 */

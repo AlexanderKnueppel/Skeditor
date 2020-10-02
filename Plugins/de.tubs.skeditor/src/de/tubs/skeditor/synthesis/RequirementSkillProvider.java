@@ -7,11 +7,13 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import SkillGraph.Category;
 import SkillGraph.Edge;
 import SkillGraph.Node;
 import SkillGraph.SkillGraphFactory;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
 import de.tubs.skeditor.synthesis.search.SkillSearch;
+import de.tubs.skeditor.utils.SynthesisUtil;
 
 public class RequirementSkillProvider extends SkillProvider {
 
@@ -25,7 +27,7 @@ public class RequirementSkillProvider extends SkillProvider {
 	
 	
 	/*
-	 * adds a nodes with a given depth to a set and adds that set to nodeMap
+	 * adds nodes with a given depth to a set and adds that set to nodeMap
 	 */
 	@Override
 	protected void addNodes(int depth) {
@@ -47,7 +49,13 @@ public class RequirementSkillProvider extends SkillProvider {
 			try {
 				
 				for(Node n : searcher.searchSkills(searchString)) {
-					nodeList.add(EcoreUtil.copy(n));
+					for(SkillGraph.Requirement safety : n.getRequirements()) {
+						if(safety.getTerm().equals(requirement.getFormula())) {
+							nodeList.add(EcoreUtil.copy(n));
+						}
+					}
+					
+					
 				}
 				
 			} catch (FilterFormatException e) {
@@ -75,14 +83,16 @@ public class RequirementSkillProvider extends SkillProvider {
 				try {
 					
 					for(Node n : searcher.searchSkills(searchString)) {
-						Node parent = EcoreUtil.copy(n);
-						Node child = EcoreUtil.copy(node);
-						Edge e = SkillGraphFactory.eINSTANCE.createEdge();
-						e.setChildNode(child);
-						e.setParentNode(parent);
-						parent.getChildEdges().add(e);
-						child.getParentNodes().add(parent);
-						nodeList.add(parent);
+						if(SynthesisUtil.canCreateEdge(n, node)) {
+							Node parent = EcoreUtil.copy(n);
+							Node child = EcoreUtil.copy(node);
+							Edge e = SkillGraphFactory.eINSTANCE.createEdge();
+							e.setChildNode(child);
+							e.setParentNode(parent);
+							parent.getChildEdges().add(e);
+							child.getParentNodes().add(parent);
+							nodeList.add(parent);
+						}
 					}
 					
 				} catch (FilterFormatException e) {
