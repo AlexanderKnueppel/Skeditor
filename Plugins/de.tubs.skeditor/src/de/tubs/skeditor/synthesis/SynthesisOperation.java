@@ -15,30 +15,44 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.geometry.Insets;
+import org.eclipse.draw2d.graph.CompoundDirectedGraph;
+import org.eclipse.draw2d.graph.CompoundDirectedGraphLayout;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.graphiti.dt.IDiagramTypeProvider;
 import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
+import org.eclipse.graphiti.services.ILinkService;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 
 import SkillGraph.Category;
+import SkillGraph.Edge;
 import SkillGraph.Graph;
 import SkillGraph.Node;
+import SkillGraph.Parameter;
 import SkillGraph.SkillGraphFactory;
+import de.tubs.skeditor.compositionality.SortDiagramFeature;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
 import de.tubs.skeditor.synthesis.search.SkillSearch;
 import de.tubs.skeditor.utils.SynthesisUtil;
 
 public class SynthesisOperation extends RecordingCommand{
+	private static final int PADDING = 30; // min. distance between components
 	private TransactionalEditingDomain editingDomain;
 	private String diagramName;
 	private String containerName;
@@ -96,6 +110,7 @@ public class SynthesisOperation extends RecordingCommand{
 			}
 		}
 		System.out.println("Anzahl der Graphen: "+graphs.size());
+		
 		//init repository for SkillSearch
 		SkillSearch.getInstance().initializeRepository(graphs);
 		
@@ -108,18 +123,18 @@ public class SynthesisOperation extends RecordingCommand{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		String[] forbidden = {};
+		/*String[] forbidden = {};
 		String[] required = {"ep"};
-		SkillProvider provider = new RequirementSkillProvider(new Requirement("ep>4"));
+		SkillProvider provider = new VariableSkillProvider(required, forbidden);
 		Node myNode = provider.getNext();
-		int i = 0;
 		while(myNode != null) {
 			System.out.println(SynthesisUtil.childsToString(myNode));
 			myNode = provider.getNext();
-			i++;
-		}
+		}*/
+		
 		//create new diagram for skillgraph synthesis
-		/*String diagramTypeId = "SkillGraph";
+		String diagramTypeId = "SkillGraph";
+		System.out.println(diagramTypeId);
 		Diagram diagram = Graphiti.getPeCreateService().createDiagram(diagramTypeId, this.diagramName, true);
 		
 		IContainer container = (IContainer) resource;
@@ -136,10 +151,80 @@ public class SynthesisOperation extends RecordingCommand{
 
 		// The dtp already creates a new graph in its init method; so get it here
 		Graph g = (Graph) featureProvider.getBusinessObjectForPictogramElement(diagram);
-		Synthesis syn = new Synthesis(g);
-		syn.synthesizeGraph(requirements);*/
+		int name = file.getName().lastIndexOf(".");
 		
 		
+		//synthesize new graph based on requirements
+		Synthesis syn = new Synthesis();
+		Node rootNode = syn.synthesizeGraph(requirements);
+		rootNode.setName(file.getName().substring(0, name));
+		g.setRootNode(rootNode);
+		System.out.println(SynthesisUtil.childsToString(rootNode));
+		List<AddContext> addContextNodes = new ArrayList<>();
+		List<AddConnectionContext> addContextEdges = new ArrayList<>();
+		AddContext ctx = new AddContext();
+		ctx.setNewObject(g.getRootNode());
+		ctx.setTargetContainer(diagram);
+
+		ctx.setX(100);
+		ctx.setY(100);
+		addContextNodes.add(ctx);
+		for(Edge e : rootNode.getChildEdges()) {
+			//addEdges(e, diagram, addContextEdges);
+			addNodes(e.getChildNode(), diagram, g, addContextNodes);
+		}
+		IAddFeature addNodeFeature = featureProvider.getAddFeature(addContextNodes.get(0));
+		System.out.println("nodes: "+addContextNodes.size());
+		for (AddContext addCtx : addContextNodes) {
+			if (addNodeFeature.canAdd(addCtx)) {
+				System.out.println("added"+addCtx.getNewObject());
+				addNodeFeature.add(addCtx);
+			}
+		}
+		for(Edge e : rootNode.getChildEdges()) {
+			addEdges(e, diagram, addContextEdges);
+			//addNodes(e.getChildNode(), diagram, g, addContextNodes);
+		}
+		IAddFeature addEdgeFeature = featureProvider.getAddFeature(addContextEdges.get(0));
+		System.out.println("edges: "+addContextEdges.size());
+		for (AddConnectionContext addCtx : addContextEdges) {
+			if (addEdgeFeature.canAdd(addCtx)) {
+				addEdgeFeature.add(addCtx);
+			}
+		}
+		//insert all parameters of all graphs from repo to new graph
+		for(Graph gr : graphs) {
+			for(int i = 0; i < gr.getParameterList().size(); i++) {
+				boolean contained = false;
+				Parameter param = gr.getParameterList().get(i);
+				for(Parameter p : g.getParameterList()) {
+					if(p.getAbbreviation().equals(param.getAbbreviation())) {
+						contained = true;
+					}
+				}
+				if(!contained) {
+					g.getParameterList().add(EcoreUtil.copy(param));
+				}
+			}
+		}
+		try {
+			resource2.save(new HashMap());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		CompoundDirectedGraph cGraph = SortDiagramFeature.mapSkillGraphToGraph(diagram);
+		cGraph.setDefaultPadding(new Insets(PADDING));
+		cGraph.setDirection(PositionConstants.EAST);
+		new CompoundDirectedGraphLayout().visit(cGraph);
+		SortDiagramFeature.mapGraphCoordinatesToSkillGraph(cGraph);
+		try {
+			resource2.save(new HashMap());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		/*Diagram dA = getDiagram(GraphAName, root, resource, rSet);
 		Diagram dB = getDiagram(GraphBName, root, resource, rSet);
 		// Create a new main node
@@ -165,14 +250,75 @@ public class SynthesisOperation extends RecordingCommand{
 		}*/
 
 		// Save resource to disk
-		/*try {
-			resource2.save(new HashMap());
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}*/
+		
 
 	}
+	
+	private void addEdges(Edge e, Diagram diagram, List<AddConnectionContext> ectx) {
+
+		// Get linkservice to ask for relations between DOs and PEs
+
+		ILinkService linkserv = Graphiti.getLinkService();
+
+		if (linkserv.getPictogramElements(diagram, e).isEmpty()) {
+			// Call add feature to add the edge
+			System.out.println("linkserv empty");
+			// We need the source anchor (from the first connected node)
+			Anchor sourceAnchor = null;
+			System.out.println("parent node:"+e.getParentNode());
+			for (PictogramElement aPe : linkserv.getPictogramElements(diagram, e.getParentNode())) {
+				System.out.println("pictogram source:"+aPe);
+				if (aPe instanceof ContainerShape) {
+					sourceAnchor = ((ContainerShape) aPe).getAnchors().get(0);
+				}
+			}
+
+			// And the target anchor (from the second connected node)
+			Anchor targetAnchor = null;
+			System.out.println("Child node:"+e.getChildNode());
+			for (PictogramElement aPe : linkserv.getPictogramElements(diagram, e.getChildNode())) {
+				System.out.println("Child node:"+e.getChildNode());
+				System.out.println("pictogram target:"+aPe);
+				if (aPe instanceof ContainerShape) {
+					targetAnchor = ((ContainerShape) aPe).getAnchors().get(0);
+				}
+			}
+			// Now we can create the add connection context with both anchors
+			AddConnectionContext acc = new AddConnectionContext(sourceAnchor, targetAnchor);
+
+			// ... and the new edge
+			acc.setNewObject(e);
+
+			// ... to be created into the diagram
+			acc.setTargetContainer(diagram);
+
+			ectx.add(acc);
+
+			if (!e.getChildNode().getChildEdges().isEmpty()) {
+				for (Edge edge : e.getChildNode().getChildEdges()) {
+					addEdges(edge, diagram, ectx);
+				}
+			}
+
+		}
+	}
+	
+	private void addNodes(Node node, Diagram diagram, Graph graph, List<AddContext> nctx) {
+
+			AddContext ctx = new AddContext();
+			ctx.setNewObject(node);
+			ctx.setTargetContainer(diagram);
+			graph.getNodes().add(node);
+			nctx.add(ctx);
+
+			if (!node.getChildEdges().isEmpty()) {
+				for (Edge e : node.getChildEdges()) {
+					addNodes(e.getChildNode(), diagram, graph, nctx);
+				}
+			}
+
+		}
+	
 	
 	private void printNodes(Set<Node> nodes) {
 		for(Node node : nodes) {

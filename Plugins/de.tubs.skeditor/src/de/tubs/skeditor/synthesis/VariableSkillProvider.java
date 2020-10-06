@@ -30,7 +30,7 @@ public class VariableSkillProvider extends SkillProvider {
 			String searchString = "";
 			for (String var : requiredVars) {
 				if(searchString.length() == 0) {
-					searchString = "provided=\""+var;
+					searchString = "defined=\""+var;
 				} else {
 					searchString += ","+var;
 				}
@@ -67,7 +67,7 @@ public class VariableSkillProvider extends SkillProvider {
 			for(Node node : nodeMap.get(depth-1)) {
 				List<String> providedVars = new ArrayList<>();
 				providedVars.addAll(node.getProvidedVariables());
-				providedVars.addAll(node.getRequiredVariables());
+				//providedVars.addAll(node.getRequiredVariables());
 				String searchString = "";
 				for (String var : requiredVars) { //remove all 
 					providedVars.remove(var);
@@ -80,7 +80,22 @@ public class VariableSkillProvider extends SkillProvider {
 					}
 					
 				}
-				System.out.println("SUCHE "+searchString);
+				if(requiredVars.length > 0) {
+					if(searchString.length() == 0) {
+						searchString = "!(";
+					} else {
+						searchString += "&!(";
+					}
+					searchString += "required=\""+requiredVars[0]+"\"";
+					if(requiredVars.length > 1) {
+						for (int i = 1; i < requiredVars.length; i++) { //remove all 
+							searchString += "|required=\""+requiredVars[0]+"\"";
+						}
+					}
+					searchString += ")";
+				}
+				
+				//System.out.println("SUCHE "+searchString);
 				try {
 					boolean forbidden = false;
 					for(Node n : searcher.searchSkills(searchString)) {
@@ -92,14 +107,27 @@ public class VariableSkillProvider extends SkillProvider {
 						}
 						if (! forbidden) {
 							if(SynthesisUtil.canCreateEdge(n, node)) {
-								Node parent = EcoreUtil.copy(n);
-								Node child = EcoreUtil.copy(node);
-								Edge e = SkillGraphFactory.eINSTANCE.createEdge();
-								e.setChildNode(child);
-								e.setParentNode(parent);
-								parent.getChildEdges().add(e);
-								child.getParentNodes().add(parent);
-								nodeList.add(parent);
+								Node temp = node;
+								//System.out.println(temp);
+								boolean categoryExists = false;
+								//check if node already exists that has same category
+								if(!n.getCategory().equals(temp.getCategory())) {
+									while(!temp.getChildEdges().isEmpty()) {
+										temp = temp.getChildEdges().get(0).getChildNode(); //has only one child
+										if(temp.getCategory().equals(n.getCategory())) {
+											categoryExists = true;
+											break;
+										}
+									}
+								} else {
+									categoryExists = true;
+								}
+								if(!categoryExists) {
+									Node parent = EcoreUtil.copy(n);
+									Node child = EcoreUtil.copy(node);
+									Edge e = SynthesisUtil.createEdge(parent, child);
+									nodeList.add(parent);
+								}
 							}
 							
 						} else {

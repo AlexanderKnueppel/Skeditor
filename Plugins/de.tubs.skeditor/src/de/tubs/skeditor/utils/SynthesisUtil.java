@@ -3,6 +3,7 @@ package de.tubs.skeditor.utils;
 import SkillGraph.Category;
 import SkillGraph.Edge;
 import SkillGraph.Node;
+import SkillGraph.SkillGraphFactory;
 
 public class SynthesisUtil {
 	
@@ -13,7 +14,7 @@ public class SynthesisUtil {
 	 * @return false if child has an invalid category or there is a path from parent to child
 	 */
 	public static boolean canCreateEdge(Node parent, Node child) {
-		boolean result =  !(containsNode(parent, child) || containsNode(child, parent));
+		boolean result =  !(containsNode(parent, child)!=null || containsNode(child, parent)!=null);
 		return result & isValidCategoryChild(parent, child);
 	}
 	
@@ -24,6 +25,7 @@ public class SynthesisUtil {
 				return true;
 			}
 			break;
+		case MAIN:
 		case OBSERVABLE_EXTERNAL_BEHAVIOR:
 			if(child.getCategory() == Category.OBSERVABLE_EXTERNAL_BEHAVIOR || child.getCategory() == Category.ACTION || child.getCategory() == Category.PLANNING || child.getCategory() == Category.PERCEPTION) {
 				return true;
@@ -45,23 +47,23 @@ public class SynthesisUtil {
 		return false;
 	}
 	
-	public static boolean containsNode(Node n1, Node n2) {
+	public static Node containsNode(Node n1, Node n2) {
 		if(n1.getName().equals(n2.getName())) {
-			return true;
+			return n1;
 		}
 		for(Edge e : n1.getChildEdges()) {
-			if(n2.getName().equals(e.getChildNode().getName())) {
-				return true;
+			Node node = containsNode(e.getChildNode(), n2);
+			if(node != null) {
+				return node;
 			}
 		}
-		boolean result = false;
-		for(Edge e : n1.getChildEdges()) {
-			result |= containsNode(e.getChildNode(), n2);
-		}
-		return result;
+		return null;
 	}
 	
 	public static String childsToString(Node parent) {
+		if(parent == null) {
+			return "";
+		}
 		String str = "("+parent.getName()+")->(";
 		for(Edge e : parent.getChildEdges()) {
 			str += childsToString(e.getChildNode());
@@ -69,5 +71,43 @@ public class SynthesisUtil {
 		str += ")";
 		return str;
 		
+	}
+	
+	public static int depth(Node root) {
+		if(root == null) {
+			return 0;
+		} else if(root.getChildEdges().size() == 0) {
+			return 1;
+		} else {
+			int maxDepth = 0;
+			for(Edge e : root.getChildEdges()) {
+				int childDepth = depth(e.getChildNode());
+				if(maxDepth < childDepth) {
+					maxDepth = childDepth;
+				}
+			}
+			return 1+maxDepth;
+		}
+	}
+	
+	public static Edge createEdge(Node parent, Node child) {
+		Edge edge = SkillGraphFactory.eINSTANCE.createEdge();
+		edge.setParentNode(parent);
+		edge.setChildNode(child);
+		parent.getChildEdges().add(edge);
+		child.getParentNodes().add(parent);
+		return edge;
+	}
+	
+	public static Node createNode(String name, Category category) {
+		Node node = SkillGraphFactory.eINSTANCE.createNode();
+		node.setName(name);
+		node.setCategory(category);
+		return node;
+	}
+	
+	public static void removeEdge(Edge edge) {
+		edge.getParentNode().getChildEdges().remove(edge);
+		edge.getChildNode().getParentNodes().remove(edge.getParentNode());
 	}
 }

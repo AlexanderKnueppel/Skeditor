@@ -69,7 +69,7 @@ public class RequirementSkillProvider extends SkillProvider {
 				List<String> providedVars = new ArrayList<>();
 				providedVars.addAll(node.getProvidedVariables());
 				providedVars.addAll(node.getRequiredVariables());
-				providedVars.removeAll(requirement.getVariables());
+				//providedVars.removeAll(requirement.getVariables());
 				String searchString = "";
 				for (String var : providedVars) {
 					if(searchString.length() == 0) {
@@ -84,14 +84,30 @@ public class RequirementSkillProvider extends SkillProvider {
 					
 					for(Node n : searcher.searchSkills(searchString)) {
 						if(SynthesisUtil.canCreateEdge(n, node)) {
-							Node parent = EcoreUtil.copy(n);
-							Node child = EcoreUtil.copy(node);
-							Edge e = SkillGraphFactory.eINSTANCE.createEdge();
-							e.setChildNode(child);
-							e.setParentNode(parent);
-							parent.getChildEdges().add(e);
-							child.getParentNodes().add(parent);
-							nodeList.add(parent);
+							Node temp = node;
+							boolean categoryExists = false;
+							//check if node already exists that has same category
+							if(!n.getCategory().equals(temp.getCategory())) {
+								while(!temp.getChildEdges().isEmpty()) {
+									temp = temp.getChildEdges().get(0).getChildNode(); //has only one child
+									if(temp.getCategory().equals(n.getCategory())) {
+										categoryExists = true;
+										break;
+									}
+								}
+							} else {
+								categoryExists = true;
+							}
+							if(!categoryExists) {
+								Node parent = EcoreUtil.copy(n);
+								Node child = EcoreUtil.copy(node);
+								Edge e = SkillGraphFactory.eINSTANCE.createEdge();
+								e.setChildNode(child);
+								e.setParentNode(parent);
+								parent.getChildEdges().add(e);
+								child.getParentNodes().add(parent);
+								nodeList.add(parent);
+							}
 						}
 					}
 					
