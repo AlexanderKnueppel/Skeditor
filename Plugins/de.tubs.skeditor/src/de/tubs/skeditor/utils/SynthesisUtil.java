@@ -1,8 +1,11 @@
 package de.tubs.skeditor.utils;
 
 import SkillGraph.Category;
+import SkillGraph.Controller;
 import SkillGraph.Edge;
+import SkillGraph.Equation;
 import SkillGraph.Node;
+import SkillGraph.Requirement;
 import SkillGraph.SkillGraphFactory;
 
 public class SynthesisUtil {
@@ -109,5 +112,89 @@ public class SynthesisUtil {
 	public static void removeEdge(Edge edge) {
 		edge.getParentNode().getChildEdges().remove(edge);
 		edge.getChildNode().getParentNodes().remove(edge.getParentNode());
+	}
+	
+	/*
+	 * creates exact copy of node but without reference to parents or children
+	 */
+	public static Node copyNode(Node node) {
+		Node copy = createNode(node.getName(), node.getCategory());
+		_copyEquations(node, copy);
+		_copyVariables(node, copy);
+		_copyController(node, copy);
+		_copyRequirements(node, copy);
+		copy.setProgramPath(node.getProgramPath());
+		return copy;
+	}
+	
+	/*
+	 * copies node and all of its children 
+	 */
+	public static Node copyNodeRecursive(Node node) {
+		Node copy = createNode(node.getName(), node.getCategory());
+		_copyEquations(node, copy);
+		_copyVariables(node, copy);
+		_copyController(node, copy);
+		_copyRequirements(node, copy);
+		copy.setProgramPath(node.getProgramPath());
+		if(node.getChildEdges().size() > 0) {
+			for(int i = 0; i < node.getChildEdges().size(); i++) {
+				_copyNode(node.getChildEdges().get(i).getChildNode(), copy);
+			}
+		}
+		return copy;
+	}
+	
+	private static void _copyNode(Node node, Node parent) {
+		Node copy = SynthesisUtil.createNode(node.getName(), node.getCategory());
+		_copyEquations(node, copy);
+		_copyVariables(node, copy);
+		_copyController(node, copy);
+		_copyRequirements(node, copy);
+		copy.setProgramPath(node.getProgramPath());
+		SynthesisUtil.createEdge(parent, copy);
+		if(node.getChildEdges().size() > 0) {
+			for(int i = 0; i < node.getChildEdges().size(); i++) {
+				_copyNode(node.getChildEdges().get(i).getChildNode(), copy);
+			}
+		}
+	}
+	
+	private static void _copyEquations(Node src, Node dest) {
+		for(Equation equation : src.getEquations()) {
+			Equation newEquation = SkillGraphFactory.eINSTANCE.createEquation();
+			newEquation.setEquation(equation.getEquation());
+			newEquation.setNode(dest);
+			dest.getEquations().add(newEquation);
+		}
+	}
+	
+	private static void _copyVariables(Node src, Node dest) {
+		for(String reqVar : src.getRequiredVariables()) {
+			dest.getRequiredVariables().add(reqVar);
+		}
+		for(String defVar : src.getProvidedVariables()) {
+			dest.getProvidedVariables().add(defVar);
+		}
+	}
+	
+	private static void _copyController(Node src, Node dest) {
+		for(Controller ctrl : src.getController()) {
+			Controller newController = SkillGraphFactory.eINSTANCE.createController();
+			newController.setCtrl(ctrl.getCtrl());
+			newController.setNode(dest);
+			dest.getController().add(newController);
+		}
+	}
+	
+	private static void _copyRequirements(Node src, Node dest) {
+		for(Requirement requirement : src.getRequirements()) {
+			Requirement newRequirement = SkillGraphFactory.eINSTANCE.createRequirement();
+			newRequirement.setComment(requirement.getComment());
+			newRequirement.setTerm(requirement.getTerm());
+			newRequirement.setType(requirement.getType());
+			newRequirement.setNode(dest);
+			dest.getRequirements().add(newRequirement);
+		}
 	}
 }

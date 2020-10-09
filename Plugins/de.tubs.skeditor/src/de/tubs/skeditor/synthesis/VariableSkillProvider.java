@@ -14,11 +14,11 @@ import de.tubs.skeditor.utils.SynthesisUtil;
 
 public class VariableSkillProvider extends SkillProvider {
 
-	private String[] requiredVars;
-	private String[] forbiddenVars;
-	public VariableSkillProvider(String[] requiredVars, String[] forbiddenVars) {
+	private String requiredVar;
+	private List<String> forbiddenVars;
+	public VariableSkillProvider(String requiredVar, List<String> forbiddenVars) {
 		super();
-		this.requiredVars = requiredVars;
+		this.requiredVar = requiredVar;
 		this.forbiddenVars = forbiddenVars;
 		addNodes(1);
 	}
@@ -27,41 +27,34 @@ public class VariableSkillProvider extends SkillProvider {
 	protected void addNodes(int depth) {
 		List<Node> nodeList = new ArrayList<>();
 		if(depth == 1) {
-			String searchString = "";
-			for (String var : requiredVars) {
-				if(searchString.length() == 0) {
-					searchString = "defined=\""+var;
-				} else {
-					searchString += ","+var;
-				}
-				
-			}
-			if(searchString.length() > 0) {
-				searchString += "\"";
-				System.out.println("Searchstring depth"+depth+" "+searchString);
-				try {
-					boolean forbidden = false; //flag that indicates if var is forbidden
-					for(Node n : searcher.searchSkills(searchString)) {
-						for (String forb : forbiddenVars) {
-							if(n.getRequiredVariables().contains(forb)) { //dependency requires var that is defined by parent
-								forbidden = true;
-								break;
-							}
+			String searchString = "defined=\""+requiredVar+"\"";
+		
+			System.out.println("Searchstring depth"+depth+" "+searchString);
+			try {
+				boolean forbidden = false; //flag that indicates if var is forbidden
+				System.out.println("depth "+depth+" found: ");
+				for(Node n : searcher.searchSkills(searchString)) {
+					System.out.println("depth "+depth+" found: "+n.getName());
+					for (String forb : forbiddenVars) {
+						System.out.println("verboten: "+forb);
+						if(n.getRequiredVariables().contains(forb)) { //dependency requires var that is defined by parent
+							forbidden = true;
+							break;
 						}
-						if (! forbidden) {
-							nodeList.add(EcoreUtil.copy(n));
-						} else {
-							forbidden = false; //reset flag 
-						}
-						
 					}
-					
-				} catch (FilterFormatException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					if (! forbidden) {
+						nodeList.add(SynthesisUtil.copyNodeRecursive(n));
+					} else {
+						forbidden = false; //reset flag 
+					}
+						
 				}
-				nodeMap.put(1, nodeList);
+					
+			} catch (FilterFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			nodeMap.put(1, nodeList);
 		} else { // add other nodes to existing nodes of previous depth if available
 			
 			for(Node node : nodeMap.get(depth-1)) {
@@ -69,9 +62,9 @@ public class VariableSkillProvider extends SkillProvider {
 				providedVars.addAll(node.getProvidedVariables());
 				//providedVars.addAll(node.getRequiredVariables());
 				String searchString = "";
-				for (String var : requiredVars) { //remove all 
+				/*for (String var : requiredVars) { //remove all 
 					providedVars.remove(var);
-				}
+				}*/
 				for (String var : providedVars) {
 					if(searchString.length() == 0) {
 						searchString = "required=\""+var+"\"";
@@ -80,7 +73,8 @@ public class VariableSkillProvider extends SkillProvider {
 					}
 					
 				}
-				if(requiredVars.length > 0) {
+				System.out.println("SUCHE: "+searchString);
+				/*if(requiredVars.length > 0) {
 					if(searchString.length() == 0) {
 						searchString = "!(";
 					} else {
@@ -93,13 +87,14 @@ public class VariableSkillProvider extends SkillProvider {
 						}
 					}
 					searchString += ")";
-				}
+				}*/
 				
 				//System.out.println("SUCHE "+searchString);
 				try {
 					boolean forbidden = false;
 					for(Node n : searcher.searchSkills(searchString)) {
 						for (String forb : forbiddenVars) {
+							System.out.println("verboten: "+forb);
 							if(n.getRequiredVariables().contains(forb)) { //dependency requires var that is defined by parent
 								forbidden = true;
 								break;
@@ -123,9 +118,9 @@ public class VariableSkillProvider extends SkillProvider {
 									categoryExists = true;
 								}
 								if(!categoryExists) {
-									Node parent = EcoreUtil.copy(n);
-									Node child = EcoreUtil.copy(node);
-									Edge e = SynthesisUtil.createEdge(parent, child);
+									Node parent = SynthesisUtil.copyNodeRecursive(n);
+									Node child = SynthesisUtil.copyNodeRecursive(node);
+									SynthesisUtil.createEdge(parent, child);
 									nodeList.add(parent);
 								}
 							}
@@ -135,7 +130,7 @@ public class VariableSkillProvider extends SkillProvider {
 						}
 					}
 				} catch (FilterFormatException e) {
-					// TODO Auto-generated catch block
+					nodeList.clear();
 					e.printStackTrace();
 				}
 				
@@ -144,4 +139,7 @@ public class VariableSkillProvider extends SkillProvider {
 		}
 	}
 	
+	public String getRequiredVariable() {
+		return requiredVar;
+	}
 }

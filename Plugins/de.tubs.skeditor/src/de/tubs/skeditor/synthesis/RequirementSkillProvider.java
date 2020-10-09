@@ -79,43 +79,42 @@ public class RequirementSkillProvider extends SkillProvider {
 					}
 					
 				}
-				System.out.println(searchString);
+				System.out.println("SUCHE REQUIREMENT: "+searchString);
 				try {
-					
-					for(Node n : searcher.searchSkills(searchString)) {
-						if(SynthesisUtil.canCreateEdge(n, node)) {
-							Node temp = node;
-							boolean categoryExists = false;
-							//check if node already exists that has same category
-							if(!n.getCategory().equals(temp.getCategory())) {
-								while(!temp.getChildEdges().isEmpty()) {
-									temp = temp.getChildEdges().get(0).getChildNode(); //has only one child
-									if(temp.getCategory().equals(n.getCategory())) {
-										categoryExists = true;
-										break;
+					if(searchString.length() > 0) {
+						for(Node n : searcher.searchSkills(searchString)) {
+							if(SynthesisUtil.canCreateEdge(n, node)) {
+								Node temp = node;
+								boolean categoryExists = false;
+								//check if node already exists that has same category
+								if(!n.getCategory().equals(temp.getCategory())) {
+									while(!temp.getChildEdges().isEmpty()) {
+										temp = temp.getChildEdges().get(0).getChildNode(); //has only one child
+										if(temp.getCategory().equals(n.getCategory())) {
+											categoryExists = true;
+											break;
+										}
 									}
+								} else {
+									categoryExists = true;
 								}
-							} else {
-								categoryExists = true;
-							}
-							if(!categoryExists) {
-								Node parent = EcoreUtil.copy(n);
-								Node child = EcoreUtil.copy(node);
-								Edge e = SkillGraphFactory.eINSTANCE.createEdge();
-								e.setChildNode(child);
-								e.setParentNode(parent);
-								parent.getChildEdges().add(e);
-								child.getParentNodes().add(parent);
-								nodeList.add(parent);
+								if(!categoryExists) {
+									Node parent = EcoreUtil.copy(n);
+									Node child = EcoreUtil.copy(node);
+									Edge e = SkillGraphFactory.eINSTANCE.createEdge();
+									e.setChildNode(child);
+									e.setParentNode(parent);
+									parent.getChildEdges().add(e);
+									child.getParentNodes().add(parent);
+									nodeList.add(parent);
+								}
 							}
 						}
-					}
-					
+					} 
 				} catch (FilterFormatException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 			}
 			nodeMap.put(depth, nodeList);
 		}

@@ -13,14 +13,20 @@ import SkillGraph.Node;
  */
 public class SkillInsert {
 
-	private Node[] insertedSkills;
-	private Edge[] insertedEdges;
+	private int depth;
+	private SkillInsert parent;
+	private List<Node> insertedSkills;
+	private List<Edge> insertedEdges;
 	private SkillProvider provider;
+	private int number;
 	
-	public SkillInsert(Node[] insertedSkills, Edge[] insertedEdges, SkillProvider provider) {
+	public SkillInsert(int depth, SkillInsert parent, List<Node> insertedSkills, List<Edge> insertedEdges, SkillProvider provider) {
 		this.insertedSkills = insertedSkills;
 		this.insertedEdges = insertedEdges; 
 		this.provider = provider;
+		this.depth = depth;
+		this.parent = parent;
+		this.number = 0;
 	}
 	
 	/**
@@ -28,7 +34,7 @@ public class SkillInsert {
 	 * 
 	 * @return the inserted skills for this insertion
 	 */
-	public Node[] getInsertedSkills() {
+	public List<Node> getInsertedSkills() {
 		return insertedSkills;
 	}
 	
@@ -37,7 +43,7 @@ public class SkillInsert {
 	 * 
 	 * @return the inserted skills for this insertion
 	 */
-	public Edge[] getInsertedEdges() {
+	public List<Edge> getInsertedEdges() {
 		return insertedEdges;
 	}
 	
@@ -46,7 +52,7 @@ public class SkillInsert {
 	 * 
 	 * @return the inserted skills for this insertion
 	 */
-	public void setInsertedSkills(Node[] inserted) {
+	public void setInsertedSkills(List<Node> inserted) {
 		this.insertedSkills = inserted;
 	}
 	
@@ -55,7 +61,7 @@ public class SkillInsert {
 	 * 
 	 * @return the inserted skills for this insertion
 	 */
-	public void setInsertedEdges(Edge[] inserted) {
+	public void setInsertedEdges(List<Edge> inserted) {
 		this.insertedEdges = inserted;
 	}
 	
@@ -66,5 +72,26 @@ public class SkillInsert {
 	 */
 	public SkillProvider getSkillProvider() {
 		return provider;
+	}
+	
+	public int getDepth() {
+		return depth;
+	}
+	public SkillInsert getParent() {
+		return parent;
+	}
+	
+	public int getNumber() {
+		return this.number;
+	}
+	
+	public void setNumber(int number) {
+		this.number = number;
+	}
+	
+	@Override
+	public String toString() {
+		String s = "(Depth: "+depth+" parent: "+parent;
+		return s;
 	}
 }

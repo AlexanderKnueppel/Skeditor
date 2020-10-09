@@ -1,5 +1,7 @@
 package de.tubs.skeditor.synthesis;
 
+import java.util.List;
+
 import SkillGraph.Edge;
 import SkillGraph.Node;
 
@@ -13,13 +15,11 @@ public class DependencyInsert extends SkillInsert {
 
 	private final Node node;
 	private final String variable;
-	private String[] satisfiedVariables;
-	
-	public DependencyInsert(Node node, String variable, String[] satisfiedVariables, Node[] insertedSkills, Edge[] insertedEdges, SkillProvider provider) {
-		super(insertedSkills, insertedEdges, provider);
+
+	public DependencyInsert(int depth, SkillInsert parent, Node node, List<Node> insertedSkills, List<Edge> insertedEdges, VariableSkillProvider provider) {
+		super(depth, parent, insertedSkills, insertedEdges, provider);
 		this.node = node;
-		this.variable = variable;
-		this.satisfiedVariables = satisfiedVariables;
+		this.variable = provider.getRequiredVariable();
 	}
 	
 	/**
@@ -40,11 +40,11 @@ public class DependencyInsert extends SkillInsert {
 		return this.variable;
 	}
 	
-	public void setSatisfiedVariables(String[] variables) {
-		this.satisfiedVariables = variables;
+	@Override
+	public String toString() {
+		String s = super.toString();
+		s += "node: "+node.getName()+" variable: "+variable;
+		return s;
 	}
 	
-	public String[] getSatisfiedVariables() {
-		return this.satisfiedVariables;
-	}
 }

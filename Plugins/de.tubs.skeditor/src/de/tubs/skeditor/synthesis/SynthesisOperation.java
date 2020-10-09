@@ -156,7 +156,7 @@ public class SynthesisOperation extends RecordingCommand{
 		
 		//synthesize new graph based on requirements
 		Synthesis syn = new Synthesis();
-		Node rootNode = syn.synthesizeGraph(requirements);
+		Node rootNode = syn.synthesizeGraph_(requirements);
 		rootNode.setName(file.getName().substring(0, name));
 		g.setRootNode(rootNode);
 		System.out.println(SynthesisUtil.childsToString(rootNode));
@@ -308,8 +308,18 @@ public class SynthesisOperation extends RecordingCommand{
 			AddContext ctx = new AddContext();
 			ctx.setNewObject(node);
 			ctx.setTargetContainer(diagram);
-			graph.getNodes().add(node);
-			nctx.add(ctx);
+			boolean exists = false;
+			for ( Node n : graph.getNodes()) {
+				if(n.getName().equals(node.getName())) {
+					exists = true;
+				}
+			}
+			if(!exists) {
+				graph.getNodes().add(node);
+				nctx.add(ctx);
+			}
+			
+			
 
 			if (!node.getChildEdges().isEmpty()) {
 				for (Edge e : node.getChildEdges()) {
