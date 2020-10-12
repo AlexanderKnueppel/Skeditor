@@ -40,6 +40,7 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import de.tubs.skeditor.synthesis.Requirement;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
+import de.tubs.skeditor.utils.SynthesisUtil;
 
 /**
  * wizard page for GraphSynthesisWizard
@@ -192,7 +193,7 @@ public class GraphSynthesisWizardPage extends WizardPage {
 		if(requirements.contains(req)) {
 			updateStatus(ERR_ALREADY_DEFINED);
 		}
-		if(isValidRequirement(requirement)) {
+		if(SynthesisUtil.isValidRequirement(requirement)) {
 			requirements.add(req);
 			for(String var : req.getVariables()) {
 				System.out.println("var: "+var);
