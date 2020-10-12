@@ -1,13 +1,24 @@
 package de.tubs.skeditor.views.safetygoalsview;
 
+import java.util.List;
+
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ITableColorProvider;
+import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 import SkillGraph.Node;
 import SkillGraph.Requirement;
+import de.tubs.skeditor.contracting.grammar.GrammarUtil;
+import de.tubs.skeditor.contracting.grammar.SyntaxError;
 
-public class LabelProvider implements ITableLabelProvider {
+public class LabelProvider implements ITableLabelProvider, ITableFontProvider, ITableColorProvider {
 
 	@Override
 	public void dispose() {
@@ -71,6 +82,39 @@ public class LabelProvider implements ITableLabelProvider {
 			}
 		}
 
+		return null;
+	}
+
+	@Override
+	public Color getForeground(Object element, int columnIndex) {
+		// TODO Auto-generated method stub
+		if(element instanceof Requirement) {
+			Requirement req = (Requirement) element;
+			
+			switch (columnIndex) {
+			case 1:
+				List<SyntaxError> errors = GrammarUtil.tryToParse(req.getTerm());
+				if(errors.isEmpty())
+					return null;
+				else {
+					//TODO add markers fr syntax errors
+					return Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+				}
+			default:break;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Color getBackground(Object element, int columnIndex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Font getFont(Object element, int columnIndex) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

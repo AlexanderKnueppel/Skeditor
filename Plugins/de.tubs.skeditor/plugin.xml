@@ -105,5 +105,35 @@
             name="Skeditor Compose">
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="de.tubs.skeditor.propertyContributor">
+         <propertyCategory  category="SkeditorProperties"></propertyCategory>
+      </propertyContributor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs
+            contributorId="de.tubs.skeditor.propertyContributor">
+         <propertyTab
+               category="SkeditorProperties"
+               id="de.tubs.skeditor.property.main"
+               label="Main">
+         </propertyTab>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="de.tubs.skeditor.propertyContributor">
+         <propertySection
+               class="de.tubs.skeditor.property.SkillSection"
+               filter="de.tubs.skeditor.property.SkillFilter"
+               id="de.tubs.skeditor.property.mainsection"
+               tab="de.tubs.skeditor.property.main">
+         </propertySection>
+      </propertySections>
+   </extension>
 
 </plugin>
