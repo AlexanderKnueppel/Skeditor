@@ -28,6 +28,16 @@ public interface folListener extends ParseTreeListener {
 	 */
 	void exitFormula(folParser.FormulaContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link folParser#has_condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterHas_condition(folParser.Has_conditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link folParser#has_condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitHas_condition(folParser.Has_conditionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link folParser#term}.
 	 * @param ctx the parse tree
 	 */
@@ -68,6 +78,26 @@ public interface folListener extends ParseTreeListener {
 	 */
 	void exitBinop(folParser.BinopContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link folParser#has_skill}.
+	 * @param ctx the parse tree
+	 */
+	void enterHas_skill(folParser.Has_skillContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link folParser#has_skill}.
+	 * @param ctx the parse tree
+	 */
+	void exitHas_skill(folParser.Has_skillContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link folParser#skill_name}.
+	 * @param ctx the parse tree
+	 */
+	void enterSkill_name(folParser.Skill_nameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link folParser#skill_name}.
+	 * @param ctx the parse tree
+	 */
+	void exitSkill_name(folParser.Skill_nameContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link folParser#bin_connective}.
 	 * @param ctx the parse tree
 	 */
@@ -77,6 +107,16 @@ public interface folListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBin_connective(folParser.Bin_connectiveContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link folParser#arith_operation}.
+	 * @param ctx the parse tree
+	 */
+	void enterArith_operation(folParser.Arith_operationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link folParser#arith_operation}.
+	 * @param ctx the parse tree
+	 */
+	void exitArith_operation(folParser.Arith_operationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link folParser#separator}.
 	 * @param ctx the parse tree

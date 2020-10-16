@@ -56,6 +56,11 @@ public class Requirement {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return "Requirement: "+this.formula;
+	}
+	
 	
 	
 }

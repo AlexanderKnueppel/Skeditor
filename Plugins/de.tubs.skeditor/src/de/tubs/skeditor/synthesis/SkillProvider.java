@@ -46,9 +46,10 @@ public abstract class SkillProvider {
 				depth++;
 				currentIndex = 1;
 				return nodeMap.get(depth).get(currentIndex-1);
+			} else {
+				return null;
 			}
 		}
-		return null;
 	}
 	
 	protected abstract void addNodes(int depth);

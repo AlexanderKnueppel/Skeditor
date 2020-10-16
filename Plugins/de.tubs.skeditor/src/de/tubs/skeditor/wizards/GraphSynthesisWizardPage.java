@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import de.tubs.skeditor.synthesis.Requirement;
+import de.tubs.skeditor.synthesis.prover.TermProver;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
 import de.tubs.skeditor.utils.SynthesisUtil;
 
@@ -56,6 +57,7 @@ public class GraphSynthesisWizardPage extends WizardPage {
 	private final String ERR_ALREADY_DEFINED = "Requirement already defined!";
 	private final String ERR_EMPTY_REPO = "Repository cannot be empty!";
 	private final String ERR_BAD_REQ = "Bad format for requirement!";
+	private final String ERR_UNSATISFIABLE = "Requirement conflicts with other requirement!";
 	
 	//attributes
 	private Text requirementText;
@@ -64,6 +66,7 @@ public class GraphSynthesisWizardPage extends WizardPage {
 	private String description;
 	
 	private List<Requirement> requirements;
+	private TermProver prover; //to prove satisfiability of requirements
 
 	/**
 	 * Constructor for GraphSynthesisWizardPage.
@@ -75,6 +78,7 @@ public class GraphSynthesisWizardPage extends WizardPage {
 		description = "This wizard synthesizes a new skill graph.";
 		setDescription(description);
 		requirements = new ArrayList<>();
+		prover = new TermProver();
 	}
 	
 	@Override
@@ -192,17 +196,35 @@ public class GraphSynthesisWizardPage extends WizardPage {
 		Requirement req = new Requirement(requirement);
 		if(requirements.contains(req)) {
 			updateStatus(ERR_ALREADY_DEFINED);
-		}
-		if(SynthesisUtil.isValidRequirement(requirement)) {
-			requirements.add(req);
-			for(String var : req.getVariables()) {
-				System.out.println("var: "+var);
-			}
-			
-		} else {
-			updateStatus(ERR_BAD_REQ);
 			return;
+		} else {
+			if(SynthesisUtil.isValidRequirement(requirement)) {
+				//check satisfiability of requirements
+				String[] requirementStrings = new String[requirements.size()+1];
+				int i;
+				for(i = 0; i < requirements.size(); i++) {
+					requirementStrings[i] = requirements.get(i).getFormula();
+				}
+				requirementStrings[i] = requirement;
+				System.out.println(requirement);
+				if(prover.check(requirementStrings)) {
+					//everythings fine, add requirement
+					requirements.add(req);
+					/*for(String var : req.getVariables()) {
+						System.out.println("var: "+var);
+					}*/
+				} else {
+					updateStatus(ERR_UNSATISFIABLE);
+					return;
+				}
+				
+				
+			} else {
+				updateStatus(ERR_BAD_REQ);
+				return;
+			}
 		}
+		
 		if(checkPage()) {
 			setPageComplete(true);
 		}

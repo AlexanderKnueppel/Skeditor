@@ -3,6 +3,15 @@ package de.tubs.skeditor.utils;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import org.antlr.v4.runtime.ANTLRErrorListener;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.tree.ParseTree;
+
+
 import SkillGraph.Category;
 import SkillGraph.Controller;
 import SkillGraph.Edge;
@@ -10,6 +19,9 @@ import SkillGraph.Equation;
 import SkillGraph.Node;
 import SkillGraph.Requirement;
 import SkillGraph.SkillGraphFactory;
+import de.tubs.skeditor.contracting.grammar.VariableListener;
+import de.tubs.skeditor.contracting.grammar.folLexer;
+import de.tubs.skeditor.contracting.grammar.folParser;
 
 //import de.tubs.skeditor.synthesis.Requirement;
 
@@ -203,15 +215,67 @@ public class SynthesisUtil {
 		}
 	}
 	
+	static class MyErrorListener extends BaseErrorListener{
+		
+		boolean isValid = true;
+		
+		@Override
+		public void syntaxError(Recognizer<?,?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+			isValid = false;
+			System.out.println(msg+"Line: "+line+" char: "+charPositionInLine);
+		}
+		
+		public boolean isValid() {
+			return isValid;
+		}
+	}
 	/*
 	 * checks if the given string is a valid requirement
 	 */
 	public static boolean isValidRequirement(String requirement) {
 		
-		String str = requirement;
-		str.replace(" ", ""); //remove white spaces from string
+		folLexer lexer = new folLexer(CharStreams.fromString(requirement));
+		folParser parser = new folParser(new CommonTokenStream(lexer));
 		
-		//check if requirement is "include SKILL" requirement
+	    
+		MyErrorListener errorListener = new MyErrorListener();
+		parser.removeErrorListeners();
+		parser.addErrorListener(errorListener);
+		ParseTree tree = parser.condition();
+		return errorListener.isValid();
+		/*String str = requirement;
+		String str1, str2;
+		ArrayDeque<Character> stack = new ArrayDeque<>(); 
+		str.replace(" ", ""); //remove white spaces from string
+		String operator = "";
+		if(str.startsWith("(")) { //if operand starts with parenthesis, find matching closing parenthesis
+			int i = 0;
+			do {
+				if(str.charAt(i) == '(') {
+					stack.push('(');
+				} else if(str.charAt(i) == ')') {
+					stack.pop();
+				}
+				i++;
+			} while(!stack.isEmpty() && i < str.length());
+			
+			str1 = str.substring(1, i-1);
+			if(i < str.length()-1) { //there is a rest string left
+				if(!(str.charAt(i+1) == '&' || str.charAt(i+1) == '|' || str.charAt(i+1) == '>' || str.charAt(i+1) == '<' || str.charAt(i+1) == '=')) {
+					return false;
+				} else {
+					if(str.charAt(i+1) == '>' || str.charAt(i+1) == '<') {
+						if(str.charAt(i+2) == '=') {
+							
+						}
+					}
+				}
+			}
+			
+			
+		} else {
+			
+		}
 		if(str.startsWith("include")) {
 			str = str.replace("include", "");
 			if(str.startsWith("not")) {
@@ -227,7 +291,7 @@ public class SynthesisUtil {
 		//split requirement at comparism operator, only one comparism allowed per requirement
 		int numOperators = 0;
 		char c;
-		String operator = "";
+		
 		for(int i = 0; i < str.length(); i++) {
 			c = str.charAt(i);
 			if (c == '<' || c == '>') {
@@ -250,11 +314,11 @@ public class SynthesisUtil {
 		if(operands.length != 2) {
 			return false;
 		}
-		/*for(String o : operands) {
+		for(String o : operands) {
 			System.out.println(o);
-		}*/
+		}
 		de.tubs.skeditor.synthesis.Requirement req = new de.tubs.skeditor.synthesis.Requirement(requirement);
-		return checkOperand(operands[0]) & checkOperand(operands[1]) & !(req.getVariables().isEmpty());
+		return checkOperand(operands[0]) & checkOperand(operands[1]) & !(req.getVariables().isEmpty())*/
 	}
 	
 	/*

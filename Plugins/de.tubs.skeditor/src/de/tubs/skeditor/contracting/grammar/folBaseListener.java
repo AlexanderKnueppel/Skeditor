@@ -40,6 +40,18 @@ public class folBaseListener implements folListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterHas_condition(folParser.Has_conditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitHas_condition(folParser.Has_conditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTerm(folParser.TermContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -88,6 +100,30 @@ public class folBaseListener implements folListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterHas_skill(folParser.Has_skillContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitHas_skill(folParser.Has_skillContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSkill_name(folParser.Skill_nameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSkill_name(folParser.Skill_nameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBin_connective(folParser.Bin_connectiveContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -95,6 +131,18 @@ public class folBaseListener implements folListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBin_connective(folParser.Bin_connectiveContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArith_operation(folParser.Arith_operationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArith_operation(folParser.Arith_operationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

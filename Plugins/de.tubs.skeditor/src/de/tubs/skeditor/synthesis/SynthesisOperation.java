@@ -39,6 +39,9 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILinkService;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 import SkillGraph.Category;
 import SkillGraph.Edge;
@@ -58,6 +61,7 @@ public class SynthesisOperation extends RecordingCommand{
 	private String containerName;
 	private String repoName;
 	private List<Requirement> requirements;
+	private List<Requirement> unsatisfiableRequirements;
 
 	public SynthesisOperation(TransactionalEditingDomain domain, String containerName, String name, String repo, List<Requirement> requirements) {
 		super(domain);
@@ -66,8 +70,13 @@ public class SynthesisOperation extends RecordingCommand{
 		this.containerName = containerName;
 		this.repoName = repo;
 		this.requirements = requirements;
+		this.unsatisfiableRequirements = new ArrayList<>();
 	}
 
+	public List<Requirement> getUnsatisfiableRequirements(){
+		return unsatisfiableRequirements;
+	}
+	
 	@Override
 	protected void doExecute() {
 		
@@ -156,7 +165,8 @@ public class SynthesisOperation extends RecordingCommand{
 		
 		//synthesize new graph based on requirements
 		Synthesis syn = new Synthesis();
-		Node rootNode = syn.synthesizeGraph_(requirements);
+		Node rootNode = syn.synthesizeGraph(requirements);
+		unsatisfiableRequirements = syn.getUnsatisfiableRequirements();
 		rootNode.setName(file.getName().substring(0, name));
 		g.setRootNode(rootNode);
 		System.out.println(SynthesisUtil.childsToString(rootNode));
@@ -185,13 +195,20 @@ public class SynthesisOperation extends RecordingCommand{
 			addEdges(e, diagram, addContextEdges);
 			//addNodes(e.getChildNode(), diagram, g, addContextNodes);
 		}
-		IAddFeature addEdgeFeature = featureProvider.getAddFeature(addContextEdges.get(0));
+		IAddFeature addEdgeFeature = null;
+		if(addContextEdges.size() > 0) {
+			addEdgeFeature = featureProvider.getAddFeature(addContextEdges.get(0));
+		}
+		
 		System.out.println("edges: "+addContextEdges.size());
-		for (AddConnectionContext addCtx : addContextEdges) {
-			if (addEdgeFeature.canAdd(addCtx)) {
-				addEdgeFeature.add(addCtx);
+		if(addEdgeFeature != null) {
+			for (AddConnectionContext addCtx : addContextEdges) {
+				if (addEdgeFeature.canAdd(addCtx)) {
+					addEdgeFeature.add(addCtx);
+				}
 			}
 		}
+		
 		//insert all parameters of all graphs from repo to new graph
 		for(Graph gr : graphs) {
 			for(int i = 0; i < gr.getParameterList().size(); i++) {

@@ -1,5 +1,6 @@
 package de.tubs.skeditor.wizards;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -44,23 +45,13 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 	private GraphSynthesisWizardPage requirementPage;
 	private NewGraphWizardPage newGraphPage;
 	private ISelection selection;
+	private List<Requirement> unsatisfiables;
 	
 	public GraphSynthesisWizard() {
 		super();
 		setNeedsProgressMonitor(true);
+		unsatisfiables = new ArrayList<>();
 	}
-	
-	/*@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// TODO Auto-generated method stub
-
-	}*/
-
-	/*@Override
-	public boolean performFinish() {
-		// TODO Auto-generated method stub
-		return false;
-	}*/
 	
 	/**
 	 * Adding the page to the wizard.
@@ -100,6 +91,14 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;
 		}
+		if(unsatisfiables.size() > 0) {
+			System.out.println("unsatisfiables gefunden");
+			String warnMsg = "The following requirements cannot be satisfied:";
+			for(Requirement unsatisfiable : unsatisfiables) {
+				warnMsg += "\n"+unsatisfiable.getFormula();
+			}
+			MessageDialog.openWarning(getShell(), "Warning", warnMsg);
+		}
 		return true;
 	}
 
@@ -132,32 +131,14 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 
 		SynthesisOperation operation = new SynthesisOperation(editingDomain, containerName, filename, repoName, requirements);
 		editingDomain.getCommandStack().execute(operation);
-
+		unsatisfiables = operation.getUnsatisfiableRequirements(); //save unsatisfiable requirements
+		
+		
 		// Dispose the editing domain to eliminate memory leak
 		editingDomain.dispose();
 
 		monitor.worked(1);
 		monitor.setTaskName("Opening file for editing...");
-		/*
-		getShell().getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-				IViewReference[] ref = page.getViewReferences();
-
-				for (IViewReference iViewReference : ref) {
-					if (iViewReference.getId().equals("de.tubs.skeditor.views.SafetyGoalsView")) {// TODO rework, bit
-																									// too hacky
-						((SafetyGoalsView) iViewReference.getView(true)).getViewer().refresh();
-					}
-				}
-
-				try {
-					IDE.openEditor(page, file, true);
-				} catch (PartInitException e) {
-				}
-			}
-		});
-		monitor.worked(1);*/
 
 	}
 

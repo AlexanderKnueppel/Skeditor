@@ -1,6 +1,7 @@
 package de.tubs.skeditor.synthesis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,9 @@ import SkillGraph.Category;
 import SkillGraph.Edge;
 import SkillGraph.Node;
 import SkillGraph.SkillGraphFactory;
+import de.tubs.skeditor.contracting.Contract;
+import de.tubs.skeditor.contracting.ContractPropagator;
+import de.tubs.skeditor.synthesis.prover.TermProver;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
 import de.tubs.skeditor.synthesis.search.SkillSearch;
 import de.tubs.skeditor.utils.SynthesisUtil;
@@ -18,10 +22,12 @@ import de.tubs.skeditor.utils.SynthesisUtil;
 public class RequirementSkillProvider extends SkillProvider {
 
 	private Requirement requirement;
+	private TermProver prover;
 	
 	public RequirementSkillProvider(Requirement req) {
 		super();
 		this.requirement = req;
+		this.prover = new TermProver();
 		addNodes(depth);
 	}
 	
@@ -49,12 +55,14 @@ public class RequirementSkillProvider extends SkillProvider {
 			try {
 				
 				for(Node n : searcher.searchSkills(searchString)) {
-					for(SkillGraph.Requirement safety : n.getRequirements()) {
-						if(safety.getTerm().equals(requirement.getFormula())) {
-							nodeList.add(EcoreUtil.copy(n));
-						}
+					String[] safetyGoals = new String[n.getRequirements().size()];
+					for(int i = 0; i < n.getRequirements().size(); i++) {
+						safetyGoals[i] = n.getRequirements().get(i).getTerm();
 					}
-					
+					//prove if safety goals of node n satisfies requirement
+					if(prover.prove(requirement.getFormula(), safetyGoals)) {
+						nodeList.add(EcoreUtil.copy(n));
+					}
 					
 				}
 				
@@ -106,7 +114,18 @@ public class RequirementSkillProvider extends SkillProvider {
 									e.setParentNode(parent);
 									parent.getChildEdges().add(e);
 									child.getParentNodes().add(parent);
-									nodeList.add(parent);
+									//check if new node guarantees requirement
+									Contract contract = ContractPropagator.computeContract(parent);
+									List<String> guarantees = Arrays.asList(contract.getGuarantee().split("&"));
+									/*for(int i = 0; i < guarantees.size(); i++) {
+										if(guarantees.get(i).equals("true")) { //we dont want true word in assumptions for prover
+											guarantees.remove(i);
+										}
+									}*/
+									if(prover.prove(requirement.getFormula(), (String[])guarantees.toArray())) {
+										nodeList.add(parent);
+									}
+									
 								}
 							}
 						}

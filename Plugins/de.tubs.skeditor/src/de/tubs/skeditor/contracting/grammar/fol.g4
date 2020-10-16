@@ -11,6 +11,7 @@ grammar fol;
 
  condition
    :formula EOF
+   |has_condition EOF 
    ;
  formula
    : formula bin_connective formula
@@ -24,12 +25,21 @@ grammar fol;
    | BOOL_LITERAL
    ;
 
+	
+has_condition
+	: has_condition bin_connective has_condition 
+	| LPAREN has_condition RPAREN
+	| NOT has_condition
+	| has_skill
+	;
+	
 term
-   : (PLUS|MINUS)* scientific
-   | (PLUS|MINUS)* variable
+   : (PLUS|MINUS)? scientific
+   | (PLUS|MINUS)? variable
    | LPAREN term RPAREN
-   | term (PLUS | MINUS) term
-   | term (TIMES | DIV) term
+   //| term (PLUS | MINUS) term
+   //| term (TIMES | DIV) term
+   | term arith_operation term
    ;
    
 scientific
@@ -48,6 +58,19 @@ binop
    | GT
    ;
    
+has_skill
+	: HAS DOUBLEQUOTE skill_name DOUBLEQUOTE RPAREN
+	| HAS SINGLEQUOTE skill_name SINGLEQUOTE RPAREN
+	;
+	
+HAS
+	: 'has('
+	;
+
+skill_name
+	: VARIABLE
+	;
+	
 BOOL_LITERAL:       'true'
             |       'false'
             ;
@@ -103,6 +126,13 @@ RPAREN
    :')'
    ;
    
+arith_operation
+	: PLUS
+	| MINUS
+	| TIMES
+	| DIV
+	;
+	
 PLUS
    : '+'
    ;
@@ -176,3 +206,9 @@ ENDLINE
 WHITESPACE
    :(' '|'\t')+->skip
    ;
+DOUBLEQUOTE
+	: '"'
+	;
+SINGLEQUOTE
+	: '\''
+	;
