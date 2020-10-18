@@ -49,6 +49,7 @@ public class Synthesis {
 	private Node rootNode;
 	private List<Requirement> unsatisfiableRequirements;
 	private List<Requirement> satisfiedRequirements;
+	private List<String> forbiddenSkills; //names of forbidden skills
 	private Requirement currentRequirement;
 	private RequirementInsert currentRequirementInsert;
 	private Node insertedRootNodeforCurrentRequirement;
@@ -59,6 +60,7 @@ public class Synthesis {
 	public Synthesis() {
 		unsatisfiableRequirements = new ArrayList<>();
 		satisfiedRequirements = new ArrayList<>();
+		forbiddenSkills = new ArrayList<>();
 		prover = new TermProver();
 	}
 	
@@ -73,6 +75,9 @@ public class Synthesis {
 		}
 	}
 	
+	/*
+	 * negates the given List of requirements representing a DNF
+	 */
 	private static List<Requirement> convertToNot(List<Requirement> reqs){
 		List<Requirement> requirements = new ArrayList<>(reqs);
 		List<Requirement> requirementList = new ArrayList<>();
@@ -100,11 +105,14 @@ public class Synthesis {
 		return toReturn;
 	}
 	
+	/*
+	 * converts the given requirement to a list of requirements representing a DNF
+	 */
 	private static List<Requirement> convertToDNF(Requirement req) {
 		class DNFVisitor extends folBaseVisitor<List<Requirement>> {
 			@Override 
 			public List<Requirement> visitCondition(folParser.ConditionContext ctx) {
-				System.out.println(ctx.getText());
+				//System.out.println(ctx.getText());
 				if(ctx.formula() != null) {
 					return visitFormula(ctx.formula());
 				}
@@ -116,7 +124,7 @@ public class Synthesis {
 
 			@Override
 			public List<Requirement> visitFormula(FormulaContext ctx) {
-				System.out.println("formula:"+ctx.getText());
+				//System.out.println("formula:"+ctx.getText());
 				List<Requirement> requirementList = new ArrayList<>();
 				if(ctx.formula().size() > 1) { //more than one formula in this context
 					List<Requirement> firstFormula = visitFormula(ctx.formula(0));
@@ -189,7 +197,7 @@ public class Synthesis {
 			
 			@Override
 			public List<Requirement> visitHas_condition(Has_conditionContext ctx) {
-				System.out.println("has_cond: "+ctx.getText());
+				//System.out.println("has_cond: "+ctx.getText());
 				List<Requirement> requirementList = new ArrayList<>();
 				if(ctx.has_condition().size() > 1) { //binary connected conditions
 					List<Requirement> has1 = visitHas_condition(ctx.has_condition(0));
@@ -343,7 +351,9 @@ public class Synthesis {
 		//all remaining requirements are has conditions, combine them to one requirement
 		String s = "";
 		for(Requirement r : requirements) {
-			if(r.getFormula().contains("has")) { 
+			if(r.getFormula().contains("!has")) { 
+				forbiddenSkills.add(r.getFormula().split("\"", 3)[1]); //add name of forbidden skill
+			} else if(r.getFormula().contains("has")) { 
 				if(s.length() == 0) {
 					s += r.getFormula();
 				} else {
@@ -384,16 +394,21 @@ public class Synthesis {
 					//synthesize graph
 					System.out.println("Liste: "+reqs.toString());
 					newGraph = synthesizeGraph_(sortRequirements(splitRequirements(reqs)), unsatisfiables, satisfiedRequirements);
-					if(unsatisfiables.isEmpty()) { //every requirement satisfied, return graph
+					if(!unsatisfiables.isEmpty() || newGraph == null) { //every requirement satisfied, return graph
+						satisfiables.clear();
+						unsatisfiables.clear();
+						forbiddenSkills.clear();
+					} else {
 						requirements.removeAll(requirementSet);
 						unsatisfiableRequirements = requirements;
 						return newGraph;
-					} else {
-						satisfiables.clear();
-						unsatisfiables.clear();
 					}
 				}
 			}
+			
+		}
+		if(newGraph == null) {
+			newGraph = SynthesisUtil.createNode("ROOT", Category.MAIN);
 		}
 		return newGraph;
 		
@@ -413,20 +428,31 @@ public class Synthesis {
 		List<Integer> insertedRequirementIndicies = new ArrayList<>();
 		RequirementSkillProvider lastProvider = null;
 		System.out.println("requirements: "+requirements+requirements.size());
+		if(requirements.size() == 0) {
+			return null;
+		}
 		while(requirements.size() > requirementIndex) {
 			resolved = false;
 			System.out.println("Requirement: "+requirements.get(requirementIndex).getFormula());
 			currentRequirement = requirements.get(requirementIndex);
 			
-			//if the graph is still valid, the current requirement is already satisfied
-			if(checkValidity()) { 
-				requirementIndex++;
-				satisfiedReqs.add(currentRequirement);
-				continue;
-			}
+			
 			
 			if(!currentRequirement.getFormula().contains("has")) { //requirement is formula
-				RequirementSkillProvider requirementProvider = new RequirementSkillProvider(currentRequirement);
+				//if the graph is still valid, the current requirement is already satisfied
+				if(checkValidity()) { 
+					requirementIndex++;
+					satisfiedReqs.add(currentRequirement);
+					continue;
+				}
+				RequirementSkillProvider requirementProvider;
+				
+				if(lastProvider != null) { //use lastProvider if it is not null
+					requirementProvider = lastProvider;
+					lastProvider = null;
+				} else {
+					requirementProvider= new RequirementSkillProvider(currentRequirement);
+				}
 				VariableSkillProvider lastVariableProvider = null;
 				//check every candidate returned by provider
 				Node candidate = requirementProvider.getNext();
@@ -451,9 +477,9 @@ public class Synthesis {
 					if(requirementInsert != null) { //remember insertion in stack if at least one edge was inserted
 						List<Integer> indicies = new ArrayList<>();
 						insertStack.push(requirementInsert);
+						insertEventforReq.put(currentRequirement, requirementInsert);
 						printStack(); //////////////////
 						boolean returnValue = true;
-						
 						//resolve dependencies of nodes inserted for this requirement
 						System.out.println("Anzahl hinzugefügter knoten: "+insertedNodes.size());
 						for(int i = 0; i < insertedNodes.size(); i++) {
@@ -467,6 +493,7 @@ public class Synthesis {
 							if(insertStack.size() - previousSize > 0 && returnValue == true) { //we inserted new nodes
 								System.out.println("Stack hat sich vergößert und alles gut");
 								indicies.add(i);
+								indiciesOfinsertedNodes.put(currentRequirement, indicies);
 							}
 							if(returnValue == true && i == insertedNodes.size()-1) {
 								System.out.println("wir sin fertig!!");
@@ -520,6 +547,7 @@ public class Synthesis {
 						}
 						if(resolved == true) { //all dependencies of requirement insert could be resolved
 							System.out.println("hab gebreakt");
+							
 							break; //break while and take next requirement
 							
 						} 
@@ -528,11 +556,11 @@ public class Synthesis {
 					}
 					if(insertSuccess == false) { //failed to insert candidate
 						candidate = requirementProvider.getNext();
+						continue;
 					}
 					if(resolved == false) { //could not resolve dependencies
 						candidate = requirementProvider.getNext();
 					} else {
-						insertedRequirementIndicies.add(requirementIndex);
 						break;
 					}
 					
@@ -548,7 +576,77 @@ public class Synthesis {
 						unsatisfiableReqs.add(currentRequirement);
 						return null;
 					} else {
-						//TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+						int lastSatisfiedRequirementIndex = insertedRequirementIndicies.get(insertedRequirementIndicies.size()-1);
+						SkillInsert lastInsert = insertStack.pop();
+						if(lastInsert instanceof RequirementInsert) { //found another insert of a requirment
+							if(((RequirementInsert) lastInsert).getRequirement() == requirements.get(lastSatisfiedRequirementIndex)) {
+								for(Edge e : lastInsert.getInsertedEdges()) {
+									SynthesisUtil.removeEdge(e);
+								}
+								requirementIndex = lastSatisfiedRequirementIndex;
+								insertedRequirementIndicies.remove(insertedRequirementIndicies.size()-1); //remove last requirement index
+								lastProvider = (RequirementSkillProvider) lastInsert.getSkillProvider();
+								continue;
+							}
+						}
+						//dependencies inserted
+						DependencyInsert lastDependInsert = (DependencyInsert) lastInsert;
+						RequirementInsert lastRequirementInsert = insertEventforReq.get(requirements.get(lastSatisfiedRequirementIndex)); 
+						List<Integer> insertedNodeIndicies = indiciesOfinsertedNodes.get(lastRequirementInsert.getRequirement());
+						Node firstInsertedNode = lastRequirementInsert.getInsertedSkills().get(insertedNodeIndicies.get(0));
+						int lastIndex = insertedNodeIndicies.get(insertedNodeIndicies.size()-1);
+						boolean returnVal= false;
+						while(!(lastDependInsert.getNode() == firstInsertedNode && lastDependInsert.getNumber() == 1)) {
+							for(Edge e : lastInsert.getInsertedEdges()) {
+								SynthesisUtil.removeEdge(e);
+							}
+							returnVal = resolveDependenciesOf(lastDependInsert.getDepth(), lastDependInsert.getNode(), lastDependInsert.getParent(), (VariableSkillProvider)lastDependInsert.getSkillProvider(), lastDependInsert.getNumber());
+							if(returnVal == true) {
+								SkillInsert parent = lastInsert.getParent();
+								while(!(parent instanceof RequirementInsert)&&((DependencyInsert) parent).getNode() != lastRequirementInsert.getInsertedSkills().get(lastIndex) && returnVal == true ) {
+									returnVal = resolveDependenciesOf(parent.getDepth(), ((DependencyInsert) parent).getNode(), parent.getParent(), null, parent.getNumber()+1);
+									parent = parent.getParent();
+								}
+								if(returnVal == true){
+									returnVal = resolveDependenciesOf(parent.getDepth(), lastRequirementInsert.getInsertedSkills().get(lastIndex), parent.getParent(), null, parent.getNumber()+1);
+									
+									for(int k = lastIndex+1; k < lastRequirementInsert.getInsertedSkills().size(); k++) {
+										int previousStackSize = insertStack.size();
+										returnVal = resolveDependenciesOf(parent.getDepth(), lastRequirementInsert.getInsertedSkills().get(k), parent.getParent(), null, 1);
+										if(insertStack.size() - previousStackSize > 0) {
+											insertedNodeIndicies.add(k);
+										}
+									}
+									//
+								} 
+								if(returnVal == false) {
+									lastInsert = insertStack.pop();
+									if(lastInsert == lastRequirementInsert) { //found last requirement insert
+										break;
+									}
+								} else {
+									break;
+								}
+							} else {
+								if(lastDependInsert.getNode() == lastRequirementInsert.getInsertedSkills().get(lastIndex)) { //found insert for last inserted node fpr this last requirement
+									insertedNodeIndicies.remove(insertedNodeIndicies.size() -1);
+									lastIndex = insertedNodeIndicies.get(insertedNodeIndicies.size()-1);
+								}
+							}
+						}
+						if(returnVal == false) {
+							if(lastInsert == lastRequirementInsert) {
+								for(Edge e : lastInsert.getInsertedEdges()) {
+									SynthesisUtil.removeEdge(e);
+								}
+								requirementIndex = lastSatisfiedRequirementIndex;
+								insertedRequirementIndicies.remove(insertedRequirementIndicies.size()-1); //remove last requirement index
+								lastProvider = (RequirementSkillProvider) lastInsert.getSkillProvider();
+								continue;
+							}
+						} else {
+							continue;
+						}
 					}
 				} else {
 					System.out.println("candidate ist nicht null");
@@ -556,12 +654,106 @@ public class Synthesis {
 				}
 			} else { //we are at the HAS requirement
 				hasConditionStarted = true;
+				if(requirementIndex == 0) {
+					unsatisfiableReqs.add(currentRequirement);
+					return null;
+				}
 				boolean hasChecked = checkHasCondition(currentRequirement);
 				if(!hasChecked) {
-					//TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+					int lastSatisfiedRequirementIndex = insertedRequirementIndicies.get(insertedRequirementIndicies.size()-1);
+					printStack(); ////////////////////
+					SkillInsert lastInsert = insertStack.pop();
+					if(lastInsert instanceof RequirementInsert) { //found another insert of a requirment
+						if(((RequirementInsert) lastInsert).getRequirement() == requirements.get(lastSatisfiedRequirementIndex)) {
+							for(Edge e : lastInsert.getInsertedEdges()) {
+								SynthesisUtil.removeEdge(e);
+							}
+							requirementIndex = lastSatisfiedRequirementIndex;
+							insertedRequirementIndicies.remove(insertedRequirementIndicies.size()-1); //remove last requirement index
+							lastProvider = (RequirementSkillProvider) lastInsert.getSkillProvider();
+							continue;
+						}
+					}
+					//dependencies inserted
+					DependencyInsert lastDependInsert = (DependencyInsert) lastInsert;
+					RequirementInsert lastRequirementInsert = insertEventforReq.get(requirements.get(lastSatisfiedRequirementIndex)); 
+					List<Integer> insertedNodeIndicies = indiciesOfinsertedNodes.get(lastRequirementInsert.getRequirement());
+					Node firstInsertedNode = lastRequirementInsert.getInsertedSkills().get(insertedNodeIndicies.get(0));
+					int lastIndex = insertedNodeIndicies.get(insertedNodeIndicies.size()-1);
+					boolean returnVal= true;
+					
+					while(!(lastInsert == lastRequirementInsert)) {
+						printStack(); ////////////////////
+						for(Edge e : lastInsert.getInsertedEdges()) {
+							SynthesisUtil.removeEdge(e);
+						}
+						returnVal = resolveDependenciesOf(lastDependInsert.getDepth(), lastDependInsert.getNode(), lastDependInsert.getParent(), (VariableSkillProvider)lastDependInsert.getSkillProvider(), lastDependInsert.getNumber());
+						if(returnVal == true) {
+							System.out.println("return ist true");
+							SkillInsert parent = lastInsert.getParent();
+							while(!(parent instanceof RequirementInsert) && returnVal == true ) {
+								returnVal = resolveDependenciesOf(parent.getDepth(), ((DependencyInsert) parent).getNode(), parent.getParent(), null, parent.getNumber()+1);
+								parent = parent.getParent();
+							}
+							if(returnVal == true){
+								returnVal = resolveDependenciesOf(parent.getDepth(), lastRequirementInsert.getInsertedSkills().get(lastIndex), parent.getParent(), null, parent.getNumber()+1);
+								
+								for(int k = lastIndex+1; k < lastRequirementInsert.getInsertedSkills().size(); k++) {
+									int previousStackSize = insertStack.size();
+									returnVal = resolveDependenciesOf(parent.getDepth(), lastRequirementInsert.getInsertedSkills().get(k), parent.getParent(), null, 1);
+									if(insertStack.size() - previousStackSize > 0) {
+										insertedNodeIndicies.add(k);
+									}
+								}
+								//
+							} 
+							if(returnVal == false) {
+								System.out.println("return ist false");
+								lastInsert = insertStack.pop();
+								if(lastInsert == lastRequirementInsert) { //found last requirement insert
+									break;
+								} else {
+									lastDependInsert = (DependencyInsert)lastInsert;
+								}
+							} else {
+								System.out.println("return ist true2");
+								break;
+							}
+						} else {
+							System.out.println("return ist false2");
+							if(lastDependInsert.getNode() == lastRequirementInsert.getInsertedSkills().get(lastIndex)) { //found insert for last inserted node fpr this last requirement
+								if(lastIndex > 0) {
+									insertedNodeIndicies.remove(insertedNodeIndicies.size() -1);
+									lastIndex = insertedNodeIndicies.get(insertedNodeIndicies.size()-1);
+								}
+							}
+							lastInsert = insertStack.pop();
+							if(lastInsert == lastRequirementInsert) { //found last requirement insert
+								break;
+							} else {
+								lastDependInsert = (DependencyInsert)lastInsert;
+							}
+						}
+					}
+					if(returnVal == false) {
+						System.out.println("return ist false3");
+						if(lastInsert == lastRequirementInsert) {
+							for(Edge e : lastInsert.getInsertedEdges()) {
+								SynthesisUtil.removeEdge(e);
+							}
+							requirementIndex = lastSatisfiedRequirementIndex;
+							insertedRequirementIndicies.remove(insertedRequirementIndicies.size()-1); //remove last requirement index
+							lastProvider = (RequirementSkillProvider) lastInsert.getSkillProvider();
+							continue;
+						} 
+						System.out.println("return false3 und kein requirementInsert");
+					} else {
+						System.out.println("return ist true3");
+						continue;
+					}
 				}
 			}
-			
+			insertedRequirementIndicies.add(requirementIndex);
 			requirementIndex++;
 			
 		}
@@ -587,12 +779,9 @@ public class Synthesis {
 		if(node.getChildEdges().isEmpty()) {
 			return "has(\""+node.getName()+"\")";
 		}
+		s = "has(\""+node.getName()+"\")";
 		for(Edge e : node.getChildEdges()) {
-			if(s.length() == 0) {
-				s += convertSkillsToCondition(e.getChildNode());
-			} else {
-				s += "&"+convertSkillsToCondition(e.getChildNode());
-			}
+			s += "&"+convertSkillsToCondition(e.getChildNode());
 		}
 		return s;
 	}
@@ -724,16 +913,22 @@ public class Synthesis {
 						DependencyInsert lastVariableInsert = insertEventforVar.get(node.getRequiredVariables().get(lastSatisfiedVariableIndex));
 						DependencyInsert lastInsert = null;
 						boolean returnValue = false;
-						int lastIndex = nodeIndicies.get(nodeIndicies.size() - 1);
+						int lastIndex = -1;
+						if(nodeIndicies != null) {
+							lastIndex = nodeIndicies.get(nodeIndicies.size() - 1);
+						}
 						lastInsert = (DependencyInsert)insertStack.pop();
-						while(!( lastInsert.getNode() == lastVariableInsert.getInsertedSkills().get(lastIndex) && lastInsert.getNumber() == 1)) {
+						System.out.println("lastInsert: "+lastInsert.toString());
+						//while(!( lastInsert.getNode() == lastVariableInsert.getInsertedSkills().get(nodeIndicies.get(0)) && lastInsert.getNumber() == 1)) { //solange wir nicht den ersten insert des ersten knotens haben für die letzte eingefügte variable
+						while(lastInsert != lastVariableInsert) {
+							System.out.println("lastinsert ist nicht letzter variablen insert");
 							for(Edge e : lastInsert.getInsertedEdges()) {
 								SynthesisUtil.removeEdge(e);
 							}
 							returnValue = resolveDependenciesOf(lastInsert.getDepth(), ((DependencyInsert) lastInsert).getNode(), lastInsert.getParent(), (VariableSkillProvider)lastInsert.getSkillProvider(), lastInsert.getNumber());
 							if(returnValue == true) {
 								SkillInsert parent = lastInsert.getParent();
-								while(((DependencyInsert) parent).getNode() != lastVariableInsert.getInsertedSkills().get(lastIndex) && returnValue == true) {
+								while(!(parent instanceof RequirementInsert)&&((DependencyInsert) parent).getNode() != lastVariableInsert.getInsertedSkills().get(lastIndex) && returnValue == true) {
 									returnValue = resolveDependenciesOf(parent.getDepth(), ((DependencyInsert) parent).getNode(), parent.getParent(), null, parent.getNumber()+1);
 									parent = parent.getParent();
 								}
@@ -757,11 +952,15 @@ public class Synthesis {
 							}
 						}
 						if(returnValue == false) {
-							i = lastIndex - 1;
+							for(Edge e : lastInsert.getInsertedEdges()) {
+								SynthesisUtil.removeEdge(e);
+							}
+							i = lastSatisfiedVariableIndex - 1;
 							lastVariableProvider = (VariableSkillProvider) lastVariableInsert.getSkillProvider();
 							insertedVariableIndicies.remove(insertedVariableIndicies.size() - 1);
-							insertEventforVar.remove(node.getRequiredVariables().get(lastIndex));
-							indiciesOfinsertedNodes.remove(node.getRequiredVariables().get(lastIndex));
+							insertEventforVar.remove(node.getRequiredVariables().get(lastSatisfiedVariableIndex));
+							indiciesOfinsertedNodes.remove(node.getRequiredVariables().get(lastSatisfiedVariableIndex));
+							continue;
 						} else {
 							i = i - 1;
 							lastVariableProvider = null;
@@ -785,12 +984,24 @@ public class Synthesis {
 		Node lastCheckedNode = parentNode;
 		Node temp = candidate;
 		System.out.println("tiefe von kandidat: "+depth);
-		System.out.println("kandidat: "+candidate);
-		System.out.println("root: "+rootNode);
+		System.out.println("kandidat: "+SynthesisUtil.childsToString(candidate));
+		//System.out.println("root: "+rootNode);
 		if(!SynthesisUtil.canCreateEdge(parentNode, candidate)) { // we cannot create edge from parent to candidate, so ignore candidate
 			System.out.println("keine kante möglich!");
 			return false;
 		}
+		//check if candidate contains a forbidden skill
+		for(int i = 0; i < depth; i++) {
+			if(forbiddenSkills.contains(temp.getName())) { //skill is forbidden
+				System.out.println("skill ist leider verboten");
+				return false;
+			}
+			if(i < depth - 1) {
+				temp = temp.getChildEdges().get(0).getChildNode(); //temp has only one child
+			}
+		}
+		
+		temp = candidate;
 		for(int i = 0; i < depth; i++) {
 			
 			//check if temp is already in graph
@@ -860,6 +1071,7 @@ public class Synthesis {
 			
 		}
 		System.out.println("garantie: "+guarantees);
+		guarantees = guarantees.replace(" ", ""); //remove whitespaces
 		for(Requirement r : satisfiedRequirements) {
 			if(toCheck.length() == 0) {
 				toCheck += r.getFormula();
@@ -867,11 +1079,14 @@ public class Synthesis {
 				toCheck += "&"+r.getFormula();
 			}
 		}
-		if(toCheck.length() == 0) {
-			toCheck += currentRequirement.getFormula();
-		} else {
-			toCheck += "&"+currentRequirement.getFormula();
+		if(!currentRequirement.getFormula().contains("has")) {
+			if(toCheck.length() == 0) {
+				toCheck += currentRequirement.getFormula();
+			} else {
+				toCheck += "&"+currentRequirement.getFormula();
+			}
 		}
+		
 		if(guarantees.length() == 0) {
 			return false;
 		}

@@ -68,7 +68,8 @@ HAS
 	;
 
 skill_name
-	: VARIABLE
+	: skill_name ' ' skill_name
+	| VARIABLE
 	;
 	
 BOOL_LITERAL:       'true'

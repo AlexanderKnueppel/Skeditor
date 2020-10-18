@@ -68,13 +68,16 @@ public class TermProver{
 	 * @return true if assumptions imply toProve otherwise false 
 	 */
 	public boolean prove(String toProve, String... assumptions) {
+		String s;
 		for(String term : assumptions) {
-			if (!SynthesisUtil.isValidRequirement(term)) {
-				throw new IllegalArgumentException("Invalid format for assumption: \""+term+"\"");
+			s = term.replace(" ", "");
+			if (!SynthesisUtil.isValidRequirement(s)) {
+				throw new IllegalArgumentException("Invalid format for assumption: \""+s+"\"");
 			}
 		}
-		if(!SynthesisUtil.isValidRequirement(toProve)) {
-			throw new IllegalArgumentException("Invalid format for term: \""+toProve+"\"");
+		s = toProve.replace(" ", "");
+		if(!SynthesisUtil.isValidRequirement(s)) {
+			throw new IllegalArgumentException("Invalid format for term: \""+s+"\"");
 		}
 		Solver solver = ctx.mkSolver();
 		folLexer lexer;
@@ -294,7 +297,7 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitCondition(folParser.ConditionContext ctx) {
-			System.out.println(ctx.getText());
+			//System.out.println(ctx.getText());
 			if(ctx.formula() != null) {
 				return visitFormula(ctx.formula());
 			}
@@ -306,7 +309,7 @@ public class TermProver{
 
 		@Override
 		public Expr visitFormula(FormulaContext ctx) {
-			System.out.println("Formula: "+ctx.getText());
+			//System.out.println("Formula: "+ctx.getText());
 			if(ctx.formula().size() > 1) { //more than one formula in this context
 				
 				BoolExpr firstFormula = (BoolExpr) visitFormula(ctx.formula(0));
@@ -388,7 +391,7 @@ public class TermProver{
 		
 		@Override
 		public Expr visitHas_condition(Has_conditionContext ctx) {
-			System.out.println("has_cond: "+ctx.getText());
+		//	System.out.println("has_cond: "+ctx.getText());
 			if(ctx.has_condition().size() > 1) { //binary connected conditions
 				BoolExpr has1 = (BoolExpr)visitHas_condition(ctx.has_condition(0));
 				BoolExpr has2 = (BoolExpr)visitHas_condition(ctx.has_condition(1));
@@ -423,14 +426,14 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitHas_skill(Has_skillContext ctx) {
-			System.out.println("has_skill: "+ctx.getText());
+			//System.out.println("has_skill: "+ctx.getText());
 			String skillname = ctx.skill_name().accept(new OperationVisitor());
 			return context.mkBoolConst("has_"+skillname);
 		}
 		
 		@Override
 		public Expr visitTerm(TermContext ctx) {
-			System.out.println("term: "+ctx.getText());
+			//System.out.println("term: "+ctx.getText());
 			if(ctx.term().size() > 1) { //2 terms in this term
 				ArithExpr term1 = (ArithExpr)visitTerm(ctx.term(0));
 				ArithExpr term2 = (ArithExpr)visitTerm(ctx.term(1));
@@ -480,14 +483,14 @@ public class TermProver{
 
 		@Override
 		public Expr visitScientific(ScientificContext ctx) {
-			System.out.println("scientific"+ctx.getText());
+			//System.out.println("scientific"+ctx.getText());
 			return context.mkReal(ctx.SCIENTIFIC_NUMBER().getText());
 			
 		}
 
 		@Override
 		public Expr visitVariable(VariableContext ctx) {
-			System.out.println("variable "+ctx.getText());
+			//System.out.println("variable "+ctx.getText());
 			return context.mkRealConst(ctx.VARIABLE().getText());
 		}
 	}
@@ -496,13 +499,18 @@ public class TermProver{
 			
 		@Override
 		public String visitSkill_name(Skill_nameContext ctx) {
-			System.out.println(ctx.getText());
-			return ctx.VARIABLE().getText();
+			//System.out.println(ctx.getText());
+			String s = "";
+			if(ctx.skill_name().size() > 1) {
+				return visitSkill_name(ctx.skill_name(0))+"_"+visitSkill_name(ctx.skill_name(1));
+			} else {
+				return ctx.VARIABLE().getText();
+			}
 		}
 
 		@Override
 		public String visitBin_connective(Bin_connectiveContext ctx) {
-			System.out.println(ctx.getText());
+			//System.out.println(ctx.getText());
 			if(ctx.CONJ() != null) {
 				return ctx.CONJ().getText();
 			} else if(ctx.DISJ() != null) {
@@ -518,7 +526,7 @@ public class TermProver{
 
 		@Override
 		public String visitBinop(BinopContext ctx) {
-			System.out.println(ctx.getText());
+			//System.out.println(ctx.getText());
 			if(ctx.EQUAL() != null) {
 				return ctx.EQUAL().getText();
 			} else if(ctx.GT() != null) {
@@ -542,7 +550,7 @@ public class TermProver{
 		
 		@Override 
 		public String visitArith_operation(folParser.Arith_operationContext ctx) { 
-			System.out.println(ctx.getText());
+			//System.out.println(ctx.getText());
 			if(ctx.PLUS() != null) {
 				return ctx.PLUS().getText();
 			} else if(ctx.MINUS() != null) {
