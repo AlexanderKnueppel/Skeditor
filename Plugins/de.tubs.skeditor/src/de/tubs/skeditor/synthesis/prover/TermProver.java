@@ -88,14 +88,14 @@ public class TermProver{
 			lexer = new folLexer(CharStreams.fromString(assumptions[i]));
 			parser = new folParser(new CommonTokenStream(lexer));
 			expr = (BoolExpr)myVisitor.visit(parser.condition());
-			System.out.println("Expr: "+expr);
+			System.out.println("Expr assumption: "+expr);
 			solver.add(expr);
 			//System.out.println("Expression: "+expressions[i]);
 		}
 		lexer = new folLexer(CharStreams.fromString(toProve));
 		parser = new folParser(new CommonTokenStream(lexer));
 		expr = (BoolExpr)myVisitor.visit(parser.condition());
-		System.out.println("Expr: "+expr);
+		System.out.println("Expr toProve: "+expr);
 		solver.add(getContext().mkNot(expr));
 		Status result = solver.check();
 		switch(result) {
@@ -130,7 +130,7 @@ public class TermProver{
 			folLexer lexer = new folLexer(CharStreams.fromString(terms[i]));
 			folParser parser = new folParser(new CommonTokenStream(lexer));
 			Expr expr = myVisitor.visit(parser.condition());
-			System.out.println("Expr: "+expr);
+			//System.out.println("Expr: "+expr);
 			solver.add((BoolExpr) expr);
 			//System.out.println("Expression: "+expressions[i]);
 		}
@@ -318,7 +318,7 @@ public class TermProver{
 				}
 				BoolExpr secondFormula = (BoolExpr) visitFormula(ctx.formula(1)); 
 				String binConn = ctx.bin_connective().accept(new OperationVisitor());
-				System.out.println("Verbinder: "+ctx.bin_connective().getText());
+				//System.out.println("Verbinder: "+ctx.bin_connective().getText());
 				BoolExpr expression = null;
 				switch(binConn) {
 				case "&":

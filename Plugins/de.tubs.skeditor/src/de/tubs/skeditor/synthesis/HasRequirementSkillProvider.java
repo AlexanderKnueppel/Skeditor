@@ -2,73 +2,44 @@ package de.tubs.skeditor.synthesis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import SkillGraph.Category;
 import SkillGraph.Edge;
 import SkillGraph.Node;
 import SkillGraph.SkillGraphFactory;
 import de.tubs.skeditor.contracting.Contract;
 import de.tubs.skeditor.contracting.ContractPropagator;
-import de.tubs.skeditor.synthesis.prover.TermProver;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
-import de.tubs.skeditor.synthesis.search.SkillSearch;
 import de.tubs.skeditor.utils.SynthesisUtil;
 
-public class RequirementSkillProvider extends SkillProvider {
+public class HasRequirementSkillProvider extends RequirementSkillProvider {
 
-	protected Requirement requirement;
-	private TermProver prover;
-	
-	public RequirementSkillProvider(Requirement req) {
-		super();
-		this.requirement = req;
-		this.prover = new TermProver();
-		addNodes(depth);
+	public HasRequirementSkillProvider(Requirement req) {
+		super(req);
+		// TODO Auto-generated constructor stub
 	}
-	
-	
-	/*
-	 * adds nodes with a given depth to a set and adds that set to nodeMap
-	 */
+
 	@Override
 	protected void addNodes(int depth) {
 		List<Node> nodeList = new ArrayList<>();
 		if(depth == 1) {
-			String searchString = "";
-			for (String var : requirement.getVariables()) {
-				if(searchString.length() == 0) {
-					searchString = "provided=\""+var;
-				} else {
-					searchString += ","+var;
-				}
-				
-			}
-			if(searchString.length() > 0) {
-				searchString += "\"";
-			}
+			
+			String skillname = requirement.getFormula().split("\"", 3)[1];
+			System.out.println("Skillname:"+skillname);
+			String searchString = "name=\""+skillname+"\"";
 			//System.out.println("Searchstring depth"+depth+" "+searchString);
-			try {
-				
-				for(Node n : searcher.searchSkills(searchString)) {
-					String[] safetyGoals = new String[n.getRequirements().size()];
-					for(int i = 0; i < n.getRequirements().size(); i++) {
-						safetyGoals[i] = n.getRequirements().get(i).getTerm();
-					}
-					//prove if safety goals of node n satisfies requirement
-					if(prover.prove(requirement.getFormula(), safetyGoals)) {
-						nodeList.add(EcoreUtil.copy(n));
+			if(skillname.length() > 0) {
+				try {
+					for(Node n : searcher.searchSkills(searchString)) {
+						nodeList.add(SynthesisUtil.copyNodeRecursive(n));
 					}
 					
+				} catch (FilterFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
-			} catch (FilterFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			nodeMap.put(1, nodeList);
 		} else { // add other nodes to existing nodes of previous depth if available
@@ -115,17 +86,7 @@ public class RequirementSkillProvider extends SkillProvider {
 									parent.getChildEdges().add(e);
 									child.getParentNodes().add(parent);
 									//check if new node guarantees requirement
-									Contract contract = ContractPropagator.computeContract(parent);
-									List<String> guarantees = Arrays.asList(contract.getGuarantee().split("&"));
-									/*for(int i = 0; i < guarantees.size(); i++) {
-										if(guarantees.get(i).equals("true")) { //we dont want true word in assumptions for prover
-											guarantees.remove(i);
-										}
-									}*/
-									if(prover.prove(requirement.getFormula(), (String[])guarantees.toArray())) {
-										nodeList.add(parent);
-									}
-									
+									nodeList.add(parent);
 								}
 							}
 						}
@@ -138,10 +99,5 @@ public class RequirementSkillProvider extends SkillProvider {
 			nodeMap.put(depth, nodeList);
 			nodeMap.remove(depth-1);
 		}
-		
-	}
-	@Override
-	public String toString() {
-		return "Tiefe: "+depth+" Current Index="+currentIndex+" requirement:"+requirement;
 	}
 }

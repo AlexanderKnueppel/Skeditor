@@ -29,14 +29,14 @@ public class VariableSkillProvider extends SkillProvider {
 		if(depth == 1) {
 			String searchString = "defined=\""+requiredVar+"\"";
 		
-			System.out.println("Searchstring depth"+depth+" "+searchString);
+			//System.out.println("Searchstring depth"+depth+" "+searchString);
 			try {
 				boolean forbidden = false; //flag that indicates if var is forbidden
-				System.out.println("depth "+depth+" found: ");
+			//	System.out.println("depth "+depth+" found: ");
 				for(Node n : searcher.searchSkills(searchString)) {
-					System.out.println("depth "+depth+" found: "+n.getName());
+					//System.out.println("depth "+depth+" found: "+n.getName());
 					for (String forb : forbiddenVars) {
-						System.out.println("verboten: "+forb);
+						//System.out.println("verboten: "+forb);
 						if(n.getRequiredVariables().contains(forb)) { //dependency requires var that is defined by parent
 							forbidden = true;
 							break;
@@ -73,7 +73,7 @@ public class VariableSkillProvider extends SkillProvider {
 					}
 					
 				}
-				System.out.println("SUCHE: "+searchString);
+				//System.out.println("SUCHE: "+searchString);
 				/*if(requiredVars.length > 0) {
 					if(searchString.length() == 0) {
 						searchString = "!(";
@@ -94,7 +94,7 @@ public class VariableSkillProvider extends SkillProvider {
 					boolean forbidden = false;
 					for(Node n : searcher.searchSkills(searchString)) {
 						for (String forb : forbiddenVars) {
-							System.out.println("verboten: "+forb);
+							//System.out.println("verboten: "+forb);
 							if(n.getRequiredVariables().contains(forb)) { //dependency requires var that is defined by parent
 								forbidden = true;
 								break;
@@ -136,10 +136,16 @@ public class VariableSkillProvider extends SkillProvider {
 				
 			}
 			nodeMap.put(depth, nodeList);
+			nodeMap.remove(depth-1);
 		}
 	}
 	
 	public String getRequiredVariable() {
 		return requiredVar;
+	}
+	
+	@Override
+	public String toString() {
+		return "Tiefe: "+depth+" Current Index="+currentIndex+" requiredVar:"+requiredVar;
 	}
 }

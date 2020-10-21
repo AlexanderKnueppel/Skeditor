@@ -23,6 +23,7 @@ public abstract class SkillProvider {
 	protected SkillSearch searcher;
 	protected int depth;
 	protected int currentIndex;
+	private boolean empty = false;
 	
 	public SkillProvider() {
 		this.nodeMap = new HashMap<>();
@@ -37,6 +38,10 @@ public abstract class SkillProvider {
 	 * @return the next skill or null if there are no more left
 	 */
 	public Node getNext() {
+		if(empty) {
+			System.out.println("LEEEER der provider");
+			return null;
+		}
 		if(nodeMap.get(depth).size() > currentIndex) {
 			currentIndex++;
 			return nodeMap.get(depth).get(currentIndex-1);
@@ -47,11 +52,13 @@ public abstract class SkillProvider {
 				currentIndex = 1;
 				return nodeMap.get(depth).get(currentIndex-1);
 			} else {
+				empty = true;
 				return null;
 			}
 		}
 	}
 	
 	protected abstract void addNodes(int depth);
+	
 	
 }
