@@ -7,7 +7,7 @@ public class VariableListener extends folBaseListener {
 	private Set<String> variables = new HashSet<String>();
 	
 	@Override public void enterVariable(folParser.VariableContext ctx) { 
-		variables.add(ctx.VARIABLE().getText());
+		variables.add(ctx.IDENTIFIER().getText());
 	}
 	
 	public Set<String> getVariables() {
