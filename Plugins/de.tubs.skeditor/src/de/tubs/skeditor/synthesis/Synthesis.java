@@ -28,9 +28,6 @@ import de.tubs.skeditor.contracting.grammar.folBaseVisitor;
 import de.tubs.skeditor.contracting.grammar.folLexer;
 import de.tubs.skeditor.contracting.grammar.folParser;
 import de.tubs.skeditor.contracting.grammar.folParser.FormulaContext;
-import de.tubs.skeditor.contracting.grammar.folParser.Has_conditionContext;
-import de.tubs.skeditor.contracting.grammar.folParser.Has_skillContext;
-import de.tubs.skeditor.contracting.grammar.folParser.ScientificContext;
 import de.tubs.skeditor.contracting.grammar.folParser.TermContext;
 import de.tubs.skeditor.contracting.grammar.folParser.VariableContext;
 import de.tubs.skeditor.synthesis.prover.TermProver;
@@ -117,16 +114,23 @@ public class Synthesis {
 				if(ctx.formula() != null) {
 					return visitFormula(ctx.formula());
 				}
-				if(ctx.has_condition() != null) {
-					return visitHas_condition(ctx.has_condition());
-				}
 				return null;
 			}
 
 			@Override
 			public List<Requirement> visitFormula(FormulaContext ctx) {
 				//System.out.println("formula:"+ctx.getText());
-				List<Requirement> requirementList = new ArrayList<>();
+				if(ctx.formula() != null) {
+					return visitFormula(ctx.formula());
+				} else if(ctx.quantifier() != null) {
+					return visitQuantifier(ctx.quantifier());
+				} else if(ctx.connectiveformula() != null) {
+					return visitConnectiveformula(ctx.connectiveformula());
+				} else {
+					return new ArrayList<Requirement>();
+				}
+				
+				/*List<Requirement> requirementList = new ArrayList<>();
 				if(ctx.formula().size() > 1) { //more than one formula in this context
 					List<Requirement> firstFormula = visitFormula(ctx.formula(0));
 					List<Requirement> secondFormula = visitFormula(ctx.formula(1)); 
@@ -193,14 +197,124 @@ public class Synthesis {
 						requirementList.add(new Requirement(ctx.BOOL_LITERAL().getText()));
 						return requirementList;
 					}
-				}
+				}*/
 			}
 			
 			@Override
-			public List<Requirement> visitHas_condition(Has_conditionContext ctx) {
+			public List<Requirement> visitConnectiveformula(folParser.ConnectiveformulaContext ctx) {
 				//System.out.println("has_cond: "+ctx.getText());
-				List<Requirement> requirementList = new ArrayList<>();
-				if(ctx.has_condition().size() > 1) { //binary connected conditions
+				List<Requirement> requirementList;
+				
+				if(ctx.boolexpression() != null) {
+					requirementList = new ArrayList<>();
+					requirementList.add(new Requirement(ctx.boolexpression().getText()));
+					System.out.println("Bool: "+ctx.boolexpression().getText()+" List: "+requirementList);
+					for(int i = 0; i < ctx.connectiveformula().size(); i++) {
+						List<Requirement> secondList = visitConnectiveformula(ctx.connectiveformula(i));
+						List<Requirement> newList = new ArrayList<>();
+						switch(ctx.connectoperator(i).getText()) {
+						case "&":
+						case "&&":
+						case "and":
+							for(Requirement req1 : requirementList) {
+								for(Requirement req2 : secondList) {
+									newList.add(new Requirement(req1.getFormula()+"&"+req2.getFormula()));
+								}
+							}
+							break;
+						case "|":
+						case "||":
+						case "or":
+							for(Requirement req1 : requirementList) {
+								newList.add(new Requirement(req1.getFormula()));
+							}
+							for(Requirement req2 : secondList) {
+								newList.add(new Requirement(req2.getFormula()));
+							}
+							
+							break;
+						case "=>":
+							for(Requirement req1 : convertToNot(requirementList)) {
+								newList.add(new Requirement(req1.getFormula()));
+							}
+							for(Requirement req2 : secondList) {
+								newList.add(new Requirement(req2.getFormula()));
+							}
+							break;
+						case "<>":
+							for(Requirement req1 : convertToNot(requirementList)) {
+								for(Requirement req2 : convertToNot(secondList)) {
+									newList.add(new Requirement(req1.getFormula()+"&"+req2.getFormula()));
+								}
+							}
+							for(Requirement req1 : requirementList) {
+								for(Requirement req2 : secondList) {
+									newList.add(new Requirement(req1.getFormula()+"&"+req2.getFormula()));
+								}
+							}
+							break;
+						default:
+							return null;
+						}
+						requirementList = newList;
+					}
+				} else {
+					requirementList = visitConnectiveformula(ctx.connectiveformula(0));
+					if(ctx.NOT() != null) {
+						requirementList = convertToNot(requirementList);
+					}
+					for(int i = 1; i < ctx.connectiveformula().size(); i++) {
+						List<Requirement> secondList = visitConnectiveformula(ctx.connectiveformula(i));
+						List<Requirement> newList = new ArrayList<>();
+						switch(ctx.connectoperator(i-1).getText()) {
+						case "&":
+						case "&&":
+						case "and":
+							for(Requirement req1 : requirementList) {
+								for(Requirement req2 : secondList) {
+									newList.add(new Requirement(req1.getFormula()+"&"+req2.getFormula()));
+								}
+							}
+							break;
+						case "|":
+						case "||":
+						case "or":
+							for(Requirement req1 : requirementList) {
+								newList.add(new Requirement(req1.getFormula()));
+							}
+							for(Requirement req2 : secondList) {
+								newList.add(new Requirement(req2.getFormula()));
+							}
+							
+							break;
+						case "=>":
+							for(Requirement req1 : convertToNot(requirementList)) {
+								newList.add(new Requirement(req1.getFormula()));
+							}
+							for(Requirement req2 : secondList) {
+								newList.add(new Requirement(req2.getFormula()));
+							}
+							break;
+						case "<>":
+							for(Requirement req1 : convertToNot(requirementList)) {
+								for(Requirement req2 : convertToNot(secondList)) {
+									newList.add(new Requirement(req1.getFormula()+"&"+req2.getFormula()));
+								}
+							}
+							for(Requirement req1 : requirementList) {
+								for(Requirement req2 : secondList) {
+									newList.add(new Requirement(req1.getFormula()+"&"+req2.getFormula()));
+								}
+							}
+							break;
+						default:
+							return null;
+						}
+						requirementList = newList;
+					}
+				}
+				return requirementList;
+				/*if(ctx.has_condition().size() > 1) { //binary connected conditions
 					List<Requirement> has1 = visitHas_condition(ctx.has_condition(0));
 					List<Requirement> has2 = visitHas_condition(ctx.has_condition(1));
 					switch(ctx.bin_connective().getText()) {
@@ -251,8 +365,9 @@ public class Synthesis {
 				} else {
 					requirementList.add(new Requirement("has(\""+ctx.has_skill().skill_name().getText()+"\")"));
 					return requirementList;
-				}
+				}*/
 			}
+			
 		}
 		folLexer lexer = new folLexer(CharStreams.fromString(req.getFormula()));
 		folParser parser = new folParser(new CommonTokenStream(lexer));
@@ -278,12 +393,12 @@ public class Synthesis {
 	}
 	
 	public static void main(String[] args) {
-		List<Requirement> list1 = convertToDNF(new Requirement("x>4<->z<0"));
-		//List<Requirement> list2 = convertToDNF(new Requirement("f=0|r=3"));
-		//List<Requirement> list3 = convertToDNF(new Requirement("a>4&(b<0|c>3)"));
+		List<Requirement> list1 = convertToDNF(new Requirement("x>4=>(z<0|y==x)"));
+		List<Requirement> list2 = convertToDNF(new Requirement("f==0|r==3"));
+		List<Requirement> list3 = convertToDNF(new Requirement("a>4&(b<0|(c>3&d==0))"));
 		System.out.println(list1);
-		//System.out.println(list2);
-		//System.out.println(list3);
+		System.out.println(list2);
+		System.out.println(list3);
 		List<List<Requirement>> DNFs = new ArrayList<>();
 		DNFs.add(list1);
 		//DNFs.add(list2);
@@ -1277,7 +1392,6 @@ public class Synthesis {
 											nodeIndicies.add(k);
 										}
 									}
-									//
 								} 
 								break;
 							} else {
@@ -1295,7 +1409,6 @@ public class Synthesis {
 							insertedVariableIndicies.remove(insertedVariableIndicies.size() - 1);
 							insertEventforVar.remove(node.getRequiredVariables().get(lastSatisfiedVariableIndex));
 							indiciesOfinsertedNodes.remove(node.getRequiredVariables().get(lastSatisfiedVariableIndex));
-							//continue;
 						} else {
 							System.out.println("return true 2");
 							i = i - 1;
@@ -1328,7 +1441,7 @@ public class Synthesis {
 		}
 		//check if candidate contains a forbidden skill
 		for(int i = 0; i < depth; i++) {
-			if(forbiddenSkills.contains(temp.getName())) { //skill is forbidden
+			if(forbiddenSkills.contains(temp.getName().replace(" ", "_"))) { //skill is forbidden
 				System.out.println("skill ist leider verboten");
 				return false;
 			}

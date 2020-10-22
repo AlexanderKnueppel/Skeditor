@@ -19,9 +19,11 @@ import SkillGraph.Equation;
 import SkillGraph.Node;
 import SkillGraph.Requirement;
 import SkillGraph.SkillGraphFactory;
+import de.tubs.skeditor.contracting.grammar.GrammarUtil;
 import de.tubs.skeditor.contracting.grammar.VariableListener;
 import de.tubs.skeditor.contracting.grammar.folLexer;
 import de.tubs.skeditor.contracting.grammar.folParser;
+import de.tubs.skeditor.synthesis.prover.TermProver;
 
 //import de.tubs.skeditor.synthesis.Requirement;
 
@@ -234,15 +236,9 @@ public class SynthesisUtil {
 	 */
 	public static boolean isValidRequirement(String requirement) {
 		
-		folLexer lexer = new folLexer(CharStreams.fromString(requirement));
-		folParser parser = new folParser(new CommonTokenStream(lexer));
+		TermProver prover = new TermProver();
 		
-	    
-		MyErrorListener errorListener = new MyErrorListener();
-		parser.removeErrorListeners();
-		parser.addErrorListener(errorListener);
-		ParseTree tree = parser.condition();
-		return errorListener.isValid();
+		return GrammarUtil.tryToParse(requirement).isEmpty() & prover.tryParse(requirement);
 		/*String str = requirement;
 		String str1, str2;
 		ArrayDeque<Character> stack = new ArrayDeque<>(); 

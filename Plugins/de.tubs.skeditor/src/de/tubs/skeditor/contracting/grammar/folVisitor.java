@@ -23,11 +23,71 @@ public interface folVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFormula(folParser.FormulaContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link folParser#has_condition}.
+	 * Visit a parse tree produced by {@link folParser#hascondition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitHas_condition(folParser.Has_conditionContext ctx);
+	T visitHascondition(folParser.HasconditionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#quantifier}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitQuantifier(folParser.QuantifierContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#operatorformula}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOperatorformula(folParser.OperatorformulaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#connectiveformula}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConnectiveformula(folParser.ConnectiveformulaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#tupelformula}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTupelformula(folParser.TupelformulaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#boolexpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolexpression(folParser.BoolexpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#compareformula}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompareformula(folParser.CompareformulaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#tupel}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTupel(folParser.TupelContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#summformula}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSummformula(folParser.SummformulaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#faktorformula}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFaktorformula(folParser.FaktorformulaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#powerformula}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPowerformula(folParser.PowerformulaContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link folParser#term}.
 	 * @param ctx the parse tree
@@ -35,51 +95,75 @@ public interface folVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTerm(folParser.TermContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link folParser#scientific}.
+	 * Visit a parse tree produced by {@link folParser#array}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitScientific(folParser.ScientificContext ctx);
+	T visitArray(folParser.ArrayContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#compproperty}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompproperty(folParser.ComppropertyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#portproperty}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPortproperty(folParser.PortpropertyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#port}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPort(folParser.PortContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#functioncall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctioncall(folParser.FunctioncallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#functionname}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionname(folParser.FunctionnameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#compoperator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompoperator(folParser.CompoperatorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#multoperator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMultoperator(folParser.MultoperatorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#addoperator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddoperator(folParser.AddoperatorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#connectoperator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConnectoperator(folParser.ConnectoperatorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#pred_constant}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPred_constant(folParser.Pred_constantContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link folParser#variable}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitVariable(folParser.VariableContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link folParser#binop}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBinop(folParser.BinopContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link folParser#has_skill}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitHas_skill(folParser.Has_skillContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link folParser#skill_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSkill_name(folParser.Skill_nameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link folParser#bin_connective}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBin_connective(folParser.Bin_connectiveContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link folParser#arith_operation}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArith_operation(folParser.Arith_operationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link folParser#separator}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSeparator(folParser.SeparatorContext ctx);
 }

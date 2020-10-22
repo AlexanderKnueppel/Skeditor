@@ -28,7 +28,7 @@ public class HasRequirementSkillProvider extends RequirementSkillProvider {
 			
 			String skillname = requirement.getFormula().split("\"", 3)[1];
 			System.out.println("Skillname:"+skillname);
-			String searchString = "name=\""+skillname+"\"";
+			String searchString = "name=\""+skillname.replace("_", " ")+"\"";
 			//System.out.println("Searchstring depth"+depth+" "+searchString);
 			if(skillname.length() > 0) {
 				try {
