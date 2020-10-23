@@ -1,31 +1,16 @@
 package de.tubs.skeditor.utils;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.tree.ParseTree;
-
+import java.util.ArrayList;
+import java.util.List;
 
 import SkillGraph.Category;
 import SkillGraph.Controller;
 import SkillGraph.Edge;
 import SkillGraph.Equation;
 import SkillGraph.Node;
-import SkillGraph.Requirement;
 import SkillGraph.SkillGraphFactory;
 import de.tubs.skeditor.contracting.grammar.GrammarUtil;
-import de.tubs.skeditor.contracting.grammar.VariableListener;
-import de.tubs.skeditor.contracting.grammar.folLexer;
-import de.tubs.skeditor.contracting.grammar.folParser;
 import de.tubs.skeditor.synthesis.prover.TermProver;
-
-//import de.tubs.skeditor.synthesis.Requirement;
 
 public class SynthesisUtil {
 	
@@ -112,6 +97,13 @@ public class SynthesisUtil {
 		}
 	}
 	
+	/**
+	 * creates a new edge from parent to child
+	 * 
+	 * @param parent, the parent node
+	 * @param child, the child node
+	 * @return the newly created edge
+	 */
 	public static Edge createEdge(Node parent, Node child) {
 		Edge edge = SkillGraphFactory.eINSTANCE.createEdge();
 		edge.setParentNode(parent);
@@ -121,6 +113,13 @@ public class SynthesisUtil {
 		return edge;
 	}
 	
+	/**
+	 * creates a new node with the given name and category
+	 * 
+	 * @param name, the name for the new node
+	 * @param category, the category for the new node
+	 * @return the newly created node
+	 */
 	public static Node createNode(String name, Category category) {
 		Node node = SkillGraphFactory.eINSTANCE.createNode();
 		node.setName(name);
@@ -128,13 +127,21 @@ public class SynthesisUtil {
 		return node;
 	}
 	
+	/**
+	 * removes the given edge
+	 * 
+	 * @param edge, the edge to remove
+	 */
 	public static void removeEdge(Edge edge) {
 		edge.getParentNode().getChildEdges().remove(edge);
 		edge.getChildNode().getParentNodes().remove(edge.getParentNode());
 	}
 	
-	/*
+	/**
 	 * creates exact copy of node but without reference to parents or children
+	 * 
+	 * @param node, the node to copy
+	 * @return, the copy of the node
 	 */
 	public static Node copyNode(Node node) {
 		Node copy = createNode(node.getName(), node.getCategory());
@@ -146,10 +153,13 @@ public class SynthesisUtil {
 		return copy;
 	}
 	
-	/*
-	 * copies node and all of its children 
+	/**
+	 * copies node and all of its children and all of their children and so on
+	 * 
+	 * @param node, the node to copy
+	 * @return, the copy of the node
 	 */
-	public static Node copyNodeRecursive(Node node) {
+	public static Node copyNodeWithChildren(Node node) {
 		Node copy = createNode(node.getName(), node.getCategory());
 		_copyEquations(node, copy);
 		_copyVariables(node, copy);
@@ -164,6 +174,72 @@ public class SynthesisUtil {
 		return copy;
 	}
 	
+	/*
+	 * checks if the given string is a valid requirement
+	 */
+	public static boolean isValidRequirement(String requirement) {
+		
+		TermProver prover = new TermProver();
+		return GrammarUtil.tryToParse(requirement).isEmpty() & prover.tryParse(requirement);
+	}
+	
+	/*
+	 * returns the node with the given name in the graph if included
+	 */
+	public static Node getChildByName(String name, Node node) {
+		if(node.getName().equals(name)) {
+			return node;
+		}
+		if(!node.getChildEdges().isEmpty()) {
+			for (Edge e : node.getChildEdges() ) {
+				Node inGraph = getChildByName(name, e.getChildNode());
+				if(inGraph != null) {
+					return inGraph;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * returns a List of all propagated variables 
+	 */
+	public static List<String> providedVariablesOf(Node node) {
+		List<String> providedVars = new ArrayList<String>();
+		if(node.getProvidedVariables() != null) {
+			for(String defined : node.getProvidedVariables()) {
+				if(!providedVars.contains(defined)) {
+					providedVars.add(defined);
+				}
+			}
+		}
+		
+		if(node.getChildEdges().size() > 0) {
+			for (Edge e : node.getChildEdges()){
+				for(String defined : providedVariablesOf(e.getChildNode())) {
+					if(!providedVars.contains(defined)) {
+						providedVars.add(defined);
+					}
+				}
+			}
+		}
+		
+		return providedVars;
+	}
+	
+	/*
+	 * checks if the given string is numeric
+	 */
+	public static boolean isNumeric(String str) { 
+		  try {  
+		    Double.parseDouble(str);  
+		    return true;
+		  } catch(NumberFormatException e){  
+		    return false;  
+		  }  
+	}
+	
+	/**PRIVATE FUNCTIONS**/
 	private static void _copyNode(Node node, Node parent) {
 		Node copy = SynthesisUtil.createNode(node.getName(), node.getCategory());
 		_copyEquations(node, copy);
@@ -217,183 +293,5 @@ public class SynthesisUtil {
 		}
 	}
 	
-	static class MyErrorListener extends BaseErrorListener{
-		
-		boolean isValid = true;
-		
-		@Override
-		public void syntaxError(Recognizer<?,?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-			isValid = false;
-			System.out.println(msg+"Line: "+line+" char: "+charPositionInLine);
-		}
-		
-		public boolean isValid() {
-			return isValid;
-		}
-	}
-	/*
-	 * checks if the given string is a valid requirement
-	 */
-	public static boolean isValidRequirement(String requirement) {
-		
-		TermProver prover = new TermProver();
-		
-		return GrammarUtil.tryToParse(requirement).isEmpty() & prover.tryParse(requirement);
-		/*String str = requirement;
-		String str1, str2;
-		ArrayDeque<Character> stack = new ArrayDeque<>(); 
-		str.replace(" ", ""); //remove white spaces from string
-		String operator = "";
-		if(str.startsWith("(")) { //if operand starts with parenthesis, find matching closing parenthesis
-			int i = 0;
-			do {
-				if(str.charAt(i) == '(') {
-					stack.push('(');
-				} else if(str.charAt(i) == ')') {
-					stack.pop();
-				}
-				i++;
-			} while(!stack.isEmpty() && i < str.length());
-			
-			str1 = str.substring(1, i-1);
-			if(i < str.length()-1) { //there is a rest string left
-				if(!(str.charAt(i+1) == '&' || str.charAt(i+1) == '|' || str.charAt(i+1) == '>' || str.charAt(i+1) == '<' || str.charAt(i+1) == '=')) {
-					return false;
-				} else {
-					if(str.charAt(i+1) == '>' || str.charAt(i+1) == '<') {
-						if(str.charAt(i+2) == '=') {
-							
-						}
-					}
-				}
-			}
-			
-			
-		} else {
-			
-		}
-		if(str.startsWith("include")) {
-			str = str.replace("include", "");
-			if(str.startsWith("not")) {
-				str = str.replace("not", "");
-			}
-			if(!str.matches("([A-Za-z_])([A-Za-z0-9_]*)")) { //no valid skill name given
-				return false;
-			} else {
-				return true;
-			}
-		}
-		
-		//split requirement at comparism operator, only one comparism allowed per requirement
-		int numOperators = 0;
-		char c;
-		
-		for(int i = 0; i < str.length(); i++) {
-			c = str.charAt(i);
-			if (c == '<' || c == '>') {
-				if(str.charAt(i+1) == '=') { // <= or >=
-					operator = String.format("%c=", c);
-					i++;
-				} else {
-					operator = String.format("%c", c);
-				}
-				numOperators++;
-			} else if (c == '=') {
-				numOperators++;
-				operator = "=";
-			} 
-		}
-		if(numOperators != 1) { //only 1 operator allowed
-			return false;
-		}
-		String[] operands = str.split(operator); 
-		if(operands.length != 2) {
-			return false;
-		}
-		for(String o : operands) {
-			System.out.println(o);
-		}
-		de.tubs.skeditor.synthesis.Requirement req = new de.tubs.skeditor.synthesis.Requirement(requirement);
-		return checkOperand(operands[0]) & checkOperand(operands[1]) & !(req.getVariables().isEmpty())*/
-	}
 	
-	/*
-	 * checks if the given operand of a requirement is valid.
-	 * this method is a helper function for isValidRequirement()
-	 */
-	private static boolean checkOperand(String operand) {
-		int i; 
-		boolean result = true;
-		String rest = "";
-		Deque<Character> stack = new ArrayDeque<>(); //for finding matching parenthesis in filter
-		if(operand.startsWith("(")) { //if filter starts with parenthesis, find matching closing parenthesis
-			i = 0;
-			do {
-				if(operand.charAt(i) == '(') {
-					stack.push('(');
-				} else if(operand.charAt(i) == ')') {
-					if(stack.isEmpty()) {
-						return false;
-					}
-					stack.pop();
-				}
-				i++;
-			} while(!stack.isEmpty() && i < operand.length());
-			if(!stack.isEmpty()) { // unbalanced parantheses
-				return false;
-			}
-			rest = operand.substring(i);
-			result &= checkOperand(operand.substring(1, i-1));
-		} else {
-			String toCheck = operand;
-			String part1 = "", part2 = "";
-			i = 0;
-			System.out.println(operand);
-			while(i < operand.length()) {
-				if(operand.charAt(i) == '+' || operand.charAt(i) == '-' || operand.charAt(i) == '*' || operand.charAt(i) == '/') {
-					part1 = operand.substring(0, i);
-					part2 = operand.substring(i);
-					System.out.println(part1+ " und "+part2);
-					break;
-				}
-				i++;
-			}
-			if (part1.length() == 0 && part2.length() == 0) {
-				toCheck = operand;
-			} else {
-				if(part1.length() == 0 || part2.length() == 0) { //operand is a operation itself, so operands of operand cannot be empty
-					return false;
-				} else {
-					toCheck = part1;
-					rest = part2;
-				}
-			} 
-			if (!toCheck.matches("([A-Za-z_])([A-Za-z0-9_]*)")) { //check if String is valid variable
-				System.out.println(toCheck+ " ist keine variable");
-				if(!isNumeric(toCheck)) { //check if string is number
-					System.out.println(toCheck+ " ist keine zahl");
-					return false;
-				}
-			}
-		}
-		if(rest.length() > 0) {
-			if(!(rest.charAt(0) == '+' || rest.charAt(0) == '-' || rest.charAt(0) == '*' || rest.charAt(0) == '/')) {
-				return false;
-			}
-			result &= checkOperand(rest.substring(1));
-		}
-		return result;
-	}
-	
-	/*
-	 * checks if the given string is numeric
-	 */
-	public static boolean isNumeric(String str) { 
-		  try {  
-		    Double.parseDouble(str);  
-		    return true;
-		  } catch(NumberFormatException e){  
-		    return false;  
-		  }  
-	}
 }

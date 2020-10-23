@@ -1,16 +1,9 @@
 package de.tubs.skeditor.synthesis;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import SkillGraph.Edge;
 import SkillGraph.Node;
-import SkillGraph.SkillGraphFactory;
-import de.tubs.skeditor.contracting.Contract;
-import de.tubs.skeditor.contracting.ContractPropagator;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
 import de.tubs.skeditor.utils.SynthesisUtil;
 
@@ -29,11 +22,11 @@ public class HasRequirementSkillProvider extends RequirementSkillProvider {
 			String skillname = requirement.getFormula().split("\"", 3)[1];
 			System.out.println("Skillname:"+skillname);
 			String searchString = "name=\""+skillname.replace("_", " ")+"\"";
-			//System.out.println("Searchstring depth"+depth+" "+searchString);
+			System.out.println("Searchstring depth"+depth+" "+searchString);
 			if(skillname.length() > 0) {
 				try {
 					for(Node n : searcher.searchSkills(searchString)) {
-						nodeList.add(SynthesisUtil.copyNodeRecursive(n));
+						nodeList.add(SynthesisUtil.copyNodeWithChildren(n));
 					}
 					
 				} catch (FilterFormatException e) {
@@ -58,7 +51,7 @@ public class HasRequirementSkillProvider extends RequirementSkillProvider {
 					}
 					
 				}
-				//System.out.println("SUCHE REQUIREMENT: "+searchString);
+				//System.out.println("SUCHE HAS REQUIREMENT: "+searchString);
 				try {
 					if(searchString.length() > 0) {
 						for(Node n : searcher.searchSkills(searchString)) {
@@ -78,13 +71,10 @@ public class HasRequirementSkillProvider extends RequirementSkillProvider {
 									categoryExists = true;
 								}
 								if(!categoryExists) {
-									Node parent = EcoreUtil.copy(n);
-									Node child = EcoreUtil.copy(node);
-									Edge e = SkillGraphFactory.eINSTANCE.createEdge();
-									e.setChildNode(child);
-									e.setParentNode(parent);
-									parent.getChildEdges().add(e);
-									child.getParentNodes().add(parent);
+									Node parent = SynthesisUtil.copyNodeWithChildren(n);
+									Node child = SynthesisUtil.copyNodeWithChildren(node);
+									SynthesisUtil.createEdge(parent, child);
+
 									//check if new node guarantees requirement
 									nodeList.add(parent);
 								}

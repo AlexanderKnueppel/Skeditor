@@ -1,32 +1,19 @@
 package de.tubs.skeditor.synthesis.prover;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.microsoft.z3.ArithExpr;
 import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
-import com.microsoft.z3.FuncDecl;
-import com.microsoft.z3.Pattern;
 import com.microsoft.z3.Solver;
 import com.microsoft.z3.Status;
 import com.microsoft.z3.Z3Exception;
 
-import de.tubs.skeditor.contracting.grammar.folBaseListener;
 import de.tubs.skeditor.contracting.grammar.folBaseVisitor;
 import de.tubs.skeditor.contracting.grammar.folLexer;
-import de.tubs.skeditor.contracting.grammar.folListener;
 import de.tubs.skeditor.contracting.grammar.folParser;
-import de.tubs.skeditor.contracting.grammar.folParser.ConditionContext;
-import de.tubs.skeditor.contracting.grammar.folParser.FormulaContext;
-import de.tubs.skeditor.contracting.grammar.folParser.TermContext;
-import de.tubs.skeditor.contracting.grammar.folParser.VariableContext;
-import de.tubs.skeditor.contracting.grammar.folVisitor;
 import de.tubs.skeditor.utils.SynthesisUtil;
 
 /**
@@ -40,7 +27,6 @@ public class TermProver{
 	private Context ctx;
 	
 	public TermProver() {
-		System.out.println("In TermProver ");
 		ctx = new Context();
 	}
 	
@@ -59,8 +45,8 @@ public class TermProver{
 		folParser parser = new folParser(new CommonTokenStream(lexer));
 		ExpressionVisitor myVisitor = new ExpressionVisitor();
 		try{
-			Expr expr = myVisitor.visit(parser.condition());
-			System.out.println("Expr tryParse"+expr);
+			myVisitor.visit(parser.condition());
+			//System.out.println("Expr tryParse"+expr);
 		} catch(Z3Exception | NullPointerException e ) {
 			e.printStackTrace();
 			return false;
@@ -96,25 +82,25 @@ public class TermProver{
 			lexer = new folLexer(CharStreams.fromString(assumptions[i]));
 			parser = new folParser(new CommonTokenStream(lexer));
 			expr = (BoolExpr)myVisitor.visit(parser.condition());
-			System.out.println("Expr assumption: "+expr);
+			//System.out.println("Expr assumption: "+expr);
 			solver.add(expr);
 			//System.out.println("Expression: "+expressions[i]);
 		}
 		lexer = new folLexer(CharStreams.fromString(toProve));
 		parser = new folParser(new CommonTokenStream(lexer));
 		expr = (BoolExpr)myVisitor.visit(parser.condition());
-		System.out.println("Expr toProve: "+expr);
+		//System.out.println("Expr toProve: "+expr);
 		solver.add(getContext().mkNot(expr));
 		Status result = solver.check();
 		switch(result) {
 		case SATISFIABLE:
-			System.out.println("leider gilt das nicht unbedingt");
+			//System.out.println("leider gilt das nicht unbedingt");
 			return false;
 		case UNSATISFIABLE:
-			System.out.println("100% wahr");
+			//System.out.println("100% wahr");
 			return true;
 		default:
-			System.out.println("Unbekannt");
+			//System.out.println("Unbekannt");
 			return false;
 		}
 		
@@ -138,7 +124,7 @@ public class TermProver{
 			folLexer lexer = new folLexer(CharStreams.fromString(terms[i]));
 			folParser parser = new folParser(new CommonTokenStream(lexer));
 			Expr expr = myVisitor.visit(parser.condition());
-			System.out.println("Expr: "+expr);
+		//	System.out.println("Expr: "+expr);
 			solver.add((BoolExpr) expr);
 			//System.out.println("Expression: "+expressions[i]);
 		}
@@ -146,13 +132,13 @@ public class TermProver{
 			Status result = solver.check();
 			switch(result) {
 			case SATISFIABLE:
-				System.out.println("Erfüllbar");
+				//System.out.println("Erfüllbar");
 				return true;
 			case UNSATISFIABLE:
-				System.out.println("Unerfüllbar");
+				//System.out.println("Unerfüllbar");
 				return false;
 			default:
-				System.out.println("Unbekannt");
+				//System.out.println("Unbekannt");
 				return false;
 			}
 		}
@@ -166,7 +152,7 @@ public class TermProver{
 		System.out.println("Ergebnis: "+prover.check("x>4", "x<7", "y>7", "has(\"Accelerate\")"));
 		//System.out.println("Ergebnis: "+prover.check("x>4", "x>7", "x>7&x>7"));
 		//System.out.println("Ergebnis: "+prover.check("x>4", "x>7", "x>7&x>7"));
-		System.out.println("Ergebnis: "+prover.prove("x<4", "x<7", "x<y", "y==4"));
+		System.out.println("Ergebnis: "+prover.prove("ep>0", "x<7", "x<y", "y==4"));
 	}
 
 	
@@ -180,7 +166,7 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitCondition(folParser.ConditionContext ctx) {
-			System.out.println("Condition: "+ctx.getText());
+			//System.out.println("Condition: "+ctx.getText());
 			if(ctx.formula() != null) {
 				return visitFormula(ctx.formula());
 			}
@@ -189,7 +175,7 @@ public class TermProver{
 
 		@Override
 		public Expr visitFormula(folParser.FormulaContext ctx) {
-			System.out.println("Formula: "+ctx.getText());
+			//System.out.println("Formula: "+ctx.getText());
 			if(ctx.formula() != null) { //more than one formula in this context
 				return visitFormula(ctx.formula());
 			} else if(ctx.connectiveformula() != null) {
@@ -200,63 +186,6 @@ public class TermProver{
 				return null;
 			}
 		}
-		
-		/*@Override
-		public Expr visitHasconditionformula(folParser.HasconditionformulaContext ctx) {
-		//	System.out.println("has_cond: "+ctx.getText());
-			BoolExpr result = (BoolExpr) visitHascondition(ctx.hascondition(0));
-			int i;
-			for(i = 1; i < ctx.hascondition().size(); i++) {
-				BoolExpr expr = (BoolExpr) visitHascondition(ctx.hascondition(i));
-				switch(ctx.connectoperator(i-1).getText()) {
-				case "&": 
-				case "&&":
-				case "and":
-					result = getContext().mkAnd(result, expr);
-					break;
-				case "|":
-				case "||":
-				case "or":
-					result = getContext().mkOr(result, expr);
-					break;
-				case "=>":
-					result = getContext().mkImplies(result, expr);
-					break;
-				case "<>":
-					result = getContext().mkAnd(getContext().mkImplies(result, expr), getContext().mkImplies(expr, result));
-					break;
-				default:
-					return null;
-					
-				}
-			}
-			
-			for(int j = 0; j < ctx.formula().size(); j++, i++) {
-				BoolExpr expr = (BoolExpr) visitFormula(ctx.formula(j));
-				switch(ctx.connectoperator(i-1).getText()) {
-				case "&": 
-				case "&&":
-				case "and":
-					result = getContext().mkAnd(result, expr);
-					break;
-				case "|":
-				case "||":
-				case "or":
-					result = getContext().mkOr(result, expr);
-					break;
-				case "=>":
-					result = getContext().mkImplies(result, expr);
-					break;
-				case "<>":
-					result = getContext().mkAnd(getContext().mkImplies(result, expr), getContext().mkImplies(expr, result));
-					break;
-				default:
-					return null;
-					
-				}
-			}
-			return result;
-		}*/
 		
 		@Override 
 		public Expr visitHascondition(folParser.HasconditionContext ctx) {
@@ -290,11 +219,6 @@ public class TermProver{
 		}
 		
 		@Override 
-		public Expr visitTupelformula(folParser.TupelformulaContext ctx) { 
-			return visitChildren(ctx); 
-		}
-		
-		@Override 
 		public Expr visitConnectiveformula(folParser.ConnectiveformulaContext ctx) {
 			//System.out.println("connective: "+ctx.getText());
 			BoolExpr result;
@@ -303,8 +227,8 @@ public class TermProver{
 				int i;
 				for(i = 0; i < ctx.connectiveformula().size(); i++) {
 					BoolExpr expr = (BoolExpr) visitConnectiveformula(ctx.connectiveformula(i));
-					System.out.println("expression: "+ctx.connectiveformula(i).getText()+" expr: "+expr);
-					System.out.println("result: "+result);
+					//System.out.println("expression: "+ctx.connectiveformula(i).getText()+" expr: "+expr);
+					//System.out.println("result: "+result);
 					switch(ctx.connectoperator().get(i).getText()) {
 					case "&": /**AND OPERATOR**/
 					case "&&":
@@ -356,31 +280,7 @@ public class TermProver{
 						return null;
 					}
 				}
-				/*for(int j = 1; j < ctx.formula().size(); j++, i++) {
-					BoolExpr expr = (BoolExpr) visitFormula(ctx.formula(j));
-					switch(ctx.connectoperator().get(i-1).getText()) {
-					case "&": 
-					case "&&":
-					case "and":
-						result = getContext().mkAnd(result, expr);
-						break;
-					case "|":
-					case "||":
-					case "or":
-						result = getContext().mkOr(result, expr);
-						break;
-					case "=>":
-						result = getContext().mkImplies(result, expr);
-						break;
-					case "<>":
-						result = getContext().mkAnd(getContext().mkImplies(result, expr), getContext().mkImplies(expr, result));
-						break;
-					default:
-						return null;
-					}
-				}*/
 			}
-			
 			return result;
 		}
 		
@@ -388,11 +288,6 @@ public class TermProver{
 		public Expr visitBoolexpression(folParser.BoolexpressionContext ctx) { 
 			//System.out.println("bool: "+ctx.getText());
 			BoolExpr result;
-			/*if(ctx.boolexpression() != null) {
-				result = (BoolExpr)visitBoolexpression(ctx.boolexpression());
-				if(ctx.NOT() != null) {
-					result = getContext().mkNot(result);
-				}*/
 			if(ctx.quantifier() != null) {
 				result =  (BoolExpr) visitQuantifier(ctx.quantifier());
 			}
@@ -535,76 +430,4 @@ public class TermProver{
 			}
 		}
 	}
-	
-	 /*class OperationVisitor extends folBaseVisitor<String>{
-			
-		@Override
-		public String visitSkill_name(Skill_nameContext ctx) {
-			//System.out.println(ctx.getText());
-			String s = "";
-			if(ctx.skill_name().size() > 1) {
-				return visitSkill_name(ctx.skill_name(0))+"_"+visitSkill_name(ctx.skill_name(1));
-			} else {
-				return ctx.VARIABLE().getText();
-			}
-		}
-
-		@Override
-		public String visitBin_connective(Bin_connectiveContext ctx) {
-			//System.out.println(ctx.getText());
-			if(ctx.CONJ() != null) {
-				return ctx.CONJ().getText();
-			} else if(ctx.DISJ() != null) {
-				return ctx.DISJ().getText();
-			} else if(ctx.BICOND() != null) {
-				return ctx.BICOND().getText();
-			} else if(ctx.IMPL() != null) {
-				return ctx.IMPL().getText();
-			} else {
-				return null;
-			}
-		}
-
-		@Override
-		public String visitBinop(BinopContext ctx) {
-			//System.out.println(ctx.getText());
-			if(ctx.EQUAL() != null) {
-				return ctx.EQUAL().getText();
-			} else if(ctx.GT() != null) {
-				return ctx.GT().getText();
-			} else if(ctx.GEQ() != null) {
-				return ctx.GEQ().getText();
-			} else if(ctx.LT() != null) {
-				return ctx.LT().getText();
-			} else if(ctx.LEQ() != null) {
-				return ctx.LEQ().getText();
-			} else {
-				return null;
-			}
-		}
-		
-		@Override
-		public String visitSeparator(SeparatorContext ctx) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override 
-		public String visitArith_operation(folParser.Arith_operationContext ctx) { 
-			//System.out.println(ctx.getText());
-			if(ctx.PLUS() != null) {
-				return ctx.PLUS().getText();
-			} else if(ctx.MINUS() != null) {
-				return ctx.MINUS().getText();
-			} else if(ctx.TIMES() != null) {
-				return ctx.TIMES().getText();
-			} else if(ctx.DIV() != null) {
-				return ctx.DIV().getText();
-			} else {
-				return null;
-			}
-		}
-	}*/
-	
-
 }

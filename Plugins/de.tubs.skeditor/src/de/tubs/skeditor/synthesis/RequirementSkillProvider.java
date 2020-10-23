@@ -55,6 +55,7 @@ public class RequirementSkillProvider extends SkillProvider {
 			try {
 				
 				for(Node n : searcher.searchSkills(searchString)) {
+					//System.out.println("skill con search: ");SynthesisUtil.childsToString(n);
 					String[] safetyGoals = new String[n.getRequirements().size()];
 					for(int i = 0; i < n.getRequirements().size(); i++) {
 						safetyGoals[i] = n.getRequirements().get(i).getTerm();
@@ -107,32 +108,23 @@ public class RequirementSkillProvider extends SkillProvider {
 									categoryExists = true;
 								}
 								if(!categoryExists) {
-									Node parent = EcoreUtil.copy(n);
-									Node child = EcoreUtil.copy(node);
-									Edge e = SkillGraphFactory.eINSTANCE.createEdge();
-									e.setChildNode(child);
-									e.setParentNode(parent);
-									parent.getChildEdges().add(e);
-									child.getParentNodes().add(parent);
+									Node parent = SynthesisUtil.copyNodeWithChildren(n);
+									Node child = SynthesisUtil.copyNodeWithChildren(node);
+									SynthesisUtil.createEdge(parent, child);
+									
 									//check if new node guarantees requirement
 									Contract contract = ContractPropagator.computeContract(parent);
 									List<String> guarantees = Arrays.asList(contract.getGuarantee().split("&"));
-									/*for(int i = 0; i < guarantees.size(); i++) {
-										if(guarantees.get(i).equals("true")) { //we dont want true word in assumptions for prover
-											guarantees.remove(i);
-										}
-									}*/
 									if(prover.prove(requirement.getFormula(), (String[])guarantees.toArray())) {
 										nodeList.add(parent);
 									}
-									
 								}
 							}
 						}
 					} 
 				} catch (FilterFormatException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					nodeList.clear();
 				}
 			}
 			nodeMap.put(depth, nodeList);

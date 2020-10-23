@@ -43,7 +43,7 @@ public class VariableSkillProvider extends SkillProvider {
 						}
 					}
 					if (! forbidden) {
-						nodeList.add(SynthesisUtil.copyNodeRecursive(n));
+						nodeList.add(SynthesisUtil.copyNodeWithChildren(n));
 					} else {
 						forbidden = false; //reset flag 
 					}
@@ -62,9 +62,6 @@ public class VariableSkillProvider extends SkillProvider {
 				providedVars.addAll(node.getProvidedVariables());
 				//providedVars.addAll(node.getRequiredVariables());
 				String searchString = "";
-				/*for (String var : requiredVars) { //remove all 
-					providedVars.remove(var);
-				}*/
 				for (String var : providedVars) {
 					if(searchString.length() == 0) {
 						searchString = "required=\""+var+"\"";
@@ -73,21 +70,6 @@ public class VariableSkillProvider extends SkillProvider {
 					}
 					
 				}
-				//System.out.println("SUCHE: "+searchString);
-				/*if(requiredVars.length > 0) {
-					if(searchString.length() == 0) {
-						searchString = "!(";
-					} else {
-						searchString += "&!(";
-					}
-					searchString += "required=\""+requiredVars[0]+"\"";
-					if(requiredVars.length > 1) {
-						for (int i = 1; i < requiredVars.length; i++) { //remove all 
-							searchString += "|required=\""+requiredVars[0]+"\"";
-						}
-					}
-					searchString += ")";
-				}*/
 				
 				//System.out.println("SUCHE "+searchString);
 				try {
@@ -118,8 +100,8 @@ public class VariableSkillProvider extends SkillProvider {
 									categoryExists = true;
 								}
 								if(!categoryExists) {
-									Node parent = SynthesisUtil.copyNodeRecursive(n);
-									Node child = SynthesisUtil.copyNodeRecursive(node);
+									Node parent = SynthesisUtil.copyNodeWithChildren(n);
+									Node child = SynthesisUtil.copyNodeWithChildren(node);
 									SynthesisUtil.createEdge(parent, child);
 									nodeList.add(parent);
 								}
@@ -131,7 +113,7 @@ public class VariableSkillProvider extends SkillProvider {
 					}
 				} catch (FilterFormatException e) {
 					nodeList.clear();
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				
 			}
@@ -142,10 +124,5 @@ public class VariableSkillProvider extends SkillProvider {
 	
 	public String getRequiredVariable() {
 		return requiredVar;
-	}
-	
-	@Override
-	public String toString() {
-		return "Tiefe: "+depth+" Current Index="+currentIndex+" requiredVar:"+requiredVar;
 	}
 }
