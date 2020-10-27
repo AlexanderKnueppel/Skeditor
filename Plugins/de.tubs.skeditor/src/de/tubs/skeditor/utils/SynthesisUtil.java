@@ -67,6 +67,12 @@ public class SynthesisUtil {
 		return null;
 	}
 	
+	/**
+	 * returns a string representation of the given node and all of its children and subchildren and so on
+	 * 
+	 * @param parent, the node we want to represent the children from
+	 * @return the string representation
+	 */
 	public static String childsToString(Node parent) {
 		if(parent == null) {
 			return "";
@@ -80,6 +86,12 @@ public class SynthesisUtil {
 		
 	}
 	
+	/**
+	 * calculate depth of skillgraph
+	 * 
+	 * @param root, the root node of the graph
+	 * @return the depth of the graph
+	 */
 	public static int depth(Node root) {
 		if(root == null) {
 			return 0;
@@ -174,8 +186,11 @@ public class SynthesisUtil {
 		return copy;
 	}
 	
-	/*
+	/**
 	 * checks if the given string is a valid requirement
+	 * 
+	 * @param requirement
+	 * @return true if the given string is a valid requirement, false otherwise
 	 */
 	public static boolean isValidRequirement(String requirement) {
 		
@@ -183,8 +198,12 @@ public class SynthesisUtil {
 		return GrammarUtil.tryToParse(requirement).isEmpty() & prover.tryParse(requirement);
 	}
 	
-	/*
+	/**
 	 * returns the node with the given name in the graph if included
+	 * 
+	 * @param name, the name of the skill
+	 * @param node, the root node of the graph 
+	 * @return the node matching the name or null
 	 */
 	public static Node getChildByName(String name, Node node) {
 		if(node.getName().equals(name)) {
@@ -201,8 +220,11 @@ public class SynthesisUtil {
 		return null;
 	}
 	
-	/*
+	/**
 	 * returns a List of all propagated variables 
+	 * 
+	 * @param node, the node we want the propagated variables from
+	 * @return a list of all propagated variables without duplicates
 	 */
 	public static List<String> providedVariablesOf(Node node) {
 		List<String> providedVars = new ArrayList<String>();
@@ -227,8 +249,11 @@ public class SynthesisUtil {
 		return providedVars;
 	}
 	
-	/*
+	/**
 	 * checks if the given string is numeric
+	 * 
+	 * @param str, the string to check
+	 * @return true if the given string is a number or false otherwise
 	 */
 	public static boolean isNumeric(String str) { 
 		  try {  
