@@ -15,8 +15,8 @@ public class VariableContentProvider implements IStructuredContentProvider {
 		for(String req : node.getRequiredVariables()) {
 			rows.add(new VariableRow(req, VariableRow.Type.REQUIRED));
 		}
-		for(String prov : node.getProvidedVariables()) {
-			rows.add(new VariableRow(prov, VariableRow.Type.PROVIDED));
+		for(String prov : node.getDefinedVariables()) {
+			rows.add(new VariableRow(prov, VariableRow.Type.DEFINED));
 		}
 		return rows.toArray();
 	}

@@ -1,20 +1,10 @@
 package de.tubs.skeditor.synthesis;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import SkillGraph.Edge;
 import SkillGraph.Node;
-import SkillGraph.SkillGraphFactory;
-import de.tubs.skeditor.synthesis.search.FilterFormatException;
 import de.tubs.skeditor.synthesis.search.SkillSearch;
 
 public abstract class SkillProvider {
@@ -28,8 +18,8 @@ public abstract class SkillProvider {
 	public SkillProvider() {
 		this.nodeMap = new HashMap<>();
 		this.searcher = SkillSearch.getInstance();
-		this.depth = 1;
 		this.currentIndex = 0;
+		this.depth = 1;
 	}
 	
 	/*

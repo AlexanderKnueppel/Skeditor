@@ -46,7 +46,6 @@ public class TermProver{
 		ExpressionVisitor myVisitor = new ExpressionVisitor();
 		try{
 			myVisitor.visit(parser.condition());
-			//System.out.println("Expr tryParse"+expr);
 		} catch(Z3Exception | NullPointerException e ) {
 			e.printStackTrace();
 			return false;
@@ -82,25 +81,19 @@ public class TermProver{
 			lexer = new folLexer(CharStreams.fromString(assumptions[i]));
 			parser = new folParser(new CommonTokenStream(lexer));
 			expr = (BoolExpr)myVisitor.visit(parser.condition());
-			//System.out.println("Expr assumption: "+expr);
 			solver.add(expr);
-			//System.out.println("Expression: "+expressions[i]);
 		}
 		lexer = new folLexer(CharStreams.fromString(toProve));
 		parser = new folParser(new CommonTokenStream(lexer));
 		expr = (BoolExpr)myVisitor.visit(parser.condition());
-		//System.out.println("Expr toProve: "+expr);
 		solver.add(getContext().mkNot(expr));
 		Status result = solver.check();
 		switch(result) {
 		case SATISFIABLE:
-			//System.out.println("leider gilt das nicht unbedingt");
 			return false;
 		case UNSATISFIABLE:
-			//System.out.println("100% wahr");
 			return true;
 		default:
-			//System.out.println("Unbekannt");
 			return false;
 		}
 		
@@ -124,21 +117,16 @@ public class TermProver{
 			folLexer lexer = new folLexer(CharStreams.fromString(terms[i]));
 			folParser parser = new folParser(new CommonTokenStream(lexer));
 			Expr expr = myVisitor.visit(parser.condition());
-		//	System.out.println("Expr: "+expr);
 			solver.add((BoolExpr) expr);
-			//System.out.println("Expression: "+expressions[i]);
 		}
 		if(terms.length > 0) {
 			Status result = solver.check();
 			switch(result) {
 			case SATISFIABLE:
-				//System.out.println("Erfüllbar");
 				return true;
 			case UNSATISFIABLE:
-				//System.out.println("Unerfüllbar");
 				return false;
 			default:
-				//System.out.println("Unbekannt");
 				return false;
 			}
 		}
@@ -166,7 +154,6 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitCondition(folParser.ConditionContext ctx) {
-			//System.out.println("Condition: "+ctx.getText());
 			if(ctx.formula() != null) {
 				return visitFormula(ctx.formula());
 			}
@@ -175,7 +162,6 @@ public class TermProver{
 
 		@Override
 		public Expr visitFormula(folParser.FormulaContext ctx) {
-			//System.out.println("Formula: "+ctx.getText());
 			if(ctx.formula() != null) { //more than one formula in this context
 				return visitFormula(ctx.formula());
 			} else if(ctx.connectiveformula() != null) {
@@ -189,7 +175,6 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitHascondition(folParser.HasconditionContext ctx) {
-			//System.out.println("has: "+ctx.getText());
 			String name = "has_"+ctx.STRING().getText().split("\"", 3)[1];
 			name = name.replace(" ", "");
 			BoolExpr expr = getContext().mkBoolConst(name);
@@ -198,16 +183,11 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitQuantifier(folParser.QuantifierContext ctx) { 
-			//System.out.println("quantifier: "+ctx.getText());
 			Expr[] bound = new Expr[ctx.IDENTIFIER().size()];
 			for(int i = 0; i < bound.length; i++) {
 				bound[i] = getContext().mkRealConst(ctx.IDENTIFIER(i).getText());
 			}
 			BoolExpr body = (BoolExpr)visitFormula(ctx.formula());
-			/*for(int i = 1; i < ctx.formula().size(); i++) {
-				BoolExpr expr = (BoolExpr)visitFormula(ctx.formula(i));
-				body = getContext().mkAnd(body, expr);
-			}*/
 			switch(ctx.QUANTIFER().getText()) {
 			case "\\forall": 
 				return getContext().mkForall(bound, body, 1, null, null, null, null); 
@@ -220,15 +200,12 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitConnectiveformula(folParser.ConnectiveformulaContext ctx) {
-			//System.out.println("connective: "+ctx.getText());
 			BoolExpr result;
 			if(ctx.boolexpression() != null) {
 				result = (BoolExpr)visitBoolexpression(ctx.boolexpression());
 				int i;
 				for(i = 0; i < ctx.connectiveformula().size(); i++) {
 					BoolExpr expr = (BoolExpr) visitConnectiveformula(ctx.connectiveformula(i));
-					//System.out.println("expression: "+ctx.connectiveformula(i).getText()+" expr: "+expr);
-					//System.out.println("result: "+result);
 					switch(ctx.connectoperator().get(i).getText()) {
 					case "&": /**AND OPERATOR**/
 					case "&&":
@@ -258,7 +235,6 @@ public class TermProver{
 				int i;
 				for(i = 1; i < ctx.connectiveformula().size(); i++) {
 					BoolExpr expr = (BoolExpr) visitConnectiveformula(ctx.connectiveformula(i));
-					//System.out.println("expression: "+ctx.connectiveformula(i).getText()+" expr: "+expr);
 					switch(ctx.connectoperator().get(i-1).getText()) {
 					case "&": /**AND OPERATOR**/
 					case "&&":
@@ -286,7 +262,6 @@ public class TermProver{
 		
 		@Override
 		public Expr visitBoolexpression(folParser.BoolexpressionContext ctx) { 
-			//System.out.println("bool: "+ctx.getText());
 			BoolExpr result;
 			if(ctx.quantifier() != null) {
 				result =  (BoolExpr) visitQuantifier(ctx.quantifier());
@@ -313,7 +288,6 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitCompareformula(folParser.CompareformulaContext ctx) { 
-			//System.out.println("compare: "+ctx.getText());
 			BoolExpr result = null;
 			if(ctx.compareformula() != null) {
 				return visitCompareformula(ctx.compareformula());
@@ -355,7 +329,6 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitSummformula(folParser.SummformulaContext ctx) { 
-			//System.out.println("summ: "+ctx.getText());
 			if(ctx.faktorformula() == null) {
 				return visitSummformula(ctx.summformula(0));
 			}
@@ -378,7 +351,6 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitFaktorformula(folParser.FaktorformulaContext ctx) { 
-			//System.out.println("faktor: "+ctx.getText());
 			if(ctx.powerformula() == null) {
 				return visitFaktorformula(ctx.faktorformula(0));
 			}
@@ -401,7 +373,6 @@ public class TermProver{
 		
 		@Override 
 		public Expr visitPowerformula(folParser.PowerformulaContext ctx) { 
-			//System.out.println("power: "+ctx.getText());
 			if(ctx.term() == null) {
 				return visitPowerformula(ctx.powerformula(0));
 			}
@@ -415,7 +386,6 @@ public class TermProver{
 		
 		@Override
 		public Expr visitTerm(folParser.TermContext ctx) {
-			//System.out.println("term: "+ctx.getText());
 			if(ctx.term() != null) {
 				if(ctx.MINUS() != null) {
 					return getContext().mkSub(getContext().mkReal(0), (ArithExpr)visitTerm(ctx.term()));

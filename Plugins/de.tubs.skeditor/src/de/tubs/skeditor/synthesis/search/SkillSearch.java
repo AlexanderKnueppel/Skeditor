@@ -1,18 +1,10 @@
 package de.tubs.skeditor.synthesis.search;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.IllegalFormatException;
-import java.util.List;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
-
-import SkillGraph.Category;
 import SkillGraph.Graph;
 import SkillGraph.Node;
 
@@ -104,18 +96,13 @@ public class SkillSearch {
 			}
 			restFilter = filter.substring(i);
 		} else if(filter.startsWith(NAME_STRING)){ //name argument
-			System.out.println("Namen argument");
 			String[] filterArray = filter.split("\"", 3);
 			String name = filterArray[1]; // name argument should be in double quotes
-			System.out.println("Name: "+name);
 			restFilter = filterArray[2];
-			System.out.println("Rest: "+restFilter);
-			System.out.println("Anzahl nodes: "+nodeRepo.size());
 			for(Node node : nodeRepo) {
 				if (node.getName().equalsIgnoreCase(name)) {
 					skills.add(node);
 				}
-				System.out.println(node.getName()+" und "+name);
 			}
 		} else if(filter.startsWith(CATEGORY_STRING)){ //category argument
 			String[] filterArray = filter.split("\"", 3);
@@ -138,7 +125,7 @@ public class SkillSearch {
 			String[] varArray = providedVariables.split(",");
 			for(Node node : nodeRepo) {
 				for (String var : varArray) {
-					if(node.getProvidedVariables().contains(var)) {
+					if(node.getDefinedVariables().contains(var)) {
 						skills.add(node);
 						break;
 					} else if(node.getRequiredVariables().contains(var)) {
@@ -155,7 +142,7 @@ public class SkillSearch {
 			//add all variables that define at least one varibale
 			for(Node node : nodeRepo) {
 				for (String var : varArray) {
-					if(node.getProvidedVariables().contains(var)) {
+					if(node.getDefinedVariables().contains(var)) {
 						skills.add(node);
 						break;
 					}
@@ -164,7 +151,7 @@ public class SkillSearch {
 			//keep those skills that define every variable
 			for(Node node : skills) {
 				for (String var : varArray) {
-					if(!(node.getProvidedVariables().contains(var))) {
+					if(!(node.getDefinedVariables().contains(var))) {
 						skills.remove(node);
 						break;
 					}
@@ -198,20 +185,10 @@ public class SkillSearch {
 		if(restFilter.length() > 0) {
 			switch(restFilter.charAt(0)) {
 			case '&': //AND operator 
-				//System.out.println("AND operation");
-				//System.out.println("SKILLS vor UND:");
-				//printNodes(skills);
 				skills.retainAll(searchSkills(restFilter.substring(1))); // intersect of both sets
-				//System.out.println("SKILLS nach UND:");
-				//printNodes(skills);
 				break;
 			case '|': // OR operator
-				//System.out.println("OR operation");
-				//System.out.println("Skills vor ODER:");
-				//printNodes(skills);
 				skills.addAll(searchSkills(restFilter.substring(1))); // union of sets
-				//System.out.println("SKILLS nach ODER:");
-				//printNodes(skills);
 				break;
 			default:
 				throw new FilterFormatException("unknown operation \""+restFilter.charAt(0)+"\"");
@@ -254,12 +231,5 @@ public class SkillSearch {
 			return false;
 		}
 		return true;
-	}
-	
-	private void printNodes(Set<Node> nodes) {
-		for(Node node : nodes) {
-			System.out.print(node.getName()+", ");
-		}
-		System.out.println(".");
 	}
 }

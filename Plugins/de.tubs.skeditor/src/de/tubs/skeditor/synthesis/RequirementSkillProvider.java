@@ -2,21 +2,13 @@ package de.tubs.skeditor.synthesis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import SkillGraph.Category;
-import SkillGraph.Edge;
 import SkillGraph.Node;
-import SkillGraph.SkillGraphFactory;
 import de.tubs.skeditor.contracting.Contract;
 import de.tubs.skeditor.contracting.ContractPropagator;
 import de.tubs.skeditor.synthesis.prover.TermProver;
 import de.tubs.skeditor.synthesis.search.FilterFormatException;
-import de.tubs.skeditor.synthesis.search.SkillSearch;
 import de.tubs.skeditor.utils.SynthesisUtil;
 
 public class RequirementSkillProvider extends SkillProvider {
@@ -28,7 +20,7 @@ public class RequirementSkillProvider extends SkillProvider {
 		super();
 		this.requirement = req;
 		this.prover = new TermProver();
-		addNodes(depth);
+		addNodes(1);
 	}
 	
 	
@@ -62,7 +54,7 @@ public class RequirementSkillProvider extends SkillProvider {
 					}
 					//prove if safety goals of node n satisfies requirement
 					if(prover.prove(requirement.getFormula(), safetyGoals)) {
-						nodeList.add(EcoreUtil.copy(n));
+						nodeList.add(SynthesisUtil.copyNode(n));
 					}
 					
 				}
@@ -76,7 +68,7 @@ public class RequirementSkillProvider extends SkillProvider {
 			
 			for(Node node : nodeMap.get(depth-1)) {
 				List<String> providedVars = new ArrayList<>();
-				providedVars.addAll(node.getProvidedVariables());
+				providedVars.addAll(node.getDefinedVariables());
 				providedVars.addAll(node.getRequiredVariables());
 				//providedVars.removeAll(requirement.getVariables());
 				String searchString = "";

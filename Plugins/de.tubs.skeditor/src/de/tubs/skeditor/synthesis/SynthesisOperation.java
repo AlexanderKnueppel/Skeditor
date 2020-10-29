@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -39,20 +38,14 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.ILinkService;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 
-import SkillGraph.Category;
 import SkillGraph.Edge;
 import SkillGraph.Graph;
 import SkillGraph.Node;
 import SkillGraph.Parameter;
-import SkillGraph.SkillGraphFactory;
+
 import de.tubs.skeditor.compositionality.SortDiagramFeature;
-import de.tubs.skeditor.synthesis.search.FilterFormatException;
 import de.tubs.skeditor.synthesis.search.SkillSearch;
-import de.tubs.skeditor.utils.SynthesisUtil;
 
 public class SynthesisOperation extends RecordingCommand{
 	private static final int PADDING = 30; // min. distance between components
@@ -101,12 +94,12 @@ public class SynthesisOperation extends RecordingCommand{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//get graphs of repo
 		if(members != null) {
 			for(IResource res : members) {
 				if(res instanceof IFile) {
 					IFile graphFile = (IFile) res;
 					if(graphFile.getFileExtension().equals("sked")) {
-						System.out.println("Datei: "+graphFile.getName());
 						Diagram diag = getDiagram(graphFile.getFullPath().toString(), root, resource, rSet);
 						IDiagramTypeProvider tempDTP = GraphitiUi.getExtensionManager().createDiagramTypeProvider(diag,
 								"de.tubs.skeditor.diagram.SkillGraphDiagramTypeProvider"); //$NON-NLS-1$
@@ -118,32 +111,12 @@ public class SynthesisOperation extends RecordingCommand{
 				}
 			}
 		}
-		System.out.println("Anzahl der Graphen: "+graphs.size());
 		
 		//init repository for SkillSearch
 		SkillSearch.getInstance().initializeRepository(graphs);
 		
-		/*try {
-			for(Node node : SkillSearch.getInstance().searchSkills("defined=\"a\"|!(category=\"observable_external_behavior\")")){
-				
-				System.out.println(node);
-			}
-		} catch (FilterFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		/*String[] forbidden = {};
-		String[] required = {"ep"};
-		SkillProvider provider = new VariableSkillProvider(required, forbidden);
-		Node myNode = provider.getNext();
-		while(myNode != null) {
-			System.out.println(SynthesisUtil.childsToString(myNode));
-			myNode = provider.getNext();
-		}*/
-		
 		//create new diagram for skillgraph synthesis
 		String diagramTypeId = "SkillGraph";
-		System.out.println(diagramTypeId);
 		Diagram diagram = Graphiti.getPeCreateService().createDiagram(diagramTypeId, this.diagramName, true);
 		
 		IContainer container = (IContainer) resource;
@@ -169,7 +142,6 @@ public class SynthesisOperation extends RecordingCommand{
 		unsatisfiableRequirements = syn.getUnsatisfiableRequirements();
 		rootNode.setName(file.getName().substring(0, name));
 		g.setRootNode(rootNode);
-		System.out.println(SynthesisUtil.childsToString(rootNode));
 		List<AddContext> addContextNodes = new ArrayList<>();
 		List<AddConnectionContext> addContextEdges = new ArrayList<>();
 		AddContext ctx = new AddContext();
@@ -184,10 +156,8 @@ public class SynthesisOperation extends RecordingCommand{
 			addNodes(e.getChildNode(), diagram, g, addContextNodes);
 		}
 		IAddFeature addNodeFeature = featureProvider.getAddFeature(addContextNodes.get(0));
-		System.out.println("nodes: "+addContextNodes.size());
 		for (AddContext addCtx : addContextNodes) {
 			if (addNodeFeature.canAdd(addCtx)) {
-				System.out.println("added"+addCtx.getNewObject());
 				addNodeFeature.add(addCtx);
 			}
 		}
@@ -199,8 +169,7 @@ public class SynthesisOperation extends RecordingCommand{
 		if(addContextEdges.size() > 0) {
 			addEdgeFeature = featureProvider.getAddFeature(addContextEdges.get(0));
 		}
-		
-		System.out.println("edges: "+addContextEdges.size());
+	
 		if(addEdgeFeature != null) {
 			for (AddConnectionContext addCtx : addContextEdges) {
 				if (addEdgeFeature.canAdd(addCtx)) {
@@ -224,51 +193,25 @@ public class SynthesisOperation extends RecordingCommand{
 				}
 			}
 		}
-		try {
+		/*try {
 			resource2.save(new HashMap());
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		}*/
 		
 		CompoundDirectedGraph cGraph = SortDiagramFeature.mapSkillGraphToGraph(diagram);
 		cGraph.setDefaultPadding(new Insets(PADDING));
 		cGraph.setDirection(PositionConstants.EAST);
 		new CompoundDirectedGraphLayout().visit(cGraph);
 		SortDiagramFeature.mapGraphCoordinatesToSkillGraph(cGraph);
+		
 		try {
 			resource2.save(new HashMap());
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		/*Diagram dA = getDiagram(GraphAName, root, resource, rSet);
-		Diagram dB = getDiagram(GraphBName, root, resource, rSet);
-		// Create a new main node
-		int name = file.getName().lastIndexOf(".");
-		Node node = SkillGraphFactory.eINSTANCE.createNode();
-		node.setName(file.getName().substring(0, name));
-		node.setCategory(Category.MAIN);
-
-		g.setRootNode(node);
-
-		// Add graphical representation of the newly created node
-		AddContext addcontext = new AddContext();
-		addcontext.setNewObject(node);
-		addcontext.setTargetContainer(diagram);
-
-		addcontext.setX(100);
-		addcontext.setY(100);
-
-		IAddFeature add = featureProvider.getAddFeature(addcontext);
-
-		if (add.canAdd(addcontext)) {
-			add.add(addcontext);
-		}*/
-
-		// Save resource to disk
-		
-
 	}
 	
 	private void addEdges(Edge e, Diagram diagram, List<AddConnectionContext> ectx) {
@@ -278,11 +221,9 @@ public class SynthesisOperation extends RecordingCommand{
 		ILinkService linkserv = Graphiti.getLinkService();
 
 		if (linkserv.getPictogramElements(diagram, e).isEmpty()) {
-			// Call add feature to add the edge
-			System.out.println("linkserv empty");
+
 			// We need the source anchor (from the first connected node)
 			Anchor sourceAnchor = null;
-			System.out.println("parent node:"+e.getParentNode());
 			for (PictogramElement aPe : linkserv.getPictogramElements(diagram, e.getParentNode())) {
 				System.out.println("pictogram source:"+aPe);
 				if (aPe instanceof ContainerShape) {
@@ -294,8 +235,6 @@ public class SynthesisOperation extends RecordingCommand{
 			Anchor targetAnchor = null;
 			System.out.println("Child node:"+e.getChildNode());
 			for (PictogramElement aPe : linkserv.getPictogramElements(diagram, e.getChildNode())) {
-				System.out.println("Child node:"+e.getChildNode());
-				System.out.println("pictogram target:"+aPe);
 				if (aPe instanceof ContainerShape) {
 					targetAnchor = ((ContainerShape) aPe).getAnchors().get(0);
 				}
@@ -345,14 +284,6 @@ public class SynthesisOperation extends RecordingCommand{
 			}
 
 		}
-	
-	
-	private void printNodes(Set<Node> nodes) {
-		for(Node node : nodes) {
-			System.out.print(node.getName()+", ");
-		}
-		System.out.println(".");
-	}
 	
 	private Diagram getDiagramFromFile(URI uri, ResourceSet resourceSet) {
 		// Get the URI of the model file.

@@ -2,13 +2,9 @@ package de.tubs.skeditor.wizards;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -17,7 +13,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
@@ -28,17 +23,11 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWizard;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 
 import de.tubs.skeditor.synthesis.Requirement;
 import de.tubs.skeditor.synthesis.SynthesisOperation;
-import de.tubs.skeditor.views.SafetyGoalsView;
 
 public class GraphSynthesisWizard extends Wizard implements INewWizard {
 
@@ -70,7 +59,6 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 		final List<Requirement> requirements = requirementPage.getRequirements();
 		final String filename = newGraphPage.getFileName();
 		final String repoName = requirementPage.getRepositoryName();
-		//final String GraphBName = page.getGrapBName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
@@ -116,12 +104,8 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 		if (!resource.exists() || !(resource instanceof IContainer)) {
 			throwCoreException("Container \"" + containerName + "\" does not exist.");
 		}
-		IContainer container = (IContainer) resource;
-		final IFile file = container.getFile(new Path(filename));
 
 		ResourceSet rSet = new ResourceSetImpl();
-
-		URI uri = URI.createFileURI(file.getFullPath().toString());
 
 		TransactionalEditingDomain editingDomain = TransactionUtil.getEditingDomain(rSet);
 		if (editingDomain == null) {
@@ -140,15 +124,6 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 		monitor.worked(1);
 		monitor.setTaskName("Opening file for editing...");
 
-	}
-
-	/**
-	 * We will initialize file contents with a sample text.
-	 */
-
-	private InputStream openContentStream() {
-		String contents = "This is the initial file contents for *.sked files that should be word-sorted in the Preview page of the multi-page editor";
-		return new ByteArrayInputStream(contents.getBytes());
 	}
 
 	private void throwCoreException(String message) throws CoreException {

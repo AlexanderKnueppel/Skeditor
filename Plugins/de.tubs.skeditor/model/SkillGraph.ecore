@@ -40,7 +40,7 @@
         eType="#//Controller" containment="true" eOpposite="#//Controller/node"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="requiredVariables" upperBound="-1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="null"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="providedVariables" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="definedVariables" upperBound="-1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="null"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Requirement">

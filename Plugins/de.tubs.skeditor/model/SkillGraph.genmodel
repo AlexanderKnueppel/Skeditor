@@ -44,7 +44,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Node/requirements"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Node/controller"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Node/requiredVariables"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Node/providedVariables"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Node/definedVariables"/>
     </genClasses>
     <genClasses ecoreClass="SkillGraph.ecore#//Requirement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Requirement/comment"/>

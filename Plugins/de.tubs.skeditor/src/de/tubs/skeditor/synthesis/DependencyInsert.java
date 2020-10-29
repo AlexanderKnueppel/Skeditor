@@ -16,8 +16,8 @@ public class DependencyInsert extends SkillInsert {
 	private final Node node;
 	private final String variable;
 
-	public DependencyInsert(int depth, SkillInsert parent, Node node, List<Node> insertedSkills, List<Edge> insertedEdges, VariableSkillProvider provider) {
-		super(depth, parent, insertedSkills, insertedEdges, provider);
+	public DependencyInsert(Node node, List<Node> insertedSkills, List<Edge> insertedEdges, VariableSkillProvider provider) {
+		super(insertedSkills, insertedEdges, provider);
 		this.node = node;
 		this.variable = provider.getRequiredVariable();
 	}

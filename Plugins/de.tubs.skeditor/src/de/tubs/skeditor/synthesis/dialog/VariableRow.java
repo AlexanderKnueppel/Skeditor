@@ -3,7 +3,7 @@ package de.tubs.skeditor.synthesis.dialog;
 public class VariableRow {
 	
 	enum Type{
-		PROVIDED,
+		DEFINED,
 		REQUIRED
 	}
 	private final String name;
@@ -24,7 +24,7 @@ public class VariableRow {
 	
 	public String getTypeAsString() {
 		switch(this.type) {
-			case PROVIDED: return "PROVIDED";
+			case DEFINED: return "DEFINED";
 			case REQUIRED: return "REQUIRED";
 			default: return null;
 		}
@@ -33,7 +33,7 @@ public class VariableRow {
 	@Override 
 	public String toString() {
 		switch(this.type) {
-			case PROVIDED: return this.name+" [PROVIDED]";
+			case DEFINED: return this.name+" [DEFINED]";
 			case REQUIRED: return this.name+" [REQUIRED]";
 			default: return null;
 		}

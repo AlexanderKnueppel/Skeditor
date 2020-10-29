@@ -228,8 +228,8 @@ public class SynthesisUtil {
 	 */
 	public static List<String> providedVariablesOf(Node node) {
 		List<String> providedVars = new ArrayList<String>();
-		if(node.getProvidedVariables() != null) {
-			for(String defined : node.getProvidedVariables()) {
+		if(node.getDefinedVariables() != null) {
+			for(String defined : node.getDefinedVariables()) {
 				if(!providedVars.contains(defined)) {
 					providedVars.add(defined);
 				}
@@ -293,8 +293,8 @@ public class SynthesisUtil {
 		for(String reqVar : src.getRequiredVariables()) {
 			dest.getRequiredVariables().add(reqVar);
 		}
-		for(String defVar : src.getProvidedVariables()) {
-			dest.getProvidedVariables().add(defVar);
+		for(String defVar : src.getDefinedVariables()) {
+			dest.getDefinedVariables().add(defVar);
 		}
 	}
 	

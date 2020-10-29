@@ -1,25 +1,15 @@
 package de.tubs.skeditor.wizards;
 
-
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.wizard.WizardPage;
@@ -33,14 +23,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import de.tubs.skeditor.synthesis.Requirement;
 import de.tubs.skeditor.synthesis.prover.TermProver;
-import de.tubs.skeditor.synthesis.search.FilterFormatException;
 import de.tubs.skeditor.utils.SynthesisUtil;
 
 /**
@@ -52,7 +39,6 @@ import de.tubs.skeditor.utils.SynthesisUtil;
 public class GraphSynthesisWizardPage extends WizardPage {
 
 	//error messages for this page
-	private final String ERR_EMPTY = "New requirement cannot be empty!";
 	private final String ERR_REQUIREMENTS = "You must at least specify one requirement!";
 	private final String ERR_ALREADY_DEFINED = "Requirement already defined!";
 	private final String ERR_EMPTY_REPO = "Repository cannot be empty!";
@@ -163,7 +149,6 @@ public class GraphSynthesisWizardPage extends WizardPage {
         viewerColumn.getColumn().setMoveable(true);
         viewerColumn.setEditingSupport(new GraphSynthesisEditingSupport(viewer));
         colLayout.setColumnData(viewerColumn.getColumn(), new ColumnWeightData(100));
-        //viewer.getTable().setLayout(tableColumnLayout);
         viewerColumn.setLabelProvider(new ColumnLabelProvider() {
         	@Override
             public String getText(Object element) {
@@ -181,8 +166,6 @@ public class GraphSynthesisWizardPage extends WizardPage {
 			}
 		});
 
-		//requirements.add(new Requirement("Test"));
-		//requirements.add(new Requirement("Test2"));
 		updateStatus(ERR_REQUIREMENTS);
 		setPageComplete(false);
 		setControl(container);
@@ -210,9 +193,6 @@ public class GraphSynthesisWizardPage extends WizardPage {
 				if(prover.check(requirementStrings)) {
 					//everythings fine, add requirement
 					requirements.add(req);
-					/*for(String var : req.getVariables()) {
-						System.out.println("var: "+var);
-					}*/
 				} else {
 					updateStatus(ERR_UNSATISFIABLE);
 					return;
@@ -228,7 +208,7 @@ public class GraphSynthesisWizardPage extends WizardPage {
 		if(checkPage()) {
 			setPageComplete(true);
 		}
-		updateStatus(null);
+		//updateStatus(null);
 	}
 	
 	private void printReqs() {
@@ -246,19 +226,13 @@ public class GraphSynthesisWizardPage extends WizardPage {
 			printReqs();
 			for(Object obj : iselection.toList()) {
 				Requirement req = (Requirement) obj;
-				System.out.println("Formel:"+req.getFormula()+" ,hash: "+req.hashCode());
-				requirements.remove(req);
-				System.out.println("Sind enthalten :"+requirements.contains(req));	
+				requirements.remove(req);	
 			}
 			printReqs();
-			System.out.println("reqs nach löschen");
 			if(!checkPage()) {
 				setPageComplete(false);
 			} 
-			System.out.println("after deletion");
-		} else {
-			System.out.println("selection ist leer");
-		}
+		} 
 	}
 	
 	/*
@@ -299,137 +273,6 @@ public class GraphSynthesisWizardPage extends WizardPage {
 		}
 		
 		return false;
-	}
-	
-	/*
-	 * checks if the given string is a valid requirement
-	 */
-	private boolean isValidRequirement(String requirement) {
-		
-		String str = requirement;
-		str.replace(" ", ""); //remove white spaces from string
-		
-		//check if requirement is "include SKILL" requirement
-		if(str.startsWith("include")) {
-			str = str.replace("include", "");
-			if(str.startsWith("not")) {
-				str = str.replace("not", "");
-			}
-			if(!str.matches("([A-Za-z_])([A-Za-z0-9_]*)")) { //no valid skill name given
-				return false;
-			} else {
-				return true;
-			}
-		}
-		
-		//split requirement at comparism operator, only one comparism allowed per requirement
-		int numOperators = 0;
-		char c;
-		String operator = "";
-		for(int i = 0; i < str.length(); i++) {
-			c = str.charAt(i);
-			if (c == '<' || c == '>') {
-				if(str.charAt(i+1) == '=') { // <= or >=
-					operator = String.format("%c=", c);
-					i++;
-				} else {
-					operator = String.format("%c", c);
-				}
-				numOperators++;
-			} else if (c == '=') {
-				numOperators++;
-				operator = "=";
-			} 
-		}
-		if(numOperators != 1) { //only 1 operator allowed
-			return false;
-		}
-		String[] operands = str.split(operator); 
-		if(operands.length != 2) {
-			return false;
-		}
-		/*for(String o : operands) {
-			System.out.println(o);
-		}*/
-		Requirement req = new Requirement(requirement);
-		return checkOperand(operands[0]) & checkOperand(operands[1]) & !(req.getVariables().isEmpty());
-	}
-	
-	/*
-	 * checks if the given operand of a requirement is valid.
-	 * this method is a helper function for isValidRequirement()
-	 */
-	private boolean checkOperand(String operand) {
-		int i; 
-		boolean result = true;
-		String rest = "";
-		Deque<Character> stack = new ArrayDeque<>(); //for finding matching parenthesis in filter
-		if(operand.startsWith("(")) { //if filter starts with parenthesis, find matching closing parenthesis
-			i = 0;
-			do {
-				if(operand.charAt(i) == '(') {
-					stack.push('(');
-				} else if(operand.charAt(i) == ')') {
-					stack.pop();
-				}
-				i++;
-			} while(!stack.isEmpty() && i < operand.length());
-			if(!stack.isEmpty()) { // unbalanced parantheses
-				return false;
-			}
-			rest = operand.substring(i);
-			result &= checkOperand(operand.substring(1, i-1));
-		} else {
-			String toCheck = operand;
-			String part1 = "", part2 = "";
-			i = 0;
-			System.out.println(operand);
-			while(i < operand.length()) {
-				if(operand.charAt(i) == '+' || operand.charAt(i) == '-' || operand.charAt(i) == '*' || operand.charAt(i) == '/') {
-					part1 = operand.substring(0, i);
-					part2 = operand.substring(i);
-					System.out.println(part1+ " und "+part2);
-					break;
-				}
-				i++;
-			}
-			if (part1.length() == 0 && part2.length() == 0) {
-				toCheck = operand;
-			} else {
-				if(part1.length() == 0 || part2.length() == 0) { //operand is a operation itself, so operands of operand cannot be empty
-					return false;
-				} else {
-					toCheck = part1;
-					rest = part2;
-				}
-			} 
-			if (!toCheck.matches("([A-Za-z_])([A-Za-z0-9_]*)")) { //check if String is valid variable
-				System.out.println(toCheck+ " ist keine variable");
-				if(!isNumeric(toCheck)) { //check if string is number
-					System.out.println(toCheck+ " ist keine zahl");
-					return false;
-				}
-			}
-		}
-		if(rest.length() > 0) {
-			if(!(rest.charAt(0) == '+' || rest.charAt(0) == '-' || rest.charAt(0) == '*' || rest.charAt(0) == '/')) {
-				return false;
-			}
-			result &= checkOperand(rest.substring(1));
-		}
-		return result;
-	}
-	
-	/*
-	 * checks if the given string is numeric
-	 */
-	private boolean isNumeric(String str) { 
-		  try {  
-		    Double.parseDouble(str);  
-		    return true;
-		  } catch(NumberFormatException e){  
-		    return false;  
-		  }  
 	}
 	
 	/**

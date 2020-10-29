@@ -13,20 +13,14 @@ import SkillGraph.Node;
  */
 public class SkillInsert {
 
-	private int depth;
-	private SkillInsert parent;
 	private List<Node> insertedSkills;
 	private List<Edge> insertedEdges;
 	private SkillProvider provider;
-	private int number;
 	
-	public SkillInsert(int depth, SkillInsert parent, List<Node> insertedSkills, List<Edge> insertedEdges, SkillProvider provider) {
+	public SkillInsert(List<Node> insertedSkills, List<Edge> insertedEdges, SkillProvider provider) {
 		this.insertedSkills = insertedSkills;
 		this.insertedEdges = insertedEdges; 
 		this.provider = provider;
-		this.depth = depth;
-		this.parent = parent;
-		this.number = 0;
 	}
 	
 	/**
@@ -74,24 +68,4 @@ public class SkillInsert {
 		return provider;
 	}
 	
-	public int getDepth() {
-		return depth;
-	}
-	public SkillInsert getParent() {
-		return parent;
-	}
-	
-	public int getNumber() {
-		return this.number;
-	}
-	
-	public void setNumber(int number) {
-		this.number = number;
-	}
-	
-	@Override
-	public String toString() {
-		String s = "(Depth: "+depth+" parent: "+parent;
-		return s;
-	}
 }

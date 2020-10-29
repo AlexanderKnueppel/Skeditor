@@ -39,7 +39,7 @@ public class HasRequirementSkillProvider extends RequirementSkillProvider {
 			
 			for(Node node : nodeMap.get(depth-1)) {
 				List<String> providedVars = new ArrayList<>();
-				providedVars.addAll(node.getProvidedVariables());
+				providedVars.addAll(node.getDefinedVariables());
 				providedVars.addAll(node.getRequiredVariables());
 				//providedVars.removeAll(requirement.getVariables());
 				String searchString = "";

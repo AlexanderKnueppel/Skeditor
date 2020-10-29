@@ -45,7 +45,7 @@ public class LabelProvider implements ITableLabelProvider{
 		Node node = (Node) element;
 		String defined = "";
 		String required = "";
-		for(String var : node.getProvidedVariables()) {
+		for(String var : node.getDefinedVariables()) {
 			if(defined.length() == 0) {
 				defined += var;
 			} else {
