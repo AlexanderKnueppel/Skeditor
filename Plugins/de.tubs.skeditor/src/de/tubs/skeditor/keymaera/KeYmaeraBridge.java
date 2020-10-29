@@ -17,7 +17,7 @@ import scala.collection.immutable.Map;
 public class KeYmaeraBridge {
 
 	static final edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXParser$ parser = edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXParser$.MODULE$;
-	static final edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXProblemParser$ problemParser = edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXProblemParser$.MODULE$;
+	static final edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXArchiveParser$ archiveParser = edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXArchiveParser$.MODULE$;
 	static final edu.cmu.cs.ls.keymaerax.parser.StringConverter$ stringConverter = edu.cmu.cs.ls.keymaerax.parser.StringConverter$.MODULE$;
 	static final edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXPrettyPrinter$ prettyPrinter = edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXPrettyPrinter$.MODULE$;
 	static final edu.cmu.cs.ls.keymaerax.btactics.TactixLibrary$ God = edu.cmu.cs.ls.keymaerax.btactics.TactixLibrary$.MODULE$;
@@ -33,7 +33,7 @@ public class KeYmaeraBridge {
 
 	public static Formula parseProgramFromFile(String filename) throws IOException {
 		String contents = new String(Files.readAllBytes(Paths.get(filename)));
-		return problemParser.apply(contents);
+		return archiveParser.parseAsFormula(contents);
 	}
 
 	public static Sequent parseSeqFromString(String content) {
@@ -41,7 +41,7 @@ public class KeYmaeraBridge {
 	}
 
 	public static Formula parseProgram(String contents) {
-		return problemParser.apply(contents);
+		return archiveParser.parseAsFormula(contents);
 	}
 
 	public static java.util.HashMap<String, String> getConfig() {
@@ -56,9 +56,9 @@ public class KeYmaeraBridge {
 	}
 
 	private void init() {
-		belleInterpreter.setInterpreter(new edu.cmu.cs.ls.keymaerax.bellerophon.SequentialInterpreter(edu.cmu.cs.ls.keymaerax.bellerophon.SequentialInterpreter.apply$default$1()));
+		//belleInterpreter.setInterpreter(new edu.cmu.cs.ls.keymaerax.bellerophon.SequentialInterpreter(edu.cmu.cs.ls.keymaerax.bellerophon.SequentialInterpreter.apply$default$1()));
 
-		edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider());
+		edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(null));
 		// edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$.setProvider(new
 		// edu.cmu.cs.ls.keymaerax.btactics.MathematicaToolProvider(toScalaMap(getConfig())));
 

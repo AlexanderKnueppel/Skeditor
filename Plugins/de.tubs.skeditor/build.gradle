@@ -1,0 +1,13 @@
+plugins {
+	id "de.undercouch.download" version "4.1.1"
+}
+
+tasks.register("downloadAntlr", Download) {
+    src 'https://repo1.maven.org/maven2/org/antlr/antlr4/4.7.1/antlr4-4.7.1-complete.jar'
+    dest 'libs/antlr-4.7.1-complete.jar'
+}
+
+tasks.register("downloadKeymaerax", Download) {
+    src 'https://www.ls.cs.cmu.edu/KeYmaeraX/keymaerax.jar'
+    dest 'libs'
+}
