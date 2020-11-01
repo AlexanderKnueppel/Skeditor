@@ -140,6 +140,7 @@ public class SynthesisOperation extends RecordingCommand{
 		Synthesis syn = new Synthesis();
 		Node rootNode = syn.synthesizeGraph(requirements);
 		unsatisfiableRequirements = syn.getUnsatisfiableRequirements();
+		System.out.println("unsatisfiable in opera: "+unsatisfiableRequirements );
 		rootNode.setName(file.getName().substring(0, name));
 		g.setRootNode(rootNode);
 		List<AddContext> addContextNodes = new ArrayList<>();

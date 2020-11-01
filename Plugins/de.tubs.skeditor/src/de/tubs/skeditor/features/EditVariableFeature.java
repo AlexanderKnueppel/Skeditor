@@ -58,7 +58,7 @@ public class EditVariableFeature extends AbstractCustomFeature{
 			if (bo instanceof Node) {
 				Node node = (Node) bo;
 				EditVariableListDialog ldialog = new EditVariableListDialog(getShell(), node);
-				ldialog.setTitle("Edit required and provided variables");
+				ldialog.setTitle("Edit required and defined variables");
 				ldialog.setContentProvider(new VariableContentProvider());
 				ldialog.setLabelProvider(new ColumnLabelProvider() {
 					@Override

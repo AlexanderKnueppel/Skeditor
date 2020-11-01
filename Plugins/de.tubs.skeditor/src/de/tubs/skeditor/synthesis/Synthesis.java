@@ -80,16 +80,19 @@ public class Synthesis {
 						forbiddenSkills.clear();
 					} else {
 						optimize_graph(rootNode); //optimize edges of graph
+						//System.out.println("Requirements: "+requirements);
 						requirements.removeAll(requirementSet);
 						unsatisfiableRequirements = requirements;
+						//System.out.println("unsatisfiable: "+unsatisfiableRequirements);
 						return newGraph;
 					}
 				}
 			}
 			
 		}
-		if(newGraph == null) {
+		if(newGraph == null) { // no requirement is satisfiable
 			newGraph = SynthesisUtil.createNode("ROOT", Category.MAIN);
+			unsatisfiableRequirements = requirements;
 		}
 		return newGraph;
 	}
@@ -338,7 +341,6 @@ public class Synthesis {
 			
 		}
 		
-		
 		//if the graph is not valid anymore, remove all inserted edges
 		if(!checkValidity()) {
 			System.out.println("Graph ist nicht mehr valide!");
@@ -397,7 +399,12 @@ public class Synthesis {
 			currentRequirementStrings[i] = currentRequirementList.get(i).getFormula();
 		}
 		currentRequirementStrings[i] = guarantees;
-		return prover.prove(toCheck, guarantees)&prover.check(currentRequirementStrings);
+		System.out.println("toProve ist: "+toCheck);
+		boolean result = true;
+		if(toCheck.length() > 0) {
+			result = prover.prove(toCheck, guarantees);
+		}
+		return result&prover.check(currentRequirementStrings);
 	}
 	
 	/*

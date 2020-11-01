@@ -86,6 +86,8 @@ public class TermProver{
 		lexer = new folLexer(CharStreams.fromString(toProve));
 		parser = new folParser(new CommonTokenStream(lexer));
 		expr = (BoolExpr)myVisitor.visit(parser.condition());
+		System.out.println("Expr toProve: "+expr);
+		System.out.println("toProve: "+toProve);
 		solver.add(getContext().mkNot(expr));
 		Status result = solver.check();
 		switch(result) {

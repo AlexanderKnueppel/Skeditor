@@ -20,9 +20,7 @@ public class HasRequirementSkillProvider extends RequirementSkillProvider {
 		if(depth == 1) {
 			
 			String skillname = requirement.getFormula().split("\"", 3)[1];
-			System.out.println("Skillname:"+skillname);
 			String searchString = "name=\""+skillname.replace("_", " ")+"\"";
-			System.out.println("Searchstring depth"+depth+" "+searchString);
 			if(skillname.length() > 0) {
 				try {
 					for(Node n : searcher.searchSkills(searchString)) {
@@ -41,7 +39,6 @@ public class HasRequirementSkillProvider extends RequirementSkillProvider {
 				List<String> providedVars = new ArrayList<>();
 				providedVars.addAll(node.getDefinedVariables());
 				providedVars.addAll(node.getRequiredVariables());
-				//providedVars.removeAll(requirement.getVariables());
 				String searchString = "";
 				for (String var : providedVars) {
 					if(searchString.length() == 0) {
@@ -51,7 +48,6 @@ public class HasRequirementSkillProvider extends RequirementSkillProvider {
 					}
 					
 				}
-				//System.out.println("SUCHE HAS REQUIREMENT: "+searchString);
 				try {
 					if(searchString.length() > 0) {
 						for(Node n : searcher.searchSkills(searchString)) {

@@ -81,10 +81,13 @@ public class GraphSynthesisWizard extends Wizard implements INewWizard {
 		}
 		if(unsatisfiables.size() > 0) {
 			System.out.println("unsatisfiables gefunden");
+			System.out.println("unsatisfiable in wizard: "+unsatisfiables );
 			String warnMsg = "The following requirements cannot be satisfied:";
 			for(Requirement unsatisfiable : unsatisfiables) {
 				warnMsg += "\n"+unsatisfiable.getFormula();
 			}
+			System.out.println("warnmsg: "+warnMsg);
+			warnMsg = warnMsg.replace("&", "&&"); // we have to do this, otherwise the dialog does not show the '&'
 			MessageDialog.openWarning(getShell(), "Warning", warnMsg);
 		}
 		return true;
