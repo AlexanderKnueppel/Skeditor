@@ -149,7 +149,7 @@ public class Synthesis {
 				RequirementInsert requirementInsert = null;
 					
 					if(insertedEdges.size() > 0) {//wenn ein knoten eingefügt wurde, danna auch safe ne kante, wenn keine kanten, dann auch keine knoten
-						requirementInsert = new RequirementInsert(insertedNodes, insertedEdges, currentRequirement, requirementProvider);
+						requirementInsert = new RequirementInsert(currentRequirement, insertedNodes, insertedEdges);
 					} 
 					if(requirementInsert != null) { //remember insertion in stack if at least one edge was inserted
 						insertStack.push(requirementInsert);
@@ -229,7 +229,7 @@ public class Synthesis {
 					boolean returnValue = true;
 					
 					if(insertedEdges.size() > 0) {//wenn ein knoten eingefügt wurde, danna auch safe ne kante, wenn keine kanten, dann auch keine knoten
-						variableInsert = new DependencyInsert(node, insertedNodes, insertedEdges, variableProvider); 
+						variableInsert = new DependencyInsert(requiredVar, insertedNodes, insertedEdges); 
 						variableInserts.add(variableInsert);
 					}
 					if(variableInsert != null) {

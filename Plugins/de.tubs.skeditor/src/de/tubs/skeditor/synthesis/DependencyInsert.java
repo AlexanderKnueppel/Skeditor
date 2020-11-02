@@ -13,22 +13,11 @@ import SkillGraph.Node;
  */
 public class DependencyInsert extends SkillInsert {
 
-	private final Node node;
 	private final String variable;
 
-	public DependencyInsert(Node node, List<Node> insertedSkills, List<Edge> insertedEdges, VariableSkillProvider provider) {
-		super(insertedSkills, insertedEdges, provider);
-		this.node = node;
-		this.variable = provider.getRequiredVariable();
-	}
-	
-	/**
-	 * Returns the skill that has the dependency
-	 * 
-	 * @return the node with dependency
-	 */
-	public Node getNode() {
-		return this.node;
+	public DependencyInsert(String variable, List<Node> insertedSkills, List<Edge> insertedEdges) {
+		super(insertedSkills, insertedEdges);
+		this.variable = variable;
 	}
 	
 	/**
@@ -43,7 +32,7 @@ public class DependencyInsert extends SkillInsert {
 	@Override
 	public String toString() {
 		String s = super.toString();
-		s += "node: "+node.getName()+" variable: "+variable;
+		s += "variable: "+variable;
 		return s;
 	}
 	

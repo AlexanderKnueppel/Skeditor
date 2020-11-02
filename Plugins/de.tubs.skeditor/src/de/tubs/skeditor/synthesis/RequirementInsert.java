@@ -10,8 +10,8 @@ public class RequirementInsert extends SkillInsert {
 	private final Requirement req;
 
 	
-	public RequirementInsert(List<Node> insertedNodes, List<Edge> insertedEdges, Requirement req, SkillProvider provider) {
-		super(insertedNodes, insertedEdges, provider);
+	public RequirementInsert(Requirement req, List<Node> insertedNodes, List<Edge> insertedEdges) {
+		super(insertedNodes, insertedEdges);
 		this.req = req;
 	}
 	
