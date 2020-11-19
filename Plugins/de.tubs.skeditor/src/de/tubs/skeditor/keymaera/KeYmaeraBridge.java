@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 import edu.cmu.cs.ls.keymaerax.bellerophon.BelleExpr;
-import edu.cmu.cs.ls.keymaerax.btactics.DerivationInfoRegistry;
 import edu.cmu.cs.ls.keymaerax.core.Formula;
 import edu.cmu.cs.ls.keymaerax.core.Sequent;
 import edu.cmu.cs.ls.keymaerax.parser.ParsedArchiveEntry;
@@ -19,19 +18,6 @@ import scala.collection.mutable.Buffer;
 
 
 public class KeYmaeraBridge {
-	
-	//static final edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXParser$ parser = edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXParser$.MODULE$;
-	static final edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXArchiveParser$ archiveParser = edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXArchiveParser$.MODULE$;
-	static final edu.cmu.cs.ls.keymaerax.parser.StringConverter$ stringConverter = edu.cmu.cs.ls.keymaerax.parser.StringConverter$.MODULE$;
-	//static final edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXPrettyPrinter$ prettyPrinter = edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXPrettyPrinter$.MODULE$;
-	static edu.cmu.cs.ls.keymaerax.btactics.TactixLibrary$ God;
-	static edu.cmu.cs.ls.keymaerax.btactics.AxiomaticODESolver$ axiomSolver;
-	static edu.cmu.cs.ls.keymaerax.btactics.DifferentialTactics$ diffTactics;
-	static edu.cmu.cs.ls.keymaerax.pt.ProvableSig$ provSig;
-	
-	//static final BelleExpr master = God.master(God.master$default$1(), God.master$default$2());
-
-	static final edu.cmu.cs.ls.keymaerax.bellerophon.BelleInterpreter$ belleInterpreter = edu.cmu.cs.ls.keymaerax.bellerophon.BelleInterpreter$.MODULE$;
 	
 	private static final KeYmaeraBridge instance = new KeYmaeraBridge();
 
@@ -72,7 +58,7 @@ public class KeYmaeraBridge {
 	
 	public static java.util.HashMap<String, String> getZ3Config() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
-		c.put("z3Path", "C:\\z3\\bin\\z3.exe"); // path
+		c.put("z3Path", "C:\\Users\\Dibo\\.keymaerax\\z3.exe"); // path
 		return c;
 	}
 	
@@ -81,22 +67,13 @@ public class KeYmaeraBridge {
 	}
 
 	private void init() {
-		DerivationInfoRegistry.init(false);
-		
-		God = edu.cmu.cs.ls.keymaerax.btactics.TactixLibrary$.MODULE$;
-		axiomSolver = edu.cmu.cs.ls.keymaerax.btactics.AxiomaticODESolver$.MODULE$;
-		diffTactics = edu.cmu.cs.ls.keymaerax.btactics.DifferentialTactics$.MODULE$;
-		provSig = edu.cmu.cs.ls.keymaerax.pt.ProvableSig$.MODULE$;
-		
-		//master = God.master(God.master$default$1(), God.master$default$2());
-		
 		edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
 			.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
 
-		/*
+		
 		edu.cmu.cs.ls.keymaerax.Configuration$.MODULE$
 			.setConfiguration(edu.cmu.cs.ls.keymaerax.FileConfiguration$.MODULE$);
-		*/
+		
 		
 		HashMap<String, String> javaConfig = new HashMap<String, String>();
 		javaConfig.put(edu.cmu.cs.ls.keymaerax.tools.KeYmaeraXTool.INIT_DERIVATION_INFO_REGISTRY(), "false");
@@ -161,34 +138,4 @@ public class KeYmaeraBridge {
 		return proveAutomatically(parseProgramAsFormula(dm.createKeYmaeraProgram(precondition, postcondition)));
 	}
 	
-	public static void main(String[] Args) {
-
-		String contents = "ArchiveEntry \"Static semantics correctness: Assignment 1\"\r\n" + "\r\n"
-				+ "Description \"Basic assignment\".\r\n" + "\r\n" + "ProgramVariables\r\n" + "  Real x;\r\n"
-				+ "End.\r\n" + "\r\n" + "Problem\r\n" + "  x>=0 -> [x:=x+1;]x>=1\r\n" + "End.\r\nEnd.";
-
-		ProvableSig proof = KeYmaeraBridge.getInstance()
-				.proveAutomatically(KeYmaeraBridge.getInstance().parseProgramAsFormula(contents));
-
-		if (proof.isProved()) {
-			System.out.println("Proved!!!");
-			System.out.println("Steps = " + proof.steps());
-			System.out.println("Proof: ");
-			System.out.println(proof.prettyString());
-		}
-
-		try {
-			for (Object entry : KeYmaeraBridge.toJavaList(
-					KeYmaeraBridge.getInstance().parseProgramsFromFileAsEntries("resources/simple_proof.kyx").toBuffer())) {
-				ParsedArchiveEntry archiveEntry = (ParsedArchiveEntry)entry;
-				
-				KeYmaeraBridge.getInstance().getProof(archiveEntry);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// KeYmaeraBridge.getInstance().getProof(entry)
-	}
-
 }
