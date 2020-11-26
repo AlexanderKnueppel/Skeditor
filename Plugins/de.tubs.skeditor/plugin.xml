@@ -66,6 +66,14 @@
       </view>
    </extension>
    <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="de.tubs.skeditor.views.VariableView"
+            id="de.tubs.skeditor.views.VariableView"
+            name="Variables">
+      </view>
+   </extension>
+   <extension
          point="org.eclipse.ui.editors">
       <editor
             class="de.tubs.skeditor.diagram.SkeditorDiagramEditor"
@@ -103,6 +111,13 @@
             icon="icons/skeditor16.png"
             id="de.tubs.skeditor.newcompose"
             name="Skeditor Compose">
+      </wizard>
+      <wizard
+            category="de.tubs.skeditor.category.skeditor"
+            class="de.tubs.skeditor.wizards.GraphSynthesisWizard"
+            icon="icons/skeditor16.png"
+            id="de.tubs.skeditor.graphsynthesis"
+            name="Skeditor Graph Synthesis">
       </wizard>
    </extension>
    <extension
