@@ -2,19 +2,20 @@ package de.tubs.skeditor.preferences;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * Group of the widgets to select a prover and specify their paths
+ * @author Dibo Gonda
+ *
+ */
 public class SelectProverGroup extends Group {
 	
-//    private Button selectZ3RadioButton;
-//    private Button selectZ3BrowseButton;
-//    private Button selectMathematicaRadioButton;
-//    private Button selectMathematicaBrowseButton;
-
 	public SelectProverGroup(Composite parent, int style) {
 		super(parent, style);
 		setText("Select preferred prover");
@@ -29,28 +30,7 @@ public class SelectProverGroup extends Group {
 		RadioButtonAndFileBrowserComposite mathematicaComposite = new RadioButtonAndFileBrowserComposite(this, 0, "Mathematica");
 		mathematicaComposite.pack();
 		
-//		selectZ3RadioButton = new Button(this, SWT.RADIO);
-//		selectZ3RadioButton.setText("z3");
-//		selectZ3RadioButton.setLocation(20, 20);
-//		selectZ3RadioButton.pack();
-//		
-//		selectZ3BrowseButton = new Button(this, SWT.PUSH);
-//		selectZ3BrowseButton.setText("Browse...");
-//		selectZ3BrowseButton.setLocation(60, 20);
-//		selectZ3BrowseButton.pack();
-//
-//		selectMathematicaRadioButton = new Button(this, SWT.RADIO);
-//		selectMathematicaRadioButton.setText("Mathematica");
-//		selectZ3RadioButton.setLocation(20, 40);
-//		selectMathematicaRadioButton.pack();
-//		
-//		selectMathematicaBrowseButton = new Button(this, SWT.PUSH);
-//		selectMathematicaBrowseButton.setText("Browse...");
-//		selectZ3RadioButton.setLocation(60, 40);
-//		selectMathematicaBrowseButton.pack();
-
-		this.pack();
-		
+		this.pack();	
 	}
 	
 	private class RadioButtonAndFileBrowserComposite extends Composite {		
@@ -60,12 +40,16 @@ public class SelectProverGroup extends Group {
 			
 			Button radioButton = new Button(this, SWT.RADIO);
 			radioButton.setText(radioButtonName);
+			RowData buttonLayoutData = new RowData();
+			buttonLayoutData.width = 100;
+	        radioButton.setLayoutData(buttonLayoutData);
 			radioButton.pack();
-			
-			// TODO right alignment
-			
-			//Text directoryText = new Text(this, style);
-			//directoryText.pack();
+						
+			Text directoryText = new Text(this, SWT.BORDER);
+			RowData textLayoutData = new RowData();
+			textLayoutData.width = 200;
+	        directoryText.setLayoutData(textLayoutData);
+			directoryText.pack();
 			
 			Button browseButton = new Button(this, SWT.PUSH);
 			browseButton.setText("Browse...");
@@ -76,7 +60,6 @@ public class SelectProverGroup extends Group {
     @Override
     protected void checkSubclass() {
         //  allow subclass
-        System.out.println("info   : checking menu subclass");
     }
 
 }
