@@ -16,7 +16,7 @@ public class RadioButtonListener extends SelectionAdapter {
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource() instanceof Button) {
 			Button selectedRadioButton = (Button) e.getSource();
-			selectProverGroup.selectButtonExclusively(selectedRadioButton);
+			//selectProverGroup.selectButtonExclusively(selectedRadioButton);
 		}
 	}
 

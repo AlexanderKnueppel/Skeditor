@@ -18,7 +18,7 @@ public class SkeditorPreferencePage extends PreferencePage implements IWorkbench
 	@Override
 	protected Control createContents(Composite parent) {
 		this.settingsComposite = new SkeditorSettingsComposite(parent, 0);
-		setDefaultValues();
+		//setDefaultValues();
 		return this.settingsComposite;
 	}
 
