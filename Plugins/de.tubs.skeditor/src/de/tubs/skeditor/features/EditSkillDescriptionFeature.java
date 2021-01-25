@@ -98,8 +98,8 @@ public class EditSkillDescriptionFeature extends AbstractCustomFeature {
 				
 				String content = "";
 				
-				if(node.getSdlModel() != null) {
-					content = node.getSdlModel();
+				if(node.getSDLModel() != null) {
+					content = node.getSDLModel();
 				} else {
 					String name = node.getName();
 					String type = getSDLCategory(node.getCategory().getName());
@@ -114,7 +114,7 @@ public class EditSkillDescriptionFeature extends AbstractCustomFeature {
 				try {
 					String changedModel = descHandler.openDialog(content);
 					if(changedModel != null) {
-						node.setSdlModel(changedModel);
+						node.setSDLModel(changedModel);
 					}
 					getFeatureProvider().getDiagramTypeProvider().getDiagramBehavior().refresh();
 				} catch (IOException e) {
