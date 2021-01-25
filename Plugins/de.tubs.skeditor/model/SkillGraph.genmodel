@@ -45,6 +45,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Node/controller"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Node/requiredVariables"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Node/definedVariables"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Node/SDLModel"/>
     </genClasses>
     <genClasses ecoreClass="SkillGraph.ecore#//Requirement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Requirement/comment"/>
