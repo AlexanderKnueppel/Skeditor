@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: de.tubs.skeditor.sdl
+Bundle-ManifestVersion: 2
+Bundle-Name: de.tubs.skeditor.sdl
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: de.tubs.skeditor.sdl; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ org.eclipse.xtext.util,
+ org.eclipse.emf.common,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: de.tubs.skeditor.sdl,
+ de.tubs.skeditor.sdl.util,
+ de.tubs.skeditor.generator,
+ de.tubs.skeditor.services,
+ de.tubs.skeditor.scoping,
+ de.tubs.skeditor.parser.antlr,
+ de.tubs.skeditor.sdl.impl,
+ de.tubs.skeditor.parser.antlr.internal,
+ de.tubs.skeditor,
+ de.tubs.skeditor.serializer,
+ de.tubs.skeditor.validation
+Import-Package: org.apache.log4j
