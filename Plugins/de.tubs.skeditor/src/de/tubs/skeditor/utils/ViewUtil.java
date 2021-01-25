@@ -10,6 +10,7 @@ import SkillGraph.Node;
 import de.tubs.skeditor.views.DynamicModelView;
 import de.tubs.skeditor.views.ParameterListView;
 import de.tubs.skeditor.views.SafetyGoalsView;
+import de.tubs.skeditor.views.VariableView;
 
 public class ViewUtil {
 	public static void updateSafetyGoalsView() {
@@ -47,6 +48,12 @@ public class ViewUtil {
 				view.refresh();
 			} else if (iViewReference.getId().equals("de.tubs.skeditor.views.ParameterListView")) {
 				TableViewer view = ((ParameterListView) iViewReference.getView(true)).getViewer();
+				if (view.getInput() == null || !view.getInput().equals(graph)) {
+					view.setInput(graph);
+				}
+				view.refresh();
+			} else if (iViewReference.getId().equals("de.tubs.skeditor.views.VariableView")) {
+				TableViewer view = ((VariableView) iViewReference.getView(true)).getViewer();
 				if (view.getInput() == null || !view.getInput().equals(graph)) {
 					view.setInput(graph);
 				}

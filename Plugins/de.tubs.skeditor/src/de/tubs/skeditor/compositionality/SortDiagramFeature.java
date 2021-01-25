@@ -34,7 +34,7 @@ public class SortDiagramFeature extends AbstractCustomFeature{
 		
 	}
 	
-	static CompoundDirectedGraph mapSkillGraphToGraph(ContainerShape c) {
+	public static CompoundDirectedGraph mapSkillGraphToGraph(ContainerShape c) {
         Map<AnchorContainer, Node> shapeToNode = new HashMap<AnchorContainer, Node>();
         CompoundDirectedGraph dg = new CompoundDirectedGraph();
         EdgeList edgeList = new EdgeList();
@@ -83,7 +83,7 @@ public class SortDiagramFeature extends AbstractCustomFeature{
         return dg;
     }
 	
-    static void mapGraphCoordinatesToSkillGraph(CompoundDirectedGraph graph) {
+    public static void mapGraphCoordinatesToSkillGraph(CompoundDirectedGraph graph) {
         NodeList myNodes = new NodeList();
         myNodes.addAll(graph.nodes);
         myNodes.addAll(graph.subgraphs);

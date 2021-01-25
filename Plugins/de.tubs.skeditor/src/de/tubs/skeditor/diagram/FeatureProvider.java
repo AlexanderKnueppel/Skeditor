@@ -37,6 +37,7 @@ import de.tubs.skeditor.features.DeleteFeature;
 import de.tubs.skeditor.features.DirectEditingNodeFeature;
 import de.tubs.skeditor.features.EditControllerFeature;
 import de.tubs.skeditor.features.EditSkillDescriptionFeature;
+import de.tubs.skeditor.features.EditVariableFeature;
 import de.tubs.skeditor.features.ExportFeature;
 import de.tubs.skeditor.features.LayoutNodeFeature;
 import de.tubs.skeditor.features.ReconnectionFeature;
@@ -123,6 +124,7 @@ public class FeatureProvider extends DefaultFeatureProvider {
 		customFeatures.add(new RunKeymaeraCheckFeature(this));
 		customFeatures.add(new EditControllerFeature(this));
 		customFeatures.add(new EditSkillDescriptionFeature(this));
+		customFeatures.add(new EditVariableFeature(this));
 		customFeatures.add(new CreateKeymaeraFileFeature(this));
 		customFeatures.add(new SetRootNodeFeature(this));
 		return customFeatures.toArray(new ICustomFeature[customFeatures.size()]);

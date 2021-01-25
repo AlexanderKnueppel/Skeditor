@@ -25,12 +25,12 @@ public class ContractPropagator {
 
 		if (GraphUtil.getChildNodes(node).isEmpty()) {
 			if (node.getRequirements().isEmpty()) {
-				safe = "true";
+				safe = "\\true";
 			} else {
 				safe = node.getRequirements().stream().map(n -> n.getTerm().toString())
 						.collect(Collectors.joining(" & "));
 			}
-			return new Contract("true", safe);
+			return new Contract("\\true", safe);
 		} else {
 			List<String> guarantees = GraphUtil.getChildNodes(node).stream().map(n -> computeContract(n).getGuarantee()).collect(Collectors.toList());
 			

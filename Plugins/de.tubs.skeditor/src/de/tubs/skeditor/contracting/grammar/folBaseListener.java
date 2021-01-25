@@ -40,6 +40,18 @@ public class folBaseListener implements folListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterHascondition(folParser.HasconditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitHascondition(folParser.HasconditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterQuantifier(folParser.QuantifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -83,6 +95,18 @@ public class folBaseListener implements folListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTupelformula(folParser.TupelformulaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBoolexpression(folParser.BoolexpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBoolexpression(folParser.BoolexpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -143,18 +167,6 @@ public class folBaseListener implements folListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPowerformula(folParser.PowerformulaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNotterm(folParser.NottermContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNotterm(folParser.NottermContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

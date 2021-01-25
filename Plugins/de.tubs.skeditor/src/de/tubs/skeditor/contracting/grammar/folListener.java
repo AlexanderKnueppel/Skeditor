@@ -28,6 +28,16 @@ public interface folListener extends ParseTreeListener {
 	 */
 	void exitFormula(folParser.FormulaContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link folParser#hascondition}.
+	 * @param ctx the parse tree
+	 */
+	void enterHascondition(folParser.HasconditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link folParser#hascondition}.
+	 * @param ctx the parse tree
+	 */
+	void exitHascondition(folParser.HasconditionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link folParser#quantifier}.
 	 * @param ctx the parse tree
 	 */
@@ -67,6 +77,16 @@ public interface folListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTupelformula(folParser.TupelformulaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link folParser#boolexpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolexpression(folParser.BoolexpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link folParser#boolexpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolexpression(folParser.BoolexpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link folParser#compareformula}.
 	 * @param ctx the parse tree
@@ -117,16 +137,6 @@ public interface folListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPowerformula(folParser.PowerformulaContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link folParser#notterm}.
-	 * @param ctx the parse tree
-	 */
-	void enterNotterm(folParser.NottermContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link folParser#notterm}.
-	 * @param ctx the parse tree
-	 */
-	void exitNotterm(folParser.NottermContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link folParser#term}.
 	 * @param ctx the parse tree

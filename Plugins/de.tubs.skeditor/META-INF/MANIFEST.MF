@@ -6,7 +6,8 @@ Automatic-Module-Name: de.tubs.skeditor
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .,
  libs/keymaerax.jar,
- libs/antlr-4.7.1-complete.jar
+ libs/antlr-4.7.1-complete.jar,
+ libs/com.microsoft.z3.jar
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.graphiti;bundle-version="0.14.0",

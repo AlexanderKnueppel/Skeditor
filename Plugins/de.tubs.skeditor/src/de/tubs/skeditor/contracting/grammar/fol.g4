@@ -14,26 +14,29 @@ condition
 formula
 :
 	'"' formula '"' 
-	| tupelformula
+	//| tupelformula
 	| connectiveformula
 	| quantifier
-	| operatorformula
-	| pred_constant LPAREN term
+	//| operatorformula
+	//| hasconditionformula
+	//| pred_constant LPAREN term
 	
-	(
-		';' term
-	)* RPAREN
+	//(
+		//';' term
+	//)* RPAREN
 ;
 
+hascondition
+:
+	'has' LPAREN STRING RPAREN
+;
 quantifier
 :
-	QUANTIFER TYPE? IDENTIFIER
+	QUANTIFER LPAREN TYPE? IDENTIFIER
 	(
 		';' TYPE? IDENTIFIER
-	)*
-	(
-		';' formula
-	)? ';' formula
+	)* RPAREN
+	LPAREN formula RPAREN
 ;
 
 operatorformula
@@ -46,12 +49,8 @@ operatorformula
 
 connectiveformula
 :
-	(
-		compareformula
-		(
-			connectoperator compareformula
-		)*
-	)
+	boolexpression (connectoperator connectiveformula)*
+	| NOT? LPAREN connectiveformula RPAREN (connectoperator connectiveformula)*
 	
 ;
  
@@ -67,8 +66,21 @@ tupelformula
 	)
 ;
 
+boolexpression
+:
+	(
+	| NOT boolexpression
+	| hascondition
+	| compareformula
+	| quantifier
+	| TRUE
+	| FALSE
+	)
+;
 compareformula
 :
+LPAREN compareformula RPAREN
+	|
 	(
 		summformula
 		(
@@ -87,43 +99,40 @@ tupel
 
 summformula
 :
+LPAREN summformula RPAREN
+	|
 	(
 		faktorformula
 		(
-			addoperator faktorformula
+			addoperator summformula
 		)*
 	)
 ;
 
 faktorformula
 :
+	LPAREN faktorformula RPAREN
+	|
 	(
 		powerformula
 		(
-			multoperator powerformula
+			multoperator faktorformula
 		)*
 	)
 ;
 
 powerformula
 :
+	LPAREN powerformula LPAREN
+	|
 	(
-		notterm
+		term
 		(
-			POWER notterm
+			POWER powerformula
 		)*
 	)
 ;
-
-notterm
-:
-	term
-	|
-	(
-		NOT term
-	)
-;
-
+	
 term
 :
 	compproperty
@@ -140,17 +149,15 @@ term
 			term
 		) RPAREN
 	)
-	| TRUE
-	| FALSE
-	| STRING
+	//| STRING
 	|
 	(
 		LPAREN term RPAREN
 	)
-	|
-	(
-		LPAREN formula RPAREN
-	)
+	//|
+	//(
+		//LPAREN formula RPAREN
+	//)
 ;
 
 array
@@ -322,7 +329,7 @@ IDENTIFIER
 
 NUMBER
 :
-	[0-9]+
+	[0-9]+ ('.' [0-9]+)?
 ;
 
 LPAREN
@@ -381,6 +388,7 @@ CHARACTER
 	| [A-Z]
 	| [a-z]
 	| '.'
+	| '_'
 ;
 
 CONJ
@@ -431,3 +439,4 @@ WHITESPACE
 		| '\n'
 	)+ -> skip
 ; 
+
