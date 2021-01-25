@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.graphiti;bundle-version="0.14.0",
  org.eclipse.ui.ide;bundle-version="3.14.0",
  org.eclipse.emf.common,
  com.google.guava,
- org.junit
+ org.junit,
+ org.eclipse.emf.mwe.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: SkillGraph,
@@ -29,3 +30,5 @@ Export-Package: SkillGraph,
  SkillGraph.util,
  de.tubs.skeditor
 Bundle-Activator: de.tubs.skeditor.Activator
+Import-Package: de.tubs.skeditor.sdl,
+ de.tubs.skeditor.ui.handler

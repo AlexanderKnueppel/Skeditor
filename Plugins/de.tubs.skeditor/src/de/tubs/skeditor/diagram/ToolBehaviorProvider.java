@@ -43,6 +43,7 @@ import de.tubs.skeditor.features.AddSafetyRequirementsFeature;
 import de.tubs.skeditor.features.ChangeCategoryFeature;
 import de.tubs.skeditor.features.CreateKeymaeraFileFeature;
 import de.tubs.skeditor.features.EditControllerFeature;
+import de.tubs.skeditor.features.EditSkillDescriptionFeature;
 import de.tubs.skeditor.features.ExportFeature;
 import de.tubs.skeditor.features.RunKeymaeraCheckFeature;
 import de.tubs.skeditor.features.SetRootNodeFeature;
@@ -64,6 +65,8 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 			} else if (customFeature instanceof RunKeymaeraCheckFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof EditControllerFeature) {
+				entries.add(new ContextMenuEntry(customFeature, context));
+			} else if (customFeature instanceof EditSkillDescriptionFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof CreateKeymaeraFileFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));

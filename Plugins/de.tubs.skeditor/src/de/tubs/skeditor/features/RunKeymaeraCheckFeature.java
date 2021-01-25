@@ -119,8 +119,8 @@ public class RunKeymaeraCheckFeature extends AbstractCustomFeature {
 			KeymaeraString keyString = new KeymaeraString(bo);
 			String dynamicModelString = keyString.getString();
 			System.out.println(dynamicModelString);
-			KeYmaeraBridge bridge = new KeYmaeraBridge();
-			ProvableSig f = bridge.prove(KeYmaeraBridge.parseProgram(dynamicModelString));
+			KeYmaeraBridge bridge = KeYmaeraBridge.getInstance();
+			ProvableSig f = bridge.proveAutomatically(bridge.parseProgramAsFormula(dynamicModelString));
 			System.out.println(f.prettyString());
 			if (f.isProved()) {
 				MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Success!", "Equations are provable!\n\n" + f.prettyString());
