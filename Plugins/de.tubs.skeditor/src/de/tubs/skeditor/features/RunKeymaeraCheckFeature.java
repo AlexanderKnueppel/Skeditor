@@ -119,7 +119,7 @@ public class RunKeymaeraCheckFeature extends AbstractCustomFeature {
 			KeymaeraString keyString = new KeymaeraString(bo);
 			String dynamicModelString = keyString.getString();
 			System.out.println(dynamicModelString);
-			KeYmaeraBridge bridge = new KeYmaeraBridge();
+			KeYmaeraBridge bridge = KeYmaeraBridge.getInstance();
 			ProvableSig f = bridge.proveAutomatically(KeYmaeraBridge.parseProgramAsFormula(dynamicModelString));
 			System.out.println(f.prettyString());
 			if (f.isProved()) {

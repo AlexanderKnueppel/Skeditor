@@ -45,8 +45,8 @@ public class KeYmaeraBridge {
 	public static java.util.HashMap<String, String> getMathematicaConfig() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
 
-		c.put("linkName", SkeditorSettings.getMathematicaExe());
-		c.put("libDir", SkeditorSettings.getMathematicaLibs());
+		c.put("linkName", SkeditorSettings.getInstance().getMathematicaExe());
+		c.put("libDir", SkeditorSettings.getInstance().getMathematicaLibs());
 
 //		c.put("linkName", "C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\MathKernel.exe"); // path
 //		c.put("libDir",
@@ -61,7 +61,7 @@ public class KeYmaeraBridge {
 
 	public static java.util.HashMap<String, String> getZ3Config() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
-		c.put("z3Path", SkeditorSettings.getZ3Exe());
+		c.put("z3Path", SkeditorSettings.getInstance().getZ3Exe());
 		// c.put("z3Path", "C:\\Users\\Dibo\\.keymaerax\\z3.exe"); // path
 		return c;
 	}
@@ -91,13 +91,16 @@ public class KeYmaeraBridge {
 	}
 	
 	public void setProver() {
-		//settings abfragen
-		edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
-		.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
-		
-		edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
-		.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.MathematicaToolProvider(toScalaMap(getMathematicaConfig())));
-
+		switch(SkeditorSettings.getInstance().getSelectedProver()) {
+		case "z3":
+			edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
+			.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
+			break;
+		case "mathematica":
+			edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
+			.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.MathematicaToolProvider(toScalaMap(getMathematicaConfig())));	
+			break;
+		}
 	}
 
 	private KeYmaeraBridge() {
