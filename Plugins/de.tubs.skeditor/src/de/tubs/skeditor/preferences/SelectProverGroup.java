@@ -34,7 +34,7 @@ public class SelectProverGroup extends Group {
 
 	public SelectProverGroup(Composite parent, int style) {
 		super(parent, style);
-		setText("Select KeymaeraX prover (.exe)");
+		setText("Select KeymaeraX prover binary");
 		setLayout(new RowLayout(SWT.VERTICAL));
 		createWidgets();
 	}
@@ -46,15 +46,9 @@ public class SelectProverGroup extends Group {
 
 		RadioButtonAndFileBrowserComposite z3Composite = new RadioButtonAndFileBrowserComposite(this, 0, "z3");
 		z3Composite.pack();
-
 		RadioButtonAndFileBrowserComposite mathematicaComposite = new RadioButtonAndFileBrowserComposite(this, 0,
 				"mathematica");
 		mathematicaComposite.pack();
-
-//		RadioButtonAndFileBrowserComposite secondMathematicaComposite = new RadioButtonAndFileBrowserComposite(this, 0,
-//				"");
-//		secondMathematicaComposite.pack();
-
 		this.pack();
 	}
 
@@ -127,7 +121,6 @@ public class SelectProverGroup extends Group {
 			directoryText.addModifyListener(new ModifyListener() {
 				@Override
 				public void modifyText(ModifyEvent e) {
-					//System.out.println("TEST " + ((Text) e.widget).getText());
 					String input = ((Text) e.widget).getText();
 					switch (radioButtonName) {
 					case "z3":
@@ -138,7 +131,6 @@ public class SelectProverGroup extends Group {
 						break;
 					}
 				}
-
 			});
 
 			switch (radioButtonName) {

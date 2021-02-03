@@ -44,13 +44,8 @@ public class KeYmaeraBridge {
 
 	public static java.util.HashMap<String, String> getMathematicaConfig() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
-
 		c.put("linkName", SkeditorSettings.getInstance().getMathematicaExe());
 		c.put("libDir", SkeditorSettings.getInstance().getMathematicaLibs());
-
-//		c.put("linkName", "C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\MathKernel.exe"); // path
-//		c.put("libDir",
-//				"C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\SystemFiles\\Links\\JLink\\SystemFiles\\Libraries\\Windows-x86-64\\"); // path
 		return c;
 	}
 
@@ -62,7 +57,6 @@ public class KeYmaeraBridge {
 	public static java.util.HashMap<String, String> getZ3Config() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
 		c.put("z3Path", SkeditorSettings.getInstance().getZ3Exe());
-		// c.put("z3Path", "C:\\Users\\Dibo\\.keymaerax\\z3.exe"); // path
 		return c;
 	}
 

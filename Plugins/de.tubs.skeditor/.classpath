@@ -9,7 +9,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="libs/keymaerax.jar" sourcepath="libs/keymaerax.jar"/>
-	<classpathentry kind="lib" path="C:/GitHub/Skeditor/Plugins/de.tubs.skeditor/libs/com.microsoft.z3.jar"/>
+  <classpathentry kind="lib" path="libs/z3/com.microsoft.z3.jar"/>
 	<classpathentry kind="lib" path="libs/antlr-4.7.1-complete.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
