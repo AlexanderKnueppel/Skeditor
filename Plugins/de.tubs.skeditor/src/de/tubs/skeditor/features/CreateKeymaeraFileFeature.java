@@ -22,11 +22,7 @@ import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 import SkillGraph.Node;
-import de.tubs.skeditor.compositionality.KeymaeraString;
-import de.tubs.skeditor.keymaera.KeYmaeraModel;
 import de.tubs.skeditor.keymaera.assembler.HybridProgramAssembler;
-import de.tubs.skeditor.sdl.SDLModel;
-import de.tubs.skeditor.ui.handler.SkillDescriptionLanguageHandler;
 
 public class CreateKeymaeraFileFeature extends AbstractCustomFeature {
 
