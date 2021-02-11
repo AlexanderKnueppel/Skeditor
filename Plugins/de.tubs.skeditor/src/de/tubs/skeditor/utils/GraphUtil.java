@@ -1,17 +1,105 @@
 package de.tubs.skeditor.utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 
 import SkillGraph.Edge;
 import SkillGraph.Equation;
+import SkillGraph.Graph;
 import SkillGraph.Node;
+import SkillGraph.Parameter;
 import SkillGraph.Requirement;
+import de.tubs.skeditor.sdl.Field;
+import de.tubs.skeditor.sdl.Provides;
+import de.tubs.skeditor.sdl.SDLModel;
+import de.tubs.skeditor.ui.handler.SkillDescriptionLanguageHandler;
 
 public class GraphUtil {
+
+	public static Set<Parameter> getAccessibleVariables(Node node) {
+		Set<Parameter> parameters = new HashSet<Parameter>();
+		SDLModel model = null;
+
+		if (node.getSDLModel() != null) {
+			try {
+				model = SkillDescriptionLanguageHandler.textToModel(node.getSDLModel());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Graph g = (Graph) node.eContainer();
+			List<Parameter> l = g.getParameterList();
+			if (model.getSkill().getVariables() != null && model.getSkill().getVariables().getProvides() != null) {
+				for (Field f : model.getSkill().getVariables().getProvides().getVariables()) {
+					parameters.addAll(
+							l.stream().filter(e -> e.getAbbreviation().equals(f.getName())).collect(Collectors.toList()));
+				}
+			}
+		}
+
+		if (getChildNodes(node).isEmpty()) {
+			return parameters;
+		} else {
+			for (Node child : getChildNodes(node)) {
+				parameters.addAll(getAccessibleVariables(child));
+			}
+		}
+
+		return parameters;
+	}
+
+	public static Set<Parameter> getCollectedParameters(Node node) {
+		Set<Parameter> parameters = new HashSet<Parameter>();
+		SDLModel model = null;
+
+		if (node.getSDLModel() != null) {
+			try {
+				model = SkillDescriptionLanguageHandler.textToModel(node.getSDLModel());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			Graph g = (Graph) node.eContainer();
+			for (Parameter p : g.getParameterList()) {
+				// Constants
+				if (model.getSkill().getParameters() != null) {
+					for (Field f : model.getSkill().getParameters().getVariables()) {
+						if (p.getAbbreviation().equals(f.getName())) {
+							parameters.add(p);
+						}
+					}
+				}
+				// Provided variables
+				if (model.getSkill().getVariables() != null) {
+					for (Field f : model.getSkill().getVariables().getProvides().getVariables()) {
+						if (p.getName().equals(f.getName())) {
+							parameters.add(p);
+						}
+					}
+				}
+			}
+		}
+
+		if (getChildNodes(node).isEmpty()) {
+			return parameters;
+		} else {
+			for (Node child : getChildNodes(node)) {
+				parameters.addAll(getCollectedParameters(child));
+			}
+		}
+
+		return parameters;
+	}
+
 	public static ArrayList<Node> getChildNodes(Node node) {
 		ArrayList<Node> nodes = new ArrayList<Node>();
 		for (Edge edge : node.getChildEdges()) {
@@ -81,10 +169,8 @@ public class GraphUtil {
 	 * 
 	 * @param <T>
 	 * 
-	 * @param container
-	 *            The main list to insert into
-	 * @param insertable
-	 *            The list to insert
+	 * @param container  The main list to insert into
+	 * @param insertable The list to insert
 	 * @return The container with new elements
 	 */
 	private static <T> EList<T> insertInto(EList<T> container, EList<T> insertable) {

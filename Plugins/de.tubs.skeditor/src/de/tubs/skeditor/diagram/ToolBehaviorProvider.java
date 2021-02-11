@@ -39,6 +39,7 @@ import SkillGraph.Node;
 import de.tubs.skeditor.ImageProvider;
 import de.tubs.skeditor.contracting.Contract;
 import de.tubs.skeditor.contracting.ContractPropagator;
+import de.tubs.skeditor.features.AddAssumptionFeature;
 import de.tubs.skeditor.features.AddSafetyRequirementsFeature;
 import de.tubs.skeditor.features.ChangeCategoryFeature;
 import de.tubs.skeditor.features.CreateKeymaeraFileFeature;
@@ -46,6 +47,7 @@ import de.tubs.skeditor.features.EditControllerFeature;
 import de.tubs.skeditor.features.EditSkillDescriptionFeature;
 import de.tubs.skeditor.features.EditVariableFeature;
 import de.tubs.skeditor.features.ExportFeature;
+import de.tubs.skeditor.features.LaunchKeymaeraFeature;
 import de.tubs.skeditor.features.RunKeymaeraCheckFeature;
 import de.tubs.skeditor.features.SetRootNodeFeature;
 import de.tubs.skeditor.utils.ConstraintUtil;
@@ -60,26 +62,60 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 	@Override
 	public IContextMenuEntry[] getContextMenu(ICustomContext context) {
 		ArrayList<ContextMenuEntry> entries = new ArrayList<ContextMenuEntry>();
+		
+		ContextMenuEntry subMenu = new ContextMenuEntry(null, context);
+		subMenu.setText("KeYmaera"); //$NON-NLS-1$
+		subMenu.setDescription("KeYmaera entries"); //$NON-NLS-1$
+		subMenu.setSubmenu(true);
+		
 		for (ICustomFeature customFeature : getFeatureProvider().getCustomFeatures(context)) {
 			if (customFeature instanceof ExportFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof RunKeymaeraCheckFeature) {
-				entries.add(new ContextMenuEntry(customFeature, context));
+				subMenu.add(new ContextMenuEntry(customFeature, context));
+			} else if (customFeature instanceof LaunchKeymaeraFeature) {
+				subMenu.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof EditControllerFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof EditSkillDescriptionFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof CreateKeymaeraFileFeature) {
-				entries.add(new ContextMenuEntry(customFeature, context));
+				subMenu.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof SetRootNodeFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof EditVariableFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
-			} 
+			}
 		}
-		
+		entries.add(subMenu);
 		return entries.toArray(new IContextMenuEntry[entries.size()]);
 	}
+	
+	//Maybe you have based your tool on the tutorial, there in the
+//	//TutorialToolBehaviorProvider we have:
+//	@Override
+//	public IContextMenuEntry[] getContextMenu(ICustomContext context) {
+//		// create a sub-menu for all custom features
+//		ContextMenuEntry subMenu = new ContextMenuEntry(null, context);
+//		subMenu.setText("Cu&stom"); //$NON-NLS-1$
+//		subMenu.setDescription("Custom features submenu"); //$NON-NLS-1$
+//		// display sub-menu hierarchical or flat
+//		subMenu.setSubmenu(true);
+//	
+//		// create a menu-entry in the sub-menu for each custom feature
+//		ICustomFeature[] customFeatures =
+//		getFeatureProvider().getCustomFeatures(context);
+//		for (int i = 0; i < customFeatures.length; i++) {
+//			ICustomFeature customFeature = customFeatures[i];
+//			if (customFeature.isAvailable(context)) {
+//				ContextMenuEntry menuEntry = new ContextMenuEntry(customFeature, context);
+//				subMenu.add(menuEntry);
+//			}
+//		}
+//
+//		IContextMenuEntry ret[] = new IContextMenuEntry[] { subMenu };
+//		return ret;
+//	}
 
 	@Override
 	public IContextButtonPadData getContextButtonPad(IPictogramElementContext context) {
@@ -119,6 +155,14 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 				ContextButtonEntry addReqButton = new ContextButtonEntry(reqFeature, customCatButtonContext);
 				addReqButton.setText("New Requirement");
 				data.getGenericContextButtons().add(addReqButton);
+
+			}
+
+			if (iCustomFeature instanceof AddAssumptionFeature) {
+				AddAssumptionFeature asFeature = (AddAssumptionFeature) iCustomFeature;
+				ContextButtonEntry addAsButton = new ContextButtonEntry(asFeature, customCatButtonContext);
+				addAsButton.setText("New Assumption");
+				data.getGenericContextButtons().add(addAsButton);
 
 			}
 		}

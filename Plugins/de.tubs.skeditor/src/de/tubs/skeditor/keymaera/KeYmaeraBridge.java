@@ -8,6 +8,8 @@ import java.util.HashMap;
 import edu.cmu.cs.ls.keymaerax.bellerophon.BelleExpr;
 import edu.cmu.cs.ls.keymaerax.core.Formula;
 import edu.cmu.cs.ls.keymaerax.core.Sequent;
+import edu.cmu.cs.ls.keymaerax.hydra.DBAbstractionObj;
+import edu.cmu.cs.ls.keymaerax.hydra.UploadArchiveRequest;
 import edu.cmu.cs.ls.keymaerax.parser.ParsedArchiveEntry;
 import edu.cmu.cs.ls.keymaerax.pt.ProvableSig;
 import scala.Tuple3;
@@ -58,7 +60,7 @@ public class KeYmaeraBridge {
 	
 	public static java.util.HashMap<String, String> getZ3Config() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
-		c.put("z3Path", "C:\\Users\\Dibo\\.keymaerax\\z3.exe"); // path
+		c.put("z3Path", "C:\\z3\\bin\\z3.exe"); // path
 		return c;
 	}
 	
@@ -91,6 +93,16 @@ public class KeYmaeraBridge {
 
 	public KeYmaeraBridge() {
 		init();
+	}
+	
+	public void launchKeYmaera() {
+		edu.cmu.cs.ls.keymaerax.launcher.Main.main(new String[0]);
+		//DBAbstractionObj.defaultDatabase().createModel(userId, name, fileContents, date, description, publink, title, tactic)
+	}
+	
+	public void uploadArchiveToKeYmaera() {
+		
+		//UploadArchiveRequest upload = new UploadArchiveRequest(DBAbstractionObj., "guest", "tst", "");
 	}
 	
 	/*
