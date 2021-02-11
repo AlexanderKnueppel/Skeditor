@@ -19,6 +19,7 @@ public class ImageProvider extends AbstractImageProvider {
 	
 	public static final String IMG_CHANGE_CAT = PREFIX + "change_category";
 	public static final String IMG_SAFETY = PREFIX + "safety";
+	public static final String IMG_ASSUMPTION = PREFIX + "assumption";
 
 	@Override
 	protected void addAvailableImages() {
@@ -35,6 +36,7 @@ public class ImageProvider extends AbstractImageProvider {
 
 		addImageFilePath(IMG_CHANGE_CAT, "icons/change_category.png");
 		addImageFilePath(IMG_SAFETY, "icons/safety.png");
+		addImageFilePath(IMG_ASSUMPTION, "icons/accept-icon.png");
 
 	}
 
