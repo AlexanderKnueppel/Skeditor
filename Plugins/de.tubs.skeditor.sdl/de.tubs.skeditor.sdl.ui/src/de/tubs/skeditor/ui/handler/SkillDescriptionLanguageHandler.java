@@ -73,7 +73,7 @@ public class SkillDescriptionLanguageHandler {
 
 		InputStream in = new ByteArrayInputStream(text.getBytes());
 		Resource resource = resourceSet.createResource(URI.createURI("dummy:/inmemory.sd"));
-		System.out.println(text);
+		//System.out.println(text);
         resource.load(in, resourceSet.getLoadOptions());
 		return (SDLModel) resource.getContents().get(0);
 	}

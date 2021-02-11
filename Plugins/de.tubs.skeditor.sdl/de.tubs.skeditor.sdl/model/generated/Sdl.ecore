@@ -18,18 +18,26 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//SkillType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="version" eType="#//Version"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="requires" eType="#//Requires"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" eType="#//Variables"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="provides" eType="#//Provides"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" eType="#//Parameters"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyCollection" eType="#//PropertyField"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hpprogram" eType="#//HybridProgram"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="invariants" upperBound="-1"
-        eType="#//Invariant" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Invariant">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="invariant" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Variables">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="requires" eType="#//Requires"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="provides" eType="#//Provides"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Parameters">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
+        eType="#//Field" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="SkillType">
     <eLiterals name="SENSOR" literal="Sensor"/>
@@ -52,30 +60,26 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="variables" upperBound="-1"
         eType="#//Field" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PropertyField">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
-        eType="#//Property" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Property">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="implementation" eType="#//Implementation"
+  <eClassifiers xsi:type="ecore:EClass" name="HybridProgram">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="interface" eType="#//HPInterface"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="program" eType="#//Program"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//SourceFile"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="program" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="controller" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="plant" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SourceFile">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="file" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EClass" name="HPInterface">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="requires" upperBound="-1"
+        eType="#//HPInterfaceElement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="provides" upperBound="-1"
+        eType="#//HPInterfaceElement" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Program">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Implementation">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="technique" eType="#//BasicImplTechnique"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="BasicImplTechnique">
-    <eLiterals name="HybridProgram" literal="HybridProgram"/>
-    <eLiterals name="ROSComponent" value="1" literal="ROSComponent"/>
+  <eClassifiers xsi:type="ecore:EClass" name="HPInterfaceElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hp" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bool" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="real" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="aliasname" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Import">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="importedNamespace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

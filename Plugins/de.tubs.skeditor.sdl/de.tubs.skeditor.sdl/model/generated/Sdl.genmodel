@@ -15,10 +15,6 @@
       <genEnumLiterals ecoreEnumLiteral="Sdl.ecore#//SkillType/PERCEPTION"/>
       <genEnumLiterals ecoreEnumLiteral="Sdl.ecore#//SkillType/ROOT"/>
     </genEnums>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Sdl.ecore#//BasicImplTechnique">
-      <genEnumLiterals ecoreEnumLiteral="Sdl.ecore#//BasicImplTechnique/HybridProgram"/>
-      <genEnumLiterals ecoreEnumLiteral="Sdl.ecore#//BasicImplTechnique/ROSComponent"/>
-    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Sdl.ecore#//BasicTypeId">
       <genEnumLiterals ecoreEnumLiteral="Sdl.ecore#//BasicTypeId/undefined"/>
       <genEnumLiterals ecoreEnumLiteral="Sdl.ecore#//BasicTypeId/Int8"/>
@@ -46,14 +42,20 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Skill/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Skill/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/version"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/requires"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/provides"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/propertyCollection"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/invariants"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/variables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/parameters"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/hpprogram"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Invariant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Invariant/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Invariant/invariant"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Variables">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Variables/requires"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Variables/provides"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Parameters">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Parameters/variables"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Version">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Version/major"/>
@@ -65,22 +67,23 @@
     <genClasses ecoreClass="Sdl.ecore#//Provides">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Provides/variables"/>
     </genClasses>
-    <genClasses ecoreClass="Sdl.ecore#//PropertyField">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//PropertyField/properties"/>
+    <genClasses ecoreClass="Sdl.ecore#//HybridProgram">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//HybridProgram/interface"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HybridProgram/program"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HybridProgram/controller"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HybridProgram/plant"/>
     </genClasses>
-    <genClasses ecoreClass="Sdl.ecore#//Property">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Property/implementation"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Property/program"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Property/source"/>
+    <genClasses ecoreClass="Sdl.ecore#//HPInterface">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//HPInterface/requires"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//HPInterface/provides"/>
     </genClasses>
-    <genClasses ecoreClass="Sdl.ecore#//SourceFile">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//SourceFile/file"/>
-    </genClasses>
-    <genClasses ecoreClass="Sdl.ecore#//Program">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Program/content"/>
-    </genClasses>
-    <genClasses ecoreClass="Sdl.ecore#//Implementation">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Implementation/technique"/>
+    <genClasses ecoreClass="Sdl.ecore#//HPInterfaceElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/hp"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/bool"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/real"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/alias"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/aliasname"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Import/importedNamespace"/>

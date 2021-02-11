@@ -16,15 +16,69 @@ Skill returns Skill:
 	'skill' name=STRING ':' type=SkillType
 	'{'
 	('version' version=Version)?
-	(requires = Requires)?
-	(provides = Provides)?
-	(propertyCollection = PropertyField)?
-	(invariants += Invariant)?
+	(variables = Variables)?
+	(parameters = Parameters)?
+	//(propertyCollection = PropertyField)?
+//	(invariants += Invariant)?
+	(hpprogram = HybridProgram)?
 	'}';
 
 Invariant:
 	'invariant' name=ID ':' invariant = STRING ';' 
 ;
+
+Variables returns Variables:
+	{Variables}
+	'Variables' '{'
+	(requires = Requires)?
+	(provides = Provides)?
+	'}'
+;
+
+Parameters returns Parameters:
+	{Parameters}
+	'Parameters' '{'
+	(variables+=Field ';')*
+	'}'
+;
+
+//skill "Control dynamics" : Action {
+/* Empty Skill Description */ 
+
+//Variables { //interface, what about functions?
+//	required {
+//		real v;
+//		real a;
+//	}
+//	defined {
+//		//empty
+//	}
+//}
+//
+//Parameters { //from skill graph
+//	real b;
+//	real vmax;
+//	real t;
+//	real ep;
+//}
+//
+//HybridProgram {
+//	//Interface {}
+//	Program := "
+// 		R margin() = (ep*A).    
+//  
+// 		HP ctrl::= { 
+//  			?vmax - v <= margin(); a := *; ?-b <= a & a <= 0;
+//  		}.
+//  
+//  		HP drive::= {
+//  			t := 0;
+//    		{x' = v, v' = a, t' = 1 & v >= 0 & t <= ep}
+//  		}.
+//
+//  		HP main ::= {ctrl; drive}";
+//}
+
 
 enum SkillType:
 	SENSOR='Sensor' | ACTUATOR='Actuator' | PLANNING='Planning' | ACTION='Action' | OBSERVABLE='ObservableBehavior' |
@@ -51,32 +105,49 @@ Provides returns Provides:
 	'}'
 ;
 
-PropertyField returns PropertyField:
-	{PropertyField}
-	'properties' '{'
-	(properties+=Property ';')*
+HybridProgram returns HybridProgram:
+	{HybridProgram}
+	'HybridProgram' '{'
+		(interface = HPInterface)?
+		('Program' '::=' program=STRING ';')?
+		('Controller' '::=' controller=STRING ';')?
+		('Plant' '::=' plant=STRING ';')?
 	'}'
 ;
 
-Property:
-	implementation=Implementation | program = Program | source = SourceFile 
-;
-
-SourceFile:
-	'SourceFile' '=>' file=STRING ';'
-;
-
-Program:
-	'program' '{' content=STRING '}'
-;
-
-Implementation:
-	'ImplementationTechnique' '=>' technique=BasicImplTechnique ';'
-;
-
-enum BasicImplTechnique returns BasicImplTechnique:
-	HybridProgram = 'HybridProgram' |
-	ROSComponent = 'ROSComponent';
+HPInterface returns HPInterface:
+	{HPInterface}
+		('Requires' ':' (requires+=HPInterfaceElement)*)
+		('Provides' ':' (provides+=HPInterfaceElement)*)
+	;
+HPInterfaceElement returns HPInterfaceElement:
+	{HPInterfaceElement}
+		(hp?='HP'| bool?="Bool" | real?="Real") name=STRING alias?='as' aliasname=STRING ';'
+	;
+//
+//Property:
+//	implementation=Implementation | program = Program | source = SourceFile 
+//;
+//
+//SourceFile:
+//	'SourceFile' '=>' file=STRING ';'
+//;
+//
+//Program:
+//	'program' '{' content=STRING '}'
+//;
+//
+//Implementation:
+//	'ImplementationTechnique' '=>' technique=BasicImplTechnique ';'
+//;
+//
+//enum BasicImplTechnique returns BasicImplTechnique:
+//	HybridProgram = 'HybridProgram' |
+//	ROSComponent = 'ROSComponent';
+	
+//HPProgram returns HPProgram:
+//	'HybridProgram' '{' content=STRING '}'
+//;
 
 Import:
 	'import' (importedNamespace=ImportedFQN 'from' | 'model') importURI=STRING;
