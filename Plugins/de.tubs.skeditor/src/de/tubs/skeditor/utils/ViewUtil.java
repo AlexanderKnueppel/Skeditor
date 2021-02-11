@@ -8,6 +8,7 @@ import org.eclipse.ui.PlatformUI;
 import SkillGraph.Graph;
 import SkillGraph.Node;
 import de.tubs.skeditor.views.DynamicModelView;
+import de.tubs.skeditor.views.InfoView;
 import de.tubs.skeditor.views.ParameterListView;
 import de.tubs.skeditor.views.SafetyGoalsView;
 import de.tubs.skeditor.views.VariableView;
@@ -37,6 +38,21 @@ public class ViewUtil {
 		}
 	}
 
+	public static void updateInfoView(Node node) {
+		IViewReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+		for (IViewReference iViewReference : ref) {
+			if (iViewReference.getId().equals("de.tubs.skeditor.views.InfoView")) {
+				TableViewer view = ((InfoView) iViewReference.getView(true)).getViewer();
+				if (view.getInput() == null || !view.getInput().equals(node)) {
+					view.setInput(node);
+				} else {
+					view.refresh();
+				}
+
+			}
+		}
+	}
+	
 	public static void updateViews(Graph graph) {
 		IViewReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
 		for (IViewReference iViewReference : ref) {

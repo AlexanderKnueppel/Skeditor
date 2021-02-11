@@ -150,5 +150,13 @@
          </propertySection>
       </propertySections>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="de.tubs.skeditor.views.InfoView"
+            id="de.tubs.skeditor.views.InfoView"
+            name="Skill Information">
+      </view>
+   </extension>
 
 </plugin>
