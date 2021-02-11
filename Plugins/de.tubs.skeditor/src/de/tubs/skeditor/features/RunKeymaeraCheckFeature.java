@@ -37,7 +37,7 @@ public class RunKeymaeraCheckFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getName() {
-		return "KeYmaera check";
+		return "Verify (automatically)";
 	}
 
 	@Override

@@ -47,12 +47,12 @@ public class EditSkillDescriptionFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getName() {
-		return "Skill Description Language";
+		return "Skill Definition";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Edit Skill Description of a Node";
+		return "Edit the definition of a skill";
 	}
 
 	@Override
