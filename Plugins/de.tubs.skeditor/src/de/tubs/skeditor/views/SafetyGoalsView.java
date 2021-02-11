@@ -12,6 +12,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
+import SkillGraph.Assumption;
 import SkillGraph.Node;
 import SkillGraph.Requirement;
 import de.tubs.skeditor.views.safetygoalsview.CommentEditingSupport;
@@ -59,12 +60,22 @@ public class SafetyGoalsView extends ViewPart {
 
 		MenuManager manager = new MenuManager();
 		viewer.getControl().setMenu(manager.createContextMenu(viewer.getControl()));
-		manager.add(new Action("Delete Requirement") {
+		manager.add(new Action("Delete Element") {
 
 			@Override
 			public void run() {
 				if (viewer.getStructuredSelection().getFirstElement() instanceof Requirement) {
 					Requirement deletReq = (Requirement) viewer.getStructuredSelection().getFirstElement();
+					Node node = deletReq.getNode();
+					TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(node);
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							node.getRequirements().remove(deletReq);
+						}
+					});
+				} else if(viewer.getStructuredSelection().getFirstElement() instanceof Assumption) {
+					Assumption deletReq = (Assumption) viewer.getStructuredSelection().getFirstElement();
 					Node node = deletReq.getNode();
 					TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(node);
 					domain.getCommandStack().execute(new RecordingCommand(domain) {
