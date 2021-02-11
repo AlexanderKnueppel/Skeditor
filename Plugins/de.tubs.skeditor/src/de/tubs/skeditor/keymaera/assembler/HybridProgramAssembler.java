@@ -48,7 +48,7 @@ public class HybridProgramAssembler {
 							
 							int end = start;
 							while(end-1 < completeProgram.length() && !completeProgram.substring(end, end+2).equals("}.")) {
-								String substring = completeProgram.substring(end, end+2);
+								//String substring = completeProgram.substring(end, end+2);
 								end++;
 							}
 							
