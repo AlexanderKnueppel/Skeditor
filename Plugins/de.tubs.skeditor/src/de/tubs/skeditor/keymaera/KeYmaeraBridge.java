@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
+import de.tubs.skeditor.preferences.SkeditorSettings;
 import edu.cmu.cs.ls.keymaerax.bellerophon.BelleExpr;
 import edu.cmu.cs.ls.keymaerax.core.Formula;
 import edu.cmu.cs.ls.keymaerax.core.Sequent;
@@ -16,9 +17,8 @@ import scala.collection.immutable.List;
 import scala.collection.immutable.Map;
 import scala.collection.mutable.Buffer;
 
-
 public class KeYmaeraBridge {
-	
+
 	private static final KeYmaeraBridge instance = new KeYmaeraBridge();
 
 	public static KeYmaeraBridge getInstance() {
@@ -29,11 +29,11 @@ public class KeYmaeraBridge {
 		String contents = new String(Files.readAllBytes(Paths.get(filename)));
 		return edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXArchiveParser$.MODULE$.parseAsFormula(contents);
 	}
-	
+
 	public List<ParsedArchiveEntry> parseProgramsFromFileAsEntries(String filename) throws IOException {
 		return edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXArchiveParser$.MODULE$.parseFromFile(filename);
 	}
-	
+
 	public static Formula parseProgramAsFormula(String contents) {
 		return edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXArchiveParser$.MODULE$.parseAsFormula(contents);
 	}
@@ -42,12 +42,15 @@ public class KeYmaeraBridge {
 		return edu.cmu.cs.ls.keymaerax.parser.StringConverter$.MODULE$.StringToStringConverter(content).asSequent();
 	}
 
-
 	public static java.util.HashMap<String, String> getMathematicaConfig() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
-		c.put("linkName", "C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\MathKernel.exe"); // path
-		c.put("libDir",
-				"C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\SystemFiles\\Links\\JLink\\SystemFiles\\Libraries\\Windows-x86-64\\"); // path
+
+		c.put("linkName", SkeditorSettings.getInstance().getMathematicaExe());
+		c.put("libDir", SkeditorSettings.getInstance().getMathematicaLibs());
+
+//		c.put("linkName", "C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\MathKernel.exe"); // path
+//		c.put("libDir",
+//				"C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\SystemFiles\\Links\\JLink\\SystemFiles\\Libraries\\Windows-x86-64\\"); // path
 		return c;
 	}
 
@@ -55,26 +58,24 @@ public class KeYmaeraBridge {
 		return JavaConverters$.MODULE$.mapAsScalaMapConverter(m).asScala()
 				.toMap(scala.Predef$.MODULE$.<scala.Tuple2<A, B>>$conforms());
 	}
-	
+
 	public static java.util.HashMap<String, String> getZ3Config() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
-		c.put("z3Path", "C:\\Users\\Dibo\\.keymaerax\\z3.exe"); // path
+		c.put("z3Path", SkeditorSettings.getInstance().getZ3Exe());
+		// c.put("z3Path", "C:\\Users\\Dibo\\.keymaerax\\z3.exe"); // path
 		return c;
 	}
-	
+
 	public static <A> java.util.List<A> toJavaList(Buffer<A> b) {
 		return JavaConverters$.MODULE$.bufferAsJavaList(b);
 	}
 
 	private void init() {
-		edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
-			.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
+		setProver();
 
-		
 		edu.cmu.cs.ls.keymaerax.Configuration$.MODULE$
-			.setConfiguration(edu.cmu.cs.ls.keymaerax.FileConfiguration$.MODULE$);
-		
-		
+				.setConfiguration(edu.cmu.cs.ls.keymaerax.FileConfiguration$.MODULE$);
+
 		HashMap<String, String> javaConfig = new HashMap<String, String>();
 		javaConfig.put(edu.cmu.cs.ls.keymaerax.tools.KeYmaeraXTool.INIT_DERIVATION_INFO_REGISTRY(), "false");
 		javaConfig.put(edu.cmu.cs.ls.keymaerax.tools.KeYmaeraXTool.INTERPRETER(),
@@ -88,17 +89,28 @@ public class KeYmaeraBridge {
 			System.out.println(edu.cmu.cs.ls.keymaerax.tools.KeYmaeraXTool.name());
 		}
 	}
+	
+	public void setProver() {
+		switch(SkeditorSettings.getInstance().getSelectedProver()) {
+		case "z3":
+			edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
+			.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
+			break;
+		case "mathematica":
+			edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
+			.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.MathematicaToolProvider(toScalaMap(getMathematicaConfig())));	
+			break;
+		}
+	}
 
-	public KeYmaeraBridge() {
+	private KeYmaeraBridge() {
 		init();
 	}
-	
+
 	/*
-	 * Proof is the belle epression! (it seems like...)
-	 * Returns list of tuples (T1,T2,T3) with 
-	 * 				T1: Name of the proof
-	 * 				T2: String content of the whole Proof
-	 * 				T3: BelleExpr is the Proof as an expression with all tactics
+	 * Proof is the belle epression! (it seems like...) Returns list of tuples
+	 * (T1,T2,T3) with T1: Name of the proof T2: String content of the whole Proof
+	 * T3: BelleExpr is the Proof as an expression with all tactics
 	 */
 	public List<Tuple3<String, String, BelleExpr>> getProof(ParsedArchiveEntry entry) {
 		List<Tuple3<String, String, BelleExpr>> tactics = entry.tactics();
@@ -115,9 +127,10 @@ public class KeYmaeraBridge {
 						edu.cmu.cs.ls.keymaerax.btactics.TactixLibrary$.MODULE$.master$default$2()));
 		return sig;
 	}
-	
+
 	/*
-	 * \brief Uses a sequence/belle expr of tactics to prove the formula interactively
+	 * \brief Uses a sequence/belle expr of tactics to prove the formula
+	 * interactively
 	 */
 	public ProvableSig prove(Formula f, BelleExpr expr) {
 		ProvableSig sig = edu.cmu.cs.ls.keymaerax.btactics.TactixLibrary$.MODULE$.proveBy(f, expr);
@@ -137,5 +150,5 @@ public class KeYmaeraBridge {
 	public ProvableSig prove(DynamicModel dm, String precondition, String postcondition) throws IOException {
 		return proveAutomatically(parseProgramAsFormula(dm.createKeYmaeraProgram(precondition, postcondition)));
 	}
-	
+
 }
