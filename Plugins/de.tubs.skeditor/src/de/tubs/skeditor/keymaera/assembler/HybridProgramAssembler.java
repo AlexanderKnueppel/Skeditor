@@ -173,7 +173,7 @@ public class HybridProgramAssembler {
 			sb.append("\tBool functionCalls <-> " + (parts.isEmpty() ? "true" : String.join(" & ", parts)));
 		}
 
-		sb.append("End.\n");
+		sb.append("\nEnd.\n");
 		sb.append("\n");
 
 		sb.append("ProgramVariables\n");
@@ -189,7 +189,7 @@ public class HybridProgramAssembler {
 		sb.append("Problem\n");
 
 		sb.append("(init() &" + (contracting ? " functionCalls() &" : "") + " consts()) ->\n");
-		sb.append("[\n{" + controller + ";" + plant + ";}*\n] safe()");
+		sb.append("[\n {\t\t" + controller + ";" + plant + ";\n }*\n] safe()\n");
 		sb.append("\n");
 
 		sb.append("End.\n");
@@ -213,7 +213,7 @@ public class HybridProgramAssembler {
 			return "HP " + elem.getAliasname() + "; /* Uninterpreted program */ \n";
 		else {
 			String content = information.get(elem.getName()).getProvidedPrograms().get(elem.getName());
-			return "HP " + elem.getAliasname() + " ::= " + content + " /* Interpreted program*/";
+			return "HP " + elem.getAliasname() + " ::= " + content + " /* Interpreted program*/ \n";
 		}
 	}
 
