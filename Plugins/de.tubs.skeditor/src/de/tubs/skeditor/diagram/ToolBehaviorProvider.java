@@ -62,7 +62,8 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 	@Override
 	public IContextMenuEntry[] getContextMenu(ICustomContext context) {
 		ArrayList<ContextMenuEntry> entries = new ArrayList<ContextMenuEntry>();
-		
+		ContextMenuEntry checkbox = new ContextMenuEntry(null, context);
+		//checkbox.
 		ContextMenuEntry subMenu = new ContextMenuEntry(null, context);
 		subMenu.setText("KeYmaera"); //$NON-NLS-1$
 		subMenu.setDescription("KeYmaera entries"); //$NON-NLS-1$
