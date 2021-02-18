@@ -23,9 +23,10 @@ Require-Bundle: org.eclipse.graphiti;bundle-version="0.14.0",
  org.eclipse.emf.common,
  com.google.guava,
  org.junit,
- org.eclipse.emf.mwe.core
+ org.eclipse.emf.mwe.core,
+ org.eclipse.ui.console;bundle-version="3.9.200"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: SkillGraph,
  SkillGraph.impl,
  SkillGraph.util,
