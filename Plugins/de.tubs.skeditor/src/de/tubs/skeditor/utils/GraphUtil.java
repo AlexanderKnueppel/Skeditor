@@ -81,7 +81,7 @@ public class GraphUtil {
 				// Provided variables
 				if (model.getSkill().getVariables() != null) {
 					for (Field f : model.getSkill().getVariables().getProvides().getVariables()) {
-						if (p.getName().equals(f.getName())) {
+						if (p.getAbbreviation().equals(f.getName())) {
 							parameters.add(p);
 						}
 					}
