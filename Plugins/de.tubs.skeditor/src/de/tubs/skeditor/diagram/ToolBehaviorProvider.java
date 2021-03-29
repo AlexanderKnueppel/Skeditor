@@ -25,6 +25,7 @@ import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
+import org.eclipse.graphiti.platform.IPlatformImageConstants;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.tb.ContextButtonEntry;
@@ -32,6 +33,9 @@ import org.eclipse.graphiti.tb.ContextMenuEntry;
 import org.eclipse.graphiti.tb.DefaultToolBehaviorProvider;
 import org.eclipse.graphiti.tb.IContextButtonPadData;
 import org.eclipse.graphiti.tb.IContextMenuEntry;
+import org.eclipse.graphiti.tb.IDecorator;
+import org.eclipse.graphiti.tb.IImageDecorator;
+import org.eclipse.graphiti.tb.ImageDecorator;
 
 import SkillGraph.Category;
 import SkillGraph.Graph;
@@ -44,6 +48,7 @@ import de.tubs.skeditor.features.AddSafetyRequirementsFeature;
 import de.tubs.skeditor.features.ChangeCategoryFeature;
 import de.tubs.skeditor.features.CreateKeymaeraFileFeature;
 import de.tubs.skeditor.features.EditControllerFeature;
+import de.tubs.skeditor.features.EditProgramPathFeature;
 import de.tubs.skeditor.features.EditSkillDescriptionFeature;
 import de.tubs.skeditor.features.EditVariableFeature;
 import de.tubs.skeditor.features.ExportFeature;
@@ -82,11 +87,13 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof CreateKeymaeraFileFeature) {
 				subMenu.add(new ContextMenuEntry(customFeature, context));
+			} else if (customFeature instanceof EditProgramPathFeature) {
+				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof SetRootNodeFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof EditVariableFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
-			}
+			} 
 		}
 		entries.add(subMenu);
 		return entries.toArray(new IContextMenuEntry[entries.size()]);
@@ -252,6 +259,25 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 			return text;
 		}
 		return super.getToolTip(graphicsAlgorithm);
+	}
+	
+	@Override
+	public IDecorator[] getDecorators(PictogramElement pe) {
+		Object bo = getFeatureProvider().getBusinessObjectForPictogramElement(pe);
+		if (bo instanceof Node) {
+			Node node = (Node)bo;
+			
+//			//Validator validator = new Validator(diagramTypeProvider);
+//			
+//			IImageDecorator imageRenderingDecorator = null;
+//
+//			if(...){ // There is a proof to import
+//
+//				imageRenderingDecorator = new ImageDecorator(IPlatformImageConstants.IMG_ECLIPSE_INFORMATION_TSK);
+//			}
+			
+		}
+		return super.getDecorators(pe);
 	}
 
 }
