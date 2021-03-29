@@ -2,30 +2,37 @@ package de.tubs.skeditor.contracting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
 
 import SkillGraph.Category;
-import SkillGraph.Graph;
 import SkillGraph.Node;
-import SkillGraph.Parameter;
 import SkillGraph.Requirement;
 import de.tubs.skeditor.contracting.grammar.GrammarUtil;
+import de.tubs.skeditor.contracting.grammar.SyntaxError;
 import de.tubs.skeditor.contracting.grammar.Z3Converter;
 import de.tubs.skeditor.utils.GraphUtil;
 
 public class ContractPropagator {
 
-	public ContractPropagator() {
-	}
-
 	private static boolean isSensorCategory(Node node) {
 		Category[] categories = { Category.SENSOR, Category.PERCEPTION, Category.PLANNING };
 		return Arrays.asList(categories).contains(node.getCategory());
+	}
+	
+	private static boolean isActuatorCategory(Node node) {
+		return node.getCategory().equals(Category.ACTUATOR);
+	}
+	
+	private static boolean isControllerCategory(Node node) {
+		Category[] categories = { Category.OBSERVABLE_EXTERNAL_BEHAVIOR, Category.ACTION};
+		return Arrays.asList(categories).contains(node.getCategory());
+	}
+	
+	private static boolean isMainCategory(Node node) {
+		return node.getCategory().equals(Category.MAIN);
 	}
 
 	public static Contract computeContract(Node node) {
@@ -66,10 +73,16 @@ public class ContractPropagator {
 		assume = assume.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
 		safe = safe.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
 		
-		Z3Converter converter = new Z3Converter();
-		assume = converter.simplifyFormula(assume);
-		safe = converter.simplifyFormula(safe);
-		
+		List<SyntaxError> errors = GrammarUtil.tryToParse(assume);
+		errors.addAll(GrammarUtil.tryToParse(safe));
+		if(errors.isEmpty()) {
+			Z3Converter converter = new Z3Converter();
+			assume = converter.simplifyFormula(assume);
+			safe = converter.simplifyFormula(safe);
+		} else {
+			//TODO log errors
+		}
+
 		if(assume.isEmpty())
 			assume = "\\true";
 		if(safe.isEmpty())

@@ -49,12 +49,13 @@ public class GrammarUtil {
 
 	public static void main(String[] args) {
 		
-		try {
-			System.out.println(tryToParse("A<5 & b > 7 & true & c = d & x -> y | 12 > VBNM"));
-			
-		} catch(ParseCancellationException e) {
-			System.out.println(e.getMessage());
-		}
+//		try {
+//			System.out.println(tryToParse("A<5 & b > 7 & true & c = d & x -> y | 12 > VBNM"));
+//			
+//		} catch(ParseCancellationException e) {
+//			System.out.println(e.getMessage());
+//		}
+		
 		
 		
 //        System.out.println("Simplify Formula");

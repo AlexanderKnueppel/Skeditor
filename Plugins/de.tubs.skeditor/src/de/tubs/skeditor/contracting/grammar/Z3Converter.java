@@ -14,6 +14,8 @@ import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
 import com.microsoft.z3.FuncDecl;
 import com.microsoft.z3.Goal;
+import com.microsoft.z3.IntNum;
+import com.microsoft.z3.RatNum;
 import com.microsoft.z3.Solver;
 import com.microsoft.z3.Status;
 import com.microsoft.z3.Tactic;
@@ -26,7 +28,7 @@ public class Z3Converter {
 
 		//String formula = "(A==true||B==true)||A==true";
 		
-		String formula = "(x==4||x==5||x==6||x==7)&&x>4";
+		String formula = "!(y <= (ly+((-1.0)*(0.5*lw))))";
 
 		Z3Converter converter = new Z3Converter();
 
@@ -106,7 +108,6 @@ public class Z3Converter {
 		folLexer lexer = new folLexer(CharStreams.fromString(formula));
 		folParser parser = new folParser(new CommonTokenStream(lexer));
 		ExpressionVisitor myVisitor = new ExpressionVisitor();
-
 		try {
 			return (BoolExpr) myVisitor.visit(parser.condition());
 		} catch (Z3Exception | NullPointerException e) {
@@ -163,13 +164,13 @@ public class Z3Converter {
 			for (int i = 0; i < e.getNumArgs(); ++i) {
 				visitZ3Expr(e.getArgs()[i], tmp);
 			}
-			parts.add("(" + String.join(" && ", tmp) + ")");
+			parts.add("(" + String.join(" & ", tmp) + ")");
 		} else if (e.isOr()) {
 			List<String> tmp = new ArrayList<String>();
 			for (int i = 0; i < e.getNumArgs(); ++i) {
 				visitZ3Expr(e.getArgs()[i], tmp);
 			}
-			parts.add("(" + String.join(" || ", tmp) + ")");
+			parts.add("(" + String.join(" | ", tmp) + ")");
 		} else if (e.isImplies()) {
 			List<String> tmp = new ArrayList<String>();
 			for (int i = 0; i < e.getNumArgs(); ++i) {
@@ -245,7 +246,13 @@ public class Z3Converter {
 		} else if(e.isFalse()) {
 			parts.add("\\false");
 		} else if(e.isNumeral()) {
-			parts.add(e.getSExpr());
+			if(e.isRatNum()) {
+			    RatNum rational = (RatNum) e;
+			    IntNum num = rational.getNumerator(), den = rational.getDenominator();
+			    parts.add(""+((double) num.getInt() / den.getInt()));
+			} else  {
+				parts.add(e.getSExpr());
+			}
 		}  
 		else if(e.isConst()) {
 			parts.add(e.getSExpr());
