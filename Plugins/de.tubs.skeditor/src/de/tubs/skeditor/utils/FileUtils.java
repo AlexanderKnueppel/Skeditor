@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class FileUtils {
 	public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation)
@@ -27,10 +28,8 @@ public class FileUtils {
 
 	public static void copyFromResource(String sourceDirectoryLocation, String destinationDirectoryLocation)
 			throws IOException {
-		try (InputStream is = FileUtils.class.getClassLoader().getResourceAsStream(sourceDirectoryLocation);
-				OutputStream os = new FileOutputStream(destinationDirectoryLocation);) {
-			is.transferTo(os);
-		}
+		Files.copy(new File(sourceDirectoryLocation).toPath(), new File(destinationDirectoryLocation).toPath(),
+				StandardCopyOption.REPLACE_EXISTING);
 	}
 
 	public static boolean deleteDirectory(File directoryToBeDeleted) {
@@ -46,7 +45,7 @@ public class FileUtils {
 	public static void replaceInFile(String pathStr, String search, String replace) throws IOException {
 		Path path = Paths.get(pathStr);
 		Charset charset = StandardCharsets.UTF_8;
-		String content = Files.readString(path, charset);
+		String content = String.join("\n", Files.readAllLines(path, charset));
 		content = content.replaceAll(search, replace);
 		Files.write(path, content.getBytes(charset));
 	}
