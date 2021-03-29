@@ -11,7 +11,7 @@ This project focueses on _prototyping_ such maneuvers to quickly evaluate the qu
 * verifying each skill individually and the complete maneuver to establish correctness proofs,
 * but also to simulate the modeled maneuver using ROS or AirSim, to see whether the correct specification is enough to be actually safe.
 
-<img alt="Driving maneuver" src="/maneuver.png" width="80%">
+<img align="center" alt="Driving maneuver" src="/maneuver.png" width="80%">
 
 Due to their compositional nature, skills and verification results can be reused accross driving maneuvers, making them good candidates for integrating them into a development process.
 
