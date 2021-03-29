@@ -26,6 +26,7 @@ import org.eclipse.graphiti.ui.features.DefaultFeatureProvider;
 import SkillGraph.Category;
 import SkillGraph.Edge;
 import SkillGraph.Node;
+import de.tubs.skeditor.features.AddAssumptionFeature;
 import de.tubs.skeditor.features.AddEdgeFeature;
 import de.tubs.skeditor.features.AddNodeFeature;
 import de.tubs.skeditor.features.AddSafetyRequirementsFeature;
@@ -36,8 +37,11 @@ import de.tubs.skeditor.features.CreateNodeFeature;
 import de.tubs.skeditor.features.DeleteFeature;
 import de.tubs.skeditor.features.DirectEditingNodeFeature;
 import de.tubs.skeditor.features.EditControllerFeature;
+import de.tubs.skeditor.features.EditProgramPathFeature;
+import de.tubs.skeditor.features.EditSkillDescriptionFeature;
 import de.tubs.skeditor.features.EditVariableFeature;
 import de.tubs.skeditor.features.ExportFeature;
+import de.tubs.skeditor.features.LaunchKeymaeraFeature;
 import de.tubs.skeditor.features.LayoutNodeFeature;
 import de.tubs.skeditor.features.ReconnectionFeature;
 import de.tubs.skeditor.features.RunKeymaeraCheckFeature;
@@ -120,10 +124,15 @@ public class FeatureProvider extends DefaultFeatureProvider {
 		}
 		customFeatures.add(new ExportFeature(this));
 		customFeatures.add(new AddSafetyRequirementsFeature(this));
+		customFeatures.add(new AddAssumptionFeature(this));
 		customFeatures.add(new RunKeymaeraCheckFeature(this));
+		customFeatures.add(new LaunchKeymaeraFeature(this));
 		customFeatures.add(new EditControllerFeature(this));
-		customFeatures.add(new EditVariableFeature(this));
-		customFeatures.add(new CreateKeymaeraFileFeature(this));
+		customFeatures.add(new EditSkillDescriptionFeature(this));
+		//customFeatures.add(new EditVariableFeature(this));
+		customFeatures.add(new CreateKeymaeraFileFeature(this, true));
+		customFeatures.add(new CreateKeymaeraFileFeature(this, false));
+		customFeatures.add(new EditProgramPathFeature(this));
 		customFeatures.add(new SetRootNodeFeature(this));
 		return customFeatures.toArray(new ICustomFeature[customFeatures.size()]);
 	}

@@ -1,0 +1,316 @@
+grammar de.tubs.skeditor.Sdl with org.eclipse.xtext.common.Terminals
+
+generate sdl "http://www.tubs.de/skeditor/Sdl"
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+SDLModel:
+	{SDLModel}
+	//'package' name=FQN
+	(comment=AnnotationBlock)?
+	(constants+=ConstantDef | types+=Type)*
+	(skill=Skill);
+	
+Skill returns Skill:
+	{Skill}
+	(comment=AnnotationBlock)?
+	'skill' name=STRING ':' type=SkillType
+	'{'
+	('version' version=Version)?
+	(variables = Variables)?
+	(parameters = Parameters)?
+	//(propertyCollection = PropertyField)?
+//	(invariants += Invariant)?
+	(hpprogram = HybridProgram)?
+	'}';
+
+Invariant:
+	'invariant' name=ID ':' invariant = STRING ';' 
+;
+
+Variables returns Variables:
+	{Variables}
+	'Variables' '{'
+	(requires = Requires)?
+	(provides = Provides)?
+	'}'
+;
+
+Parameters returns Parameters:
+	{Parameters}
+	'Parameters' '{'
+	(variables+=Field ';')*
+	'}'
+;
+
+//skill "Control dynamics" : Action {
+/* Empty Skill Description */ 
+
+//Variables { //interface, what about functions?
+//	required {
+//		real v;
+//		real a;
+//	}
+//	defined {
+//		//empty
+//	}
+//}
+//
+//Parameters { //from skill graph
+//	real b;
+//	real vmax;
+//	real t;
+//	real ep;
+//}
+//
+//HybridProgram {
+//	//Interface {}
+//	Program := "
+// 		R margin() = (ep*A).    
+//  
+// 		HP ctrl::= { 
+//  			?vmax - v <= margin(); a := *; ?-b <= a & a <= 0;
+//  		}.
+//  
+//  		HP drive::= {
+//  			t := 0;
+//    		{x' = v, v' = a, t' = 1 & v >= 0 & t <= ep}
+//  		}.
+//
+//  		HP main ::= {ctrl; drive}";
+//}
+
+
+enum SkillType:
+	SENSOR='Sensor' | ACTUATOR='Actuator' | PLANNING='Planning' | ACTION='Action' | OBSERVABLE='ObservableBehavior' |
+	PERCEPTION='Perception' | ROOT='Main';
+
+Version returns Version:
+	{Version}
+	'{'
+	'major' major=INT
+	'minor' minor=INT
+	'}';
+	
+Requires returns Requires:
+	{Requires}
+	'requires' '{'
+	(variables+=Field ';')*
+	'}'
+;
+
+Provides returns Provides:
+	{Provides}
+	'provides' '{'
+	(variables+=Field ';')*
+	'}'
+;
+
+HybridProgram returns HybridProgram:
+	{HybridProgram}
+	'HybridProgram' '{'
+		(interface = HPInterface)?
+		('Program' '::=' program=STRING ';')?
+		('Controller' '::=' controller=STRING ';')?
+		('Plant' '::=' plant=STRING ';')?
+	'}'
+;
+
+HPInterface returns HPInterface:
+	{HPInterface}
+		('Requires' ':' (requires+=HPInterfaceElement)*)
+		('Provides' ':' (provides+=HPInterfaceElement)*)
+	;
+HPInterfaceElement returns HPInterfaceElement:
+	{HPInterfaceElement}
+		(hp?='HP'| bool?="Bool" | real?="Real") name=STRING alias?='as' aliasname=STRING ';'
+	;
+//
+//Property:
+//	implementation=Implementation | program = Program | source = SourceFile 
+//;
+//
+//SourceFile:
+//	'SourceFile' '=>' file=STRING ';'
+//;
+//
+//Program:
+//	'program' '{' content=STRING '}'
+//;
+//
+//Implementation:
+//	'ImplementationTechnique' '=>' technique=BasicImplTechnique ';'
+//;
+//
+//enum BasicImplTechnique returns BasicImplTechnique:
+//	HybridProgram = 'HybridProgram' |
+//	ROSComponent = 'ROSComponent';
+	
+//HPProgram returns HPProgram:
+//	'HybridProgram' '{' content=STRING '}'
+//;
+
+Import:
+	'import' (importedNamespace=ImportedFQN 'from' | 'model') importURI=STRING;
+
+ImportedFQN:
+	FQN ('.' '*')?;
+	
+// **************************************************************
+// type system
+
+TypeRef returns TypeRef:
+	predefined=BasicTypeId | interval=IntegerInterval;
+
+enum BasicTypeId returns BasicTypeId:
+	undefined = 'undefined' |
+	Int8 = 'Int8' |
+	UInt8 = 'UInt8' |
+	Int16 = 'Int16' |
+	UInt16 = 'UInt16' |
+	Int32 = 'Int32' |
+	UInt32 = 'UInt32' |
+	Int64 = 'Int64' |
+	UInt64 = 'UInt64' |
+	Boolean = 'Boolean' |
+	String = 'String' |
+	Float = 'Float' |
+	Double = 'Double' |
+	ByteBuffer = 'ByteBuffer' ;
+	
+IntegerInterval returns IntegerInterval:
+	{IntegerInterval}
+	'Integer' ('(' (lowerBound=INTERVAL_BOUND | 'minInt') ',' (upperBound=INTERVAL_BOUND | 'maxInt') ')')?
+;
+
+INTERVAL_BOUND returns ecore::EBigInteger:
+	'-'? INT;
+	
+Type returns Type:
+	ArrayType |
+	//EnumerationType |
+	StructType |
+	UnionType |
+	MapType;
+	
+ArrayType returns ArrayType:
+	{ArrayType}
+	(comment=AnnotationBlock)?
+	'array' name=ID 'of' elementType=TypeRef;
+
+StructType returns StructType:
+	{StructType}
+	(comment=AnnotationBlock)?
+	'struct' name=ID
+		(
+			('extends' base=[StructType|FQN]) |
+			(polymorphic?='polymorphic')
+		)?
+	'{'
+		(elements+=Field)*
+    '}';
+
+UnionType returns UnionType:
+	{UnionType}
+	(comment=AnnotationBlock)?
+	(public?='public')? 'union' name=ID ('extends' base=[UnionType|FQN])?
+	'{'
+		(elements+=Field)*
+    '}';
+    
+Field:
+	(comment=AnnotationBlock)?
+	type=TypeRef (array?='[' ']')? name=ID;
+
+MapType returns MapType:
+	{MapType}
+	(comment=AnnotationBlock)?
+	(public?='public')? 'map' name=ID '{'
+		keyType=TypeRef 'to' valueType=TypeRef
+	'}';
+
+
+//TypedElement:
+//	Field |
+//	Attribute |
+//	Argument |
+//	Declaration |
+//	ConstantDef;#
+
+// **************************************************************
+// constant definitions and initializers
+
+ConstantDef:
+	(comment=AnnotationBlock)?
+	'const' type=TypeRef (array?='[' ']')? name=ID '='
+		rhs=InitializerExpression
+	;
+
+InitializerExpression:
+	//LogicalOrExpression |
+	Initializer;
+
+Initializer:
+	CompoundInitializer |
+	BracketInitializer;
+
+// this is used for struct and union types
+CompoundInitializer:
+	{CompoundInitializer}
+	'{' (
+		elements+=FieldInitializer
+		(',' elements+=FieldInitializer)*
+	)? '}';
+
+FieldInitializer:
+	element=[Field|ID] ':' value=InitializerExpression;
+
+// this is used for array and map types
+BracketInitializer:
+	{BracketInitializer}
+	'[' (
+		elements+=ElementInitializer
+		(',' elements+=ElementInitializer)*
+	)? ']';
+
+// for array type initializers, the second element is omitted
+ElementInitializer:
+	{ElementInitializer}
+	first=InitializerExpression ('=>' second=InitializerExpression)?;
+
+	
+FQN:
+	ID ('.' ID)*;
+
+AnnotationBlock returns AnnotationBlock:
+	'/*' (elements+=Annotation)+ '*/';
+
+Annotation returns Annotation:
+	rawText=ANNOTATION_STRING;
+
+	// this is used for overloaded FMethod and FBroadcast
+ID_WITH_SELECTOR:
+	ID (':' ID)?;
+
+	// **************************************************************
+// basic types
+Boolean returns ecore::EBoolean:
+	'false' | 'true';
+
+E_BigInteger returns ecore::EBigInteger:
+	INT | HEX | BINARY;
+
+terminal E_DOUBLE_OBJECT returns ecore::EDoubleObject:
+	INT '.' INT ('e' '-'? INT)? 'd';
+
+terminal E_FLOAT_OBJECT returns ecore::EFloatObject:
+	INT '.' INT ('e' '-'? INT)? 'f';
+
+terminal HEX:
+	('0x' | '0X') (('0'..'9') | ('a'..'f') | ('A'..'F'))+;
+
+terminal BINARY:
+	('0b' | '0B') ('0' | '1')+;
+
+terminal ANNOTATION_STRING returns ecore::EString:
+	'@' (('a'..'z') | '-')+ (' ' | '\t')* ':'
+	(('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\')) | ('\\*' | '\\@') | !('\\' | '*' | '@'))*;

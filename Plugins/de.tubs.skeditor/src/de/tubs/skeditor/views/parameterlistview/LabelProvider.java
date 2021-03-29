@@ -18,8 +18,8 @@ import SkillGraph.Parameter;
 
 public class LabelProvider implements ITableLabelProvider {
 	private ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
-	private final ImageDescriptor CHECKED = getImageDescriptor("checked.gif");
-	private final ImageDescriptor UNCHECKED = getImageDescriptor("unchecked.gif");
+	private final ImageDescriptor CHECKED = getImageDescriptor("checked.png");
+	private final ImageDescriptor UNCHECKED = getImageDescriptor("unchecked.png");
 
 	private static ImageDescriptor getImageDescriptor(String file) {
 		// assume that the current class is called View.java
@@ -78,7 +78,7 @@ public class LabelProvider implements ITableLabelProvider {
 		case 3:
 			return String.valueOf(parameter.getDefaultValue());
 		case 4:
-			return "" + parameter.isVariable();
+			return parameter.isVariable() ? "Var." : "Const.";
 		default:
 			return null;
 		}

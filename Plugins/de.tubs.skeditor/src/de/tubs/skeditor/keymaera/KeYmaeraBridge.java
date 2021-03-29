@@ -3,15 +3,29 @@ package de.tubs.skeditor.keymaera;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import de.tubs.skeditor.preferences.SkeditorSettings;
 import edu.cmu.cs.ls.keymaerax.bellerophon.BelleExpr;
+import edu.cmu.cs.ls.keymaerax.codegen.CControllerGenerator;
+import edu.cmu.cs.ls.keymaerax.codegen.CGenerator;
+import edu.cmu.cs.ls.keymaerax.core.BaseVariable;
+import edu.cmu.cs.ls.keymaerax.core.Box;
 import edu.cmu.cs.ls.keymaerax.core.Formula;
+import edu.cmu.cs.ls.keymaerax.core.Imply;
+import edu.cmu.cs.ls.keymaerax.core.Program;
 import edu.cmu.cs.ls.keymaerax.core.Sequent;
+import edu.cmu.cs.ls.keymaerax.core.StaticSemantics;
+import edu.cmu.cs.ls.keymaerax.hydra.DBAbstractionObj;
+import edu.cmu.cs.ls.keymaerax.hydra.UploadArchiveRequest;
+import edu.cmu.cs.ls.keymaerax.parser.ArchiveParser;
 import edu.cmu.cs.ls.keymaerax.parser.ParsedArchiveEntry;
 import edu.cmu.cs.ls.keymaerax.pt.ProvableSig;
+import scala.Tuple2;
 import scala.Tuple3;
+import scala.collection.JavaConverters;
 import scala.collection.JavaConverters$;
 import scala.collection.immutable.List;
 import scala.collection.immutable.Map;
@@ -42,6 +56,10 @@ public class KeYmaeraBridge {
 		return edu.cmu.cs.ls.keymaerax.parser.StringConverter$.MODULE$.StringToStringConverter(content).asSequent();
 	}
 
+	public ParsedArchiveEntry parseProblem(String content) {
+		return edu.cmu.cs.ls.keymaerax.parser.KeYmaeraXArchiveParser$.MODULE$.parseProblem(content, true);
+	}
+
 	public static java.util.HashMap<String, String> getMathematicaConfig() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
 
@@ -62,7 +80,6 @@ public class KeYmaeraBridge {
 	public static java.util.HashMap<String, String> getZ3Config() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
 		c.put("z3Path", SkeditorSettings.getInstance().getZ3Exe());
-		// c.put("z3Path", "C:\\Users\\Dibo\\.keymaerax\\z3.exe"); // path
 		return c;
 	}
 
@@ -105,6 +122,18 @@ public class KeYmaeraBridge {
 
 	private KeYmaeraBridge() {
 		init();
+	}
+
+	public void launchKeYmaera() {
+		edu.cmu.cs.ls.keymaerax.launcher.Main.main(new String[0]);
+		// DBAbstractionObj.defaultDatabase().createModel(userId, name, fileContents,
+		// date, description, publink, title, tactic)
+	}
+
+	public void uploadArchiveToKeYmaera() {
+
+		// UploadArchiveRequest upload = new UploadArchiveRequest(DBAbstractionObj.,
+		// "guest", "tst", "");
 	}
 
 	/*
@@ -150,5 +179,34 @@ public class KeYmaeraBridge {
 	public ProvableSig prove(DynamicModel dm, String precondition, String postcondition) throws IOException {
 		return proveAutomatically(parseProgramAsFormula(dm.createKeYmaeraProgram(precondition, postcondition)));
 	}
+	
+	public java.util.List<String> generateCCode(String hybridProgram) {
+ 		scala.collection.immutable.List<ParsedArchiveEntry> archives = ArchiveParser.parser().parse(hybridProgram,
+				true);
+
+ 		java.util.List<String> results=new java.util.ArrayList<>(); 
+		for (int i = 0; i < archives.length(); i++) {
+			ParsedArchiveEntry archive = archives.apply(i);
+			Formula model = (Formula) archive.model();
+			Program prg = ((Box) ((Imply) model).right()).program();
+
+			scala.collection.immutable.List<Object> symbols = StaticSemantics.boundVars(model).symbols().toList();
+			ArrayList<BaseVariable> vars = new ArrayList<>();
+			for (int j = 0; j < symbols.size(); j++) {
+				Object s = symbols.apply(j);
+				if (s instanceof BaseVariable) {
+					vars.add((BaseVariable) s);
+				}
+			}
+
+			Tuple2<String, String> result = new CGenerator(new CControllerGenerator()).apply(prg,
+					JavaConverters.asScalaSet(vars.stream().collect(Collectors.toSet())).toSet(),
+					CGenerator.getInputs(prg));
+			results.add(result._1);
+		}
+		return results;
+	}
 
 }
+
+

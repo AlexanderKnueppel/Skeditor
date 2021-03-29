@@ -62,7 +62,7 @@ public class ParameterListView extends ViewPart {
 
 		TableViewerColumn columnIsVariable = new TableViewerColumn(viewer, SWT.NONE);
 		columnIsVariable.getColumn().setWidth(50);
-		columnIsVariable.getColumn().setText("var");
+		columnIsVariable.getColumn().setText("Type");
 		columnIsVariable.setEditingSupport(new IsVariableEditingSupport(viewer));
 
 		viewer.setContentProvider(new ContentProvider());

@@ -223,7 +223,7 @@ functionname
 	IDENTIFIER
 ;
 
-compoperator
+compoperat1or
 :
 	GREATER
 	| SMALLER

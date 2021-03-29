@@ -45,6 +45,8 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Node/controller"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Node/requiredVariables"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Node/definedVariables"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Node/SDLModel"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Node/assumptions"/>
     </genClasses>
     <genClasses ecoreClass="SkillGraph.ecore#//Requirement">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Requirement/comment"/>
@@ -63,6 +65,11 @@
     <genClasses ecoreClass="SkillGraph.ecore#//Controller">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Controller/ctrl"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Controller/node"/>
+    </genClasses>
+    <genClasses ecoreClass="SkillGraph.ecore#//Assumption">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Assumption/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Assumption/term"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference SkillGraph.ecore#//Assumption/node"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>
