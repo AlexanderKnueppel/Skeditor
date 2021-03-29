@@ -207,5 +207,14 @@
 	            icon="icons/run.png">
 	    </launchConfigurationTypeImage>
 	</extension>
+   
+    <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="de.tubs.skeditor.preferences.SkeditorPreferencePage"
+            id="de.tubs.skeditor.preferences.page"
+            name="Skeditor Preferences">
+      </page>
+   </extension>
 
 </plugin>

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import de.tubs.skeditor.preferences.SkeditorSettings;
 import edu.cmu.cs.ls.keymaerax.bellerophon.BelleExpr;
 import edu.cmu.cs.ls.keymaerax.codegen.CControllerGenerator;
 import edu.cmu.cs.ls.keymaerax.codegen.CGenerator;
@@ -61,9 +62,13 @@ public class KeYmaeraBridge {
 
 	public static java.util.HashMap<String, String> getMathematicaConfig() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
-		c.put("linkName", "C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\MathKernel.exe"); // path
-		c.put("libDir",
-				"C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\SystemFiles\\Links\\JLink\\SystemFiles\\Libraries\\Windows-x86-64\\"); // path
+
+		c.put("linkName", SkeditorSettings.getInstance().getMathematicaExe());
+		c.put("libDir", SkeditorSettings.getInstance().getMathematicaLibs());
+
+//		c.put("linkName", "C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\MathKernel.exe"); // path
+//		c.put("libDir",
+//				"C:\\Program Files\\Wolfram Research\\Mathematica\\11.2\\SystemFiles\\Links\\JLink\\SystemFiles\\Libraries\\Windows-x86-64\\"); // path
 		return c;
 	}
 
@@ -74,7 +79,7 @@ public class KeYmaeraBridge {
 
 	public static java.util.HashMap<String, String> getZ3Config() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
-		c.put("z3Path", "C:\\z3\\bin\\z3.exe"); // path
+		c.put("z3Path", SkeditorSettings.getInstance().getZ3Exe());
 		return c;
 	}
 
@@ -83,8 +88,7 @@ public class KeYmaeraBridge {
 	}
 
 	private void init() {
-		edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
-				.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
+		setProver();
 
 		edu.cmu.cs.ls.keymaerax.Configuration$.MODULE$
 				.setConfiguration(edu.cmu.cs.ls.keymaerax.FileConfiguration$.MODULE$);
@@ -102,8 +106,21 @@ public class KeYmaeraBridge {
 			System.out.println(edu.cmu.cs.ls.keymaerax.tools.KeYmaeraXTool.name());
 		}
 	}
+	
+	public void setProver() {
+		switch(SkeditorSettings.getInstance().getSelectedProver()) {
+		case "z3":
+			edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
+			.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
+			break;
+		case "mathematica":
+			edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
+			.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.MathematicaToolProvider(toScalaMap(getMathematicaConfig())));	
+			break;
+		}
+	}
 
-	public KeYmaeraBridge() {
+	private KeYmaeraBridge() {
 		init();
 	}
 
@@ -191,3 +208,5 @@ public class KeYmaeraBridge {
 	}
 
 }
+
+
