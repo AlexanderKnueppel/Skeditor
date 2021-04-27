@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
 
+import SkillGraph.Assumption;
 import SkillGraph.Requirement;
 
 public class TermEditingSupport extends EditingSupport {
@@ -19,7 +20,7 @@ public class TermEditingSupport extends EditingSupport {
 
 	@Override
 	protected boolean canEdit(Object element) {
-		return element instanceof Requirement;
+		return element instanceof Requirement || element instanceof Assumption;
 	}
 
 	@Override
@@ -29,20 +30,35 @@ public class TermEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		return ((Requirement) element).getTerm();
+		if(element instanceof Requirement) 
+			return ((Requirement) element).getTerm();
+		else
+			return ((Assumption) element).getTerm();
 	}
 
 	@Override
 	protected void setValue(Object element, Object inputValue) {
-		Requirement req = ((Requirement) element);
-		TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(req);
-		domain.getCommandStack().execute(new RecordingCommand(domain) {
-			@Override
-			protected void doExecute() {
-				req.eSet(req.eClass().getEStructuralFeature("term"), inputValue.toString());
+		if(element instanceof Requirement) {
+			Requirement req = ((Requirement) element);
+			TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(req);
+			domain.getCommandStack().execute(new RecordingCommand(domain) {
+				@Override
+				protected void doExecute() {
+					req.eSet(req.eClass().getEStructuralFeature("term"), inputValue.toString());
 
-			}
-		});
+				}
+			});
+		} else if(element instanceof Assumption) {
+			Assumption req = ((Assumption) element);
+			TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(req);
+			domain.getCommandStack().execute(new RecordingCommand(domain) {
+				@Override
+				protected void doExecute() {
+					req.eSet(req.eClass().getEStructuralFeature("term"), inputValue.toString());
+
+				}
+			});
+		}
 		getViewer().update(element, null);
 	}
 

@@ -22,13 +22,15 @@ import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 import SkillGraph.Node;
-import de.tubs.skeditor.compositionality.KeymaeraString;
+import de.tubs.skeditor.keymaera.assembler.HybridProgramAssembler;
 
 public class CreateKeymaeraFileFeature extends AbstractCustomFeature {
 
-	public CreateKeymaeraFileFeature(IFeatureProvider fp) {
+	private boolean inline = true;
+
+	public CreateKeymaeraFileFeature(IFeatureProvider fp, boolean inline) {
 		super(fp);
-		// TODO Auto-generated constructor stub
+		this.inline = inline;
 	}
 
 	@Override
@@ -55,34 +57,38 @@ public class CreateKeymaeraFileFeature extends AbstractCustomFeature {
 			Object bo = getBusinessObjectForPictogramElement(pes[0]);
 			if (bo instanceof Node) {
 				Node node = (Node) bo;
-				if (!node.getController().isEmpty()) {
 
-					File file = null;
-					try {
-						file = File.createTempFile(node.getName(), ".kyx", null);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				if (node.getSDLModel() != null && !node.getSDLModel().isEmpty()) {
+					String HP = "";
+					HP = HybridProgramAssembler.computeProgram(node, inline, !inline);
 
-					try {
-						KeymaeraString ks = new KeymaeraString(bo);
-						pWriter = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-						pWriter.println(ks.getString());
-					} catch (IOException ioe) {
-						ioe.printStackTrace();
-					} finally {
-						if (pWriter != null) {
-							pWriter.flush();
-							pWriter.close();
-						}
-						Desktop desktop = Desktop.getDesktop();
-
+					if (!HP.isEmpty()) {
+						File file = null;
 						try {
-							desktop.open(file);
+							file = File.createTempFile(node.getName(), ".kyx", null);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+						}
+
+						try {
+							pWriter = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+							pWriter.println(HP.toString());
+						} catch (IOException ioe) {
+							ioe.printStackTrace();
+						} finally {
+							if (pWriter != null) {
+								pWriter.flush();
+								pWriter.close();
+							}
+							Desktop desktop = Desktop.getDesktop();
+
+							try {
+								desktop.open(file);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -92,22 +98,20 @@ public class CreateKeymaeraFileFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getName() {
-		return "Open Keymaera";
+		return "Generate .kyx (" + (inline ? "full inline" : "uninterpreted") + ")";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Generate and open a KeymaeraX file";
+		return "Generate and open a temporary *.kyx file";
 	}
 
-	public boolean isAlphabet(char c) {
-
-		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-			return true;
-		}
-
-		return false;
-
-	}
+//	public boolean isAlphabet(char c) {
+//		if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+//			return true;
+//		}
+//
+//		return false;
+//	}
 
 }

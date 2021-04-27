@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package
+			uri = "http://www.tubs.de/skeditor/Sdl"
+			class = "de.tubs.skeditor.sdl.SdlPackage"
+			genModel = "model/generated/Sdl.genmodel" />
+	</extension>
+</plugin>

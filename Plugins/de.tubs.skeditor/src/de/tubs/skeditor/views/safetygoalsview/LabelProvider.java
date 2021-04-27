@@ -13,6 +13,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import SkillGraph.Assumption;
 import SkillGraph.Node;
 import SkillGraph.Requirement;
 import de.tubs.skeditor.contracting.grammar.GrammarUtil;
@@ -80,6 +81,26 @@ public class LabelProvider implements ITableLabelProvider, ITableFontProvider, I
 			default:
 				break;
 			}
+		} else if (element instanceof Assumption) {
+			Assumption as = (Assumption) element;
+			switch (columnIndex) {
+			case 0:
+				String name = "AS";
+				for (int i = 0; i < as.getNode().getAssumptions().size(); i++) {
+					if (as.equals(as.getNode().getAssumptions().get(i))) {
+						name += (i + 1);
+					}
+				}
+				return name;
+			case 1:
+				return as.getTerm();
+			case 2:
+				return as.getComment();
+			case 3:
+				return "Assumption";
+			default:
+				break;
+			}
 		}
 
 		return null;
@@ -88,12 +109,16 @@ public class LabelProvider implements ITableLabelProvider, ITableFontProvider, I
 	@Override
 	public Color getForeground(Object element, int columnIndex) {
 		// TODO Auto-generated method stub
-		if(element instanceof Requirement) {
-			Requirement req = (Requirement) element;
-			
+		String Term = "";
+		if(element instanceof Requirement) 
+			Term = ((Requirement)element).getTerm();
+		else if(element instanceof Assumption) 
+			Term = ((Assumption)element).getTerm();
+		
+		if(element instanceof Requirement || element instanceof Assumption) {
 			switch (columnIndex) {
 			case 1:
-				List<SyntaxError> errors = GrammarUtil.tryToParse(req.getTerm());
+				List<SyntaxError> errors = GrammarUtil.tryToParse(Term);
 				if(errors.isEmpty())
 					return null;
 				else {

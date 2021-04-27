@@ -140,7 +140,7 @@ powerformula
 		)*
 	)
 ;
-
+	
 term
 :
 	compproperty
@@ -253,8 +253,6 @@ functionname
 :
 	IDENTIFIER
 ;
-
-
 
 compoperator
 :

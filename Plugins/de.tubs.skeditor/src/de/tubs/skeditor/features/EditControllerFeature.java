@@ -77,7 +77,7 @@ public class EditControllerFeature extends AbstractCustomFeature {
 
 				// ask user for a new comment
 				String newComment = askString(getName(), getDescription(), current);
-				if (newComment.isEmpty() || newComment.length() == 0) {
+				if (newComment == null || newComment.isEmpty() || newComment.length() == 0) {
 					this.hasDoneChanges = true;
 					node.getController().clear();
 					updatePictogramElement(((Shape) pes[0]).getContainer());

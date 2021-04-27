@@ -34,6 +34,7 @@ public class SkeditorDiagramEditor extends DiagramEditor {
 					if (pe.getLink() != null && pe.getLink().getBusinessObjects().size() == 1
 							&& pe.getLink().getBusinessObjects().get(0) instanceof Node) {
 						ViewUtil.updateDiffView((Node) pe.getLink().getBusinessObjects().get(0));
+						ViewUtil.updateInfoView((Node) pe.getLink().getBusinessObjects().get(0));
 					}
 				}
 			}
