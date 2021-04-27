@@ -46,10 +46,14 @@ public class GrammarUtil {
 	public static void main(String[] args) {
 		
 		try {
-			System.out.println(tryToParse("A<5 & b > 7 & true & c = d & x -> y | 12 > VBNM"));
+			//System.out.println(tryToParse("A<5 & b > 7 & true & c = d & x -> y | 12 > VBNM"));
+			
+			for(SyntaxError s : tryToParse("ab(y-ly) + v^2/(2*b) < lw")) {
+				System.out.println("TEST" + s.getMessage());
+			}
 			
 		} catch(ParseCancellationException e) {
-			System.out.println(e.getMessage());
+			//System.out.println(e.getMessage());
 		}
 		
 	}

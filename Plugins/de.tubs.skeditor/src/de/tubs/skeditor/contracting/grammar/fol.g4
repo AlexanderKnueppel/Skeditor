@@ -82,12 +82,20 @@ compareformula
 LPAREN compareformula RPAREN
 	|
 	(
-		summformula
+		mathematicalExpression
 		(
-			compoperator summformula
+			compoperator mathematicalExpression
 		)*
 	)
 ;
+
+mathematicalExpression
+   :  mathematicalExpression  POWER mathematicalExpression
+   |  mathematicalExpression  (MULTI | DIVISION)  mathematicalExpression
+   |  mathematicalExpression  (ADD | MINUS) mathematicalExpression
+   |  LPAREN mathematicalExpression RPAREN
+   |  (ADD | MINUS)* term
+   ;
 
 tupel
 :
@@ -132,16 +140,17 @@ powerformula
 		)*
 	)
 ;
-	
+
 term
 :
 	compproperty
 	| portproperty
 	| port
+	| predicate
 	| functioncall
 	| array
 	| variable
-	| NUMBER
+	| SCIENTIFIC_NUMBER
 	|
 	(
 		LPAREN MINUS
@@ -168,7 +177,7 @@ array
 		)
 		|
 		(
-			IDENTIFIER '.' 
+			IDENTIFIER '.'
 		)+
 	)? variable
 	(
@@ -202,17 +211,39 @@ port
 	)+
 ;
 
-functioncall
+predicate
 :
-	IDENTIFIER '.' functionname LPAREN
+	'#' functionname LPAREN
 	(
-		term
+		mathematicalExpression
 		| formula
 	)
 	(
 		','
 		(
-			term
+			mathematicalExpression
+			| formula
+		)
+	)* RPAREN
+;
+
+prefix
+:
+    IDENTIFIER '.'
+    | '\\'
+;
+
+functioncall
+:
+	prefix? functionname LPAREN
+	(
+		mathematicalExpression
+		| formula
+	)
+	(
+		','
+		(
+			mathematicalExpression
 			| formula
 		)
 	)* RPAREN
@@ -222,6 +253,8 @@ functionname
 :
 	IDENTIFIER
 ;
+
+
 
 compoperator
 :
@@ -251,6 +284,7 @@ connectoperator
 	| DISJ
 	| IMPL
 	| BICOND
+	| LEQUI
 ;
 
 pred_constant
@@ -299,8 +333,6 @@ OPERATOR
 :
 	'\\sum'
 	| '\\product'
-	| '\\max'
-	| '\\min'
 ;
 
 COMPONENT
@@ -312,6 +344,16 @@ COMPONENT
 STRING
 :
 	'"' CHARACTER+ '"'
+;
+
+CONJ
+:
+	'&&' | '&' | 'and'
+;
+
+DISJ
+:
+	'||' | '|' | 'or'
 ;
 
 IDENTIFIER
@@ -327,10 +369,33 @@ IDENTIFIER
 	)*
 ;
 
-NUMBER
+//The NUMBER part gets its potential sign from "(PLUS | MINUS)* atom" in the expression rule
+SCIENTIFIC_NUMBER
+   : NUMBER (E SIGN? UNSIGNED_INTEGER)?
+   ;
+
+fragment NUMBER
+   : [0-9]+ ('.' [0-9]+)?
+   ;
+
+fragment UNSIGNED_INTEGER
+   : [0-9]+
+   ;
+
+
+fragment E
+   : 'E' | 'e'
+   ;
+
+
+fragment SIGN
+   : ('+' | '-')
+   ;
+
+/*NUMBER
 :
 	[0-9]+ ('.' [0-9]+)?
-;
+;*/
 
 LPAREN
 :
@@ -354,7 +419,7 @@ POWER
 
 EQUAL
 :
-	'=='
+	'='
 ;
 
 NEQUAL
@@ -391,19 +456,14 @@ CHARACTER
 	| '_'
 ;
 
-CONJ
+LEQUI
 :
-	'&&' | '&' | 'and'
-;
-
-DISJ
-:
-	'||' | '|' | 'or'
+	'<->'
 ;
 
 IMPL
 :
-	'=>'
+	'->'
 ;
 
 BICOND

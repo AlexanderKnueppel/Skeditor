@@ -98,6 +98,16 @@ public interface folListener extends ParseTreeListener {
 	 */
 	void exitCompareformula(folParser.CompareformulaContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link folParser#mathematicalExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterMathematicalExpression(folParser.MathematicalExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link folParser#mathematicalExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitMathematicalExpression(folParser.MathematicalExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link folParser#tupel}.
 	 * @param ctx the parse tree
 	 */
@@ -187,6 +197,26 @@ public interface folListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPort(folParser.PortContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link folParser#predicate}.
+	 * @param ctx the parse tree
+	 */
+	void enterPredicate(folParser.PredicateContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link folParser#predicate}.
+	 * @param ctx the parse tree
+	 */
+	void exitPredicate(folParser.PredicateContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link folParser#prefix}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrefix(folParser.PrefixContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link folParser#prefix}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrefix(folParser.PrefixContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link folParser#functioncall}.
 	 * @param ctx the parse tree
