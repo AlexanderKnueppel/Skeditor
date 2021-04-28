@@ -62,9 +62,9 @@ public class TestFolGrammar {
 
 		// =>, <=, ->, <->
 		formulas.add("(\\false -> #d() || #b()) | (!#a() || #b())");
-		formulas.add("(#a()) -> (#y() & #x() && #z())"); // TODO fix
-		formulas.add("(#a() | #b() || #c() | #d()) <-> (#a() & #b() -> #c())"); // TODO fix
-		formulas.add("((#a() | #b()) & #c()) <-> \\true"); // TODO fix
+		formulas.add("(#a()) -> (#y() & #x() && #z())");
+		formulas.add("(#a() | #b() || #c() | #d()) <-> (#a() & #b() -> #c())");
+		formulas.add("((#a() | #b()) & #c()) <-> \\true");
 		
 		// LL-GRAMMAR
 

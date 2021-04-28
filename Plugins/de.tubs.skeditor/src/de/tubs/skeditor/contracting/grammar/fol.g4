@@ -104,42 +104,6 @@ tupel
 		',' term
 	)* RPAREN
 ;
-
-summformula
-:
-LPAREN summformula RPAREN
-	|
-	(
-		faktorformula
-		(
-			addoperator summformula
-		)*
-	)
-;
-
-faktorformula
-:
-	LPAREN faktorformula RPAREN
-	|
-	(
-		powerformula
-		(
-			multoperator faktorformula
-		)*
-	)
-;
-
-powerformula
-:
-	LPAREN powerformula LPAREN
-	|
-	(
-		term
-		(
-			POWER powerformula
-		)*
-	)
-;
 	
 term
 :
@@ -281,7 +245,6 @@ connectoperator
 	CONJ
 	| DISJ
 	| IMPL
-	| BICOND
 	| LEQUI
 ;
 
@@ -462,11 +425,6 @@ LEQUI
 IMPL
 :
 	'->'
-;
-
-BICOND
-:
-	'<>'
 ;
 
 GREATER

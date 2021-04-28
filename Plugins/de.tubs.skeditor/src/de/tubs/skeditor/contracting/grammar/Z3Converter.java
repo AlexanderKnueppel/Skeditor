@@ -26,8 +26,8 @@ public class Z3Converter {
 
 	public static void main(String[] args) {
 
-		//String formula = "(A==true||B==true)||A==true";
-		
+		// String formula = "(A==true||B==true)||A==true";
+
 		String formula = "!(y <= (ly+((-1.0)*(0.5*lw))))";
 
 		Z3Converter converter = new Z3Converter();
@@ -51,8 +51,8 @@ public class Z3Converter {
 		Solver s = converter.getZ3SolverFromFormula(formula);
 		for (Goal sub : res3.getSubgoals()) {
 			s.add(sub.getFormulas());
-			
-			//System.out.println(sub);
+
+			// System.out.println(sub);
 		}
 		if (s.check() == Status.SATISFIABLE)
 			System.out.println("Model: " + s.getModel().toString());
@@ -60,7 +60,7 @@ public class Z3Converter {
 			System.out.println("Not satisfiable!");
 
 		BoolExpr be = converter.getZ3BoolExpression(formula);
-		
+
 		for (BoolExpr sub : s.getAssertions()) {
 			System.out.println(converter.toFormulaFromZ3Expression(sub));
 		}
@@ -119,33 +119,33 @@ public class Z3Converter {
 	public String toFormulaFromZ3Expression(Expr formula) {
 		List<String> tmp = new ArrayList<String>();
 		visitZ3Expr(formula, tmp);
-		if(!tmp.isEmpty()) {
+		if (!tmp.isEmpty()) {
 			String res = tmp.get(0);
 			return res;
 		}
 		return "";
 	}
-	
+
 	public String simplifyFormula(String formula) {
 		Goal goal = getContext().mkGoal(true, false, false);
 		goal.add(getZ3BoolExpression(formula));
 
 		Tactic ctxSolverSimplify = getContext().mkTactic("ctx-solver-simplify");
 		ApplyResult res3 = ctxSolverSimplify.apply(goal);
-		
+
 		Solver solver = z3context.mkSolver();
 		List<String> assertions = new ArrayList<String>();
 		for (Goal sub : res3.getSubgoals()) {
-			for(BoolExpr expr : sub.getFormulas()) {
+			for (BoolExpr expr : sub.getFormulas()) {
 				assertions.add(toFormulaFromZ3Expression(expr));
 			}
 			return String.join(" & ", assertions);
-			//assertions.add(toFormulaFromZ3Expression(sub.getFormulas());
-			//solver.add(sub.getFormulas()); // Should only be one, right?
+			// assertions.add(toFormulaFromZ3Expression(sub.getFormulas());
+			// solver.add(sub.getFormulas()); // Should only be one, right?
 		}
-		
-		//solver.check();
-		
+
+		// solver.check();
+
 //		if(solver.getAssertions().length > 0) {
 //			for(int i = 0; i < solver.getAssertions().length; ++i) {
 //				
@@ -153,8 +153,7 @@ public class Z3Converter {
 //			}
 //			return toFormulaFromZ3Expression(solver.getAssertions()[0]);
 //		}
-		
-		
+
 		return "\\true";
 	}
 
@@ -207,7 +206,7 @@ public class Z3Converter {
 			visitZ3Expr(e.getArgs()[0], tmp1);
 			visitZ3Expr(e.getArgs()[1], tmp2);
 			parts.add(tmp1.get(0) + " <= " + tmp2.get(0));
-		}  else if (e.isEq()) {
+		} else if (e.isEq()) {
 			List<String> tmp1 = new ArrayList<String>();
 			List<String> tmp2 = new ArrayList<String>();
 			visitZ3Expr(e.getArgs()[0], tmp1);
@@ -237,30 +236,29 @@ public class Z3Converter {
 			visitZ3Expr(e.getArgs()[0], tmp1);
 			visitZ3Expr(e.getArgs()[1], tmp2);
 			parts.add("(" + tmp1.get(0) + "/" + tmp2.get(0) + ")");
-		} else if(e.isNot()) {
+		} else if (e.isNot()) {
 			List<String> tmp = new ArrayList<String>();
 			visitZ3Expr(e.getArgs()[0], tmp);
 			parts.add("!(" + tmp.get(0) + ")");
-		} else if(e.isTrue()) {
+		} else if (e.isTrue()) {
 			parts.add("\\true");
-		} else if(e.isFalse()) {
+		} else if (e.isFalse()) {
 			parts.add("\\false");
-		} else if(e.isNumeral()) {
-			if(e.isRatNum()) {
-			    RatNum rational = (RatNum) e;
-			    IntNum num = rational.getNumerator(), den = rational.getDenominator();
-			    parts.add(""+((double) num.getInt() / den.getInt()));
-			} else  {
+		} else if (e.isNumeral()) {
+			if (e.isRatNum()) {
+				RatNum rational = (RatNum) e;
+				IntNum num = rational.getNumerator(), den = rational.getDenominator();
+				parts.add("" + ((double) num.getInt() / den.getInt()));
+			} else {
 				parts.add(e.getSExpr());
 			}
-		}  
-		else if(e.isConst()) {
+		} else if (e.isConst()) {
 			parts.add(e.getSExpr());
-		} else if(e.isVar()) {
+		} else if (e.isVar()) {
 			parts.add(e.getString());
 		} else if (e.isApp()) {
 			System.out.println(e.getFuncDecl().getName() + " currently not supported!");
-		} 
+		}
 	}
 
 	class ExpressionVisitor extends folBaseVisitor<Expr> {
@@ -414,9 +412,9 @@ public class Z3Converter {
 			if (ctx.compareformula() != null) {
 				return visitCompareformula(ctx.compareformula());
 			}
-			ArithExpr first = (ArithExpr) visitSummformula(ctx.summformula(0));
-			for (int i = 1; i < ctx.summformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
+			ArithExpr first = (ArithExpr) visitMathematicalExpression(ctx.mathematicalExpression(0));
+			for (int i = 1; i < ctx.mathematicalExpression().size(); i++) {
+				ArithExpr expr = (ArithExpr) visitMathematicalExpression(ctx.mathematicalExpression(i));
 				switch (ctx.compoperator(i - 1).getText()) {
 				case ">":
 					result = getContext().mkGt(first, expr);
@@ -450,61 +448,122 @@ public class Z3Converter {
 		}
 
 		@Override
-		public Expr visitSummformula(folParser.SummformulaContext ctx) {
-			if (ctx.faktorformula() == null) {
-				return visitSummformula(ctx.summformula(0));
+		public Expr visitMathematicalExpression(folParser.MathematicalExpressionContext ctx) {
+			if (ctx.mathematicalExpression() == null) {
+				return visitMathematicalExpression(ctx.mathematicalExpression(0));
 			}
-			ArithExpr result = (ArithExpr) visitFaktorformula(ctx.faktorformula());
-			for (int i = 0; i < ctx.summformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
-				switch (ctx.addoperator(i).getText()) {
-				case "+":
-					result = getContext().mkAdd(result, expr);
-					break;
-				case "-":
-					result = getContext().mkSub(result, expr);
-					break;
-				default:
-					result = null;
-				}
-			}
-			return result;
+
+			return null;
 		}
 
-		@Override
-		public Expr visitFaktorformula(folParser.FaktorformulaContext ctx) {
-			if (ctx.powerformula() == null) {
-				return visitFaktorformula(ctx.faktorformula(0));
-			}
-			ArithExpr result = (ArithExpr) visitPowerformula(ctx.powerformula());
-			for (int i = 0; i < ctx.faktorformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitFaktorformula(ctx.faktorformula(i));
-				switch (ctx.multoperator(i).getText()) {
-				case "*":
-					result = getContext().mkMul(result, expr);
-					break;
-				case "/":
-					result = getContext().mkDiv(result, expr);
-					break;
-				default:
-					result = null;
-				}
-			}
-			return result;
-		}
+//		@Override
+//		public Expr visitCompareformula(folParser.CompareformulaContext ctx) {
+//			BoolExpr result = null;
+//			if (ctx.compareformula() != null) {
+//				return visitCompareformula(ctx.compareformula());
+//			}
+//			ArithExpr first = (ArithExpr) visitSummformula(ctx.summformula(0));
+//			for (int i = 1; i < ctx.summformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
+//				switch (ctx.compoperator(i - 1).getText()) {
+//				case ">":
+//					result = getContext().mkGt(first, expr);
+//					first = expr;
+//					break;
+//				case "<":
+//					result = getContext().mkLt(first, expr);
+//					first = expr;
+//					break;
+//				case ">=":
+//					result = getContext().mkGe(first, expr);
+//					first = expr;
+//					break;
+//				case "<=":
+//					result = getContext().mkLe(first, expr);
+//					first = expr;
+//					break;
+//				case "==":
+//					result = getContext().mkEq(first, expr);
+//					first = expr;
+//					break;
+//				case "!=":
+//					result = getContext().mkNot(getContext().mkEq(first, expr));
+//					first = expr;
+//					break;
+//				default:
+//					return null;
+//				}
+//			}
+//			return result;
+//		}
 
-		@Override
-		public Expr visitPowerformula(folParser.PowerformulaContext ctx) {
-			if (ctx.term() == null) {
-				return visitPowerformula(ctx.powerformula(0));
-			}
-			ArithExpr result = (ArithExpr) visitTerm(ctx.term());
-			for (int i = 0; i < ctx.powerformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitPowerformula(ctx.powerformula(i));
-				result = getContext().mkPower(result, expr);
-			}
-			return result;
-		}
+//		@Override
+//		public Expr visitSummformula(folParser.SummformulaContext ctx) {
+//			if (ctx.faktorformula() == null) {
+//				return visitSummformula(ctx.summformula(0));
+//			}
+//			ArithExpr result = (ArithExpr) visitFaktorformula(ctx.faktorformula());
+//			for (int i = 0; i < ctx.summformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
+//				switch (ctx.addoperator(i).getText()) {
+//				case "+":
+//					result = getContext().mkAdd(result, expr);
+//					break;
+//				case "-":
+//					result = getContext().mkSub(result, expr);
+//					break;
+//				default:
+//					result = null;
+//				}
+//			}
+//			return result;
+//		}
+
+//		@Override
+//		public Expr visitFaktorformula(folParser.FaktorformulaContext ctx) {
+//			if (ctx.powerformula() == null) {
+//				return visitFaktorformula(ctx.faktorformula(0));
+//			}
+//			ArithExpr result = (ArithExpr) visitPowerformula(ctx.powerformula());
+//			for (int i = 0; i < ctx.faktorformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitFaktorformula(ctx.faktorformula(i));
+//				switch (ctx.multoperator(i).getText()) {
+//				case "*":
+//					result = getContext().mkMul(result, expr);
+//					break;
+//				case "/":
+//					result = getContext().mkDiv(result, expr);
+//					break;
+//				default:
+//					result = null;
+//				}
+//			}
+//			return result;
+//		}
+
+//		@Override
+//		public Expr visitPowerformula(folParser.PowerformulaContext ctx) {
+//			if (ctx.term() == null) {
+//				return visitPowerformula(ctx.powerformula(0));
+//			}
+//			ArithExpr result = (ArithExpr) visitTerm(ctx.term());
+//			for (int i = 0; i < ctx.powerformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitPowerformula(ctx.powerformula(i));
+//				result = getContext().mkPower(result, expr);
+//			}
+//			return result;
+//		}
+
+		/*
+		 * @Override public Expr visitTerm(folParser.TermContext ctx) { if (ctx.term()
+		 * != null) { if (ctx.MINUS() != null) { return
+		 * getContext().mkSub(getContext().mkReal(0), (ArithExpr)
+		 * visitTerm(ctx.term())); } return visitTerm(ctx.term()); } else if
+		 * (ctx.variable() != null) { return
+		 * getContext().mkRealConst(ctx.variable().getText()); } else if (ctx.NUMBER()
+		 * != null) { return getContext().mkReal(ctx.NUMBER().getText()); } else {
+		 * return null; } }
+		 */
 
 		@Override
 		public Expr visitTerm(folParser.TermContext ctx) {
@@ -515,8 +574,8 @@ public class Z3Converter {
 				return visitTerm(ctx.term());
 			} else if (ctx.variable() != null) {
 				return getContext().mkRealConst(ctx.variable().getText());
-			} else if (ctx.NUMBER() != null) {
-				return getContext().mkReal(ctx.NUMBER().getText());
+			} else if (ctx.SCIENTIFIC_NUMBER() != null) {
+				return getContext().mkReal(ctx.SCIENTIFIC_NUMBER().getText());
 			} else {
 				return null;
 			}

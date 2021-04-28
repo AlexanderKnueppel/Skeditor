@@ -23,6 +23,16 @@
 hs_err_pid*
 
 src-gen
+xtend-gen
 bin
 .settings
 doc
+
+# Generated Projects
+de.tubs.skeditor.edit
+de.tubs.skeditor.editor
+de.tubs.skeditor.sdl.edit
+de.tubs.skeditor.sdl.editor
+de.tubs.skeditor.tests
+de.tubs.skeditor.sdl.tests
+de.tubs.skeditor.sdl.ui.tests

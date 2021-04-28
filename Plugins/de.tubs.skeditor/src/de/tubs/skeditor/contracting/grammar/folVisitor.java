@@ -65,29 +65,17 @@ public interface folVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompareformula(folParser.CompareformulaContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link folParser#mathematicalExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMathematicalExpression(folParser.MathematicalExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link folParser#tupel}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitTupel(folParser.TupelContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link folParser#summformula}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSummformula(folParser.SummformulaContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link folParser#faktorformula}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFaktorformula(folParser.FaktorformulaContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link folParser#powerformula}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPowerformula(folParser.PowerformulaContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link folParser#term}.
 	 * @param ctx the parse tree
@@ -118,6 +106,18 @@ public interface folVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitPort(folParser.PortContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#predicate}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPredicate(folParser.PredicateContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link folParser#prefix}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrefix(folParser.PrefixContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link folParser#functioncall}.
 	 * @param ctx the parse tree

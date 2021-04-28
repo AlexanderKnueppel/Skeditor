@@ -118,36 +118,6 @@ public interface folListener extends ParseTreeListener {
 	 */
 	void exitTupel(folParser.TupelContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link folParser#summformula}.
-	 * @param ctx the parse tree
-	 */
-	void enterSummformula(folParser.SummformulaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link folParser#summformula}.
-	 * @param ctx the parse tree
-	 */
-	void exitSummformula(folParser.SummformulaContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link folParser#faktorformula}.
-	 * @param ctx the parse tree
-	 */
-	void enterFaktorformula(folParser.FaktorformulaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link folParser#faktorformula}.
-	 * @param ctx the parse tree
-	 */
-	void exitFaktorformula(folParser.FaktorformulaContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link folParser#powerformula}.
-	 * @param ctx the parse tree
-	 */
-	void enterPowerformula(folParser.PowerformulaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link folParser#powerformula}.
-	 * @param ctx the parse tree
-	 */
-	void exitPowerformula(folParser.PowerformulaContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link folParser#term}.
 	 * @param ctx the parse tree
 	 */

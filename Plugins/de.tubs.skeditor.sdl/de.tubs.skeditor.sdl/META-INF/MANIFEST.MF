@@ -15,15 +15,15 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.emf.common,
  org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: de.tubs.skeditor.sdl,
- de.tubs.skeditor.sdl.util,
+Export-Package: de.tubs.skeditor,
  de.tubs.skeditor.generator,
- de.tubs.skeditor.services,
- de.tubs.skeditor.scoping,
  de.tubs.skeditor.parser.antlr,
- de.tubs.skeditor.sdl.impl,
  de.tubs.skeditor.parser.antlr.internal,
- de.tubs.skeditor,
+ de.tubs.skeditor.scoping,
+ de.tubs.skeditor.sdl,
+ de.tubs.skeditor.sdl.impl,
+ de.tubs.skeditor.sdl.util,
  de.tubs.skeditor.serializer,
+ de.tubs.skeditor.services,
  de.tubs.skeditor.validation
 Import-Package: org.apache.log4j

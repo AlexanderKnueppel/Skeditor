@@ -6,7 +6,7 @@ import de.tubs.skeditor.contracting.grammar.folParser.BoolexpressionContext;
 import de.tubs.skeditor.contracting.grammar.folParser.CompareformulaContext;
 import de.tubs.skeditor.contracting.grammar.folParser.ConnectiveformulaContext;
 import de.tubs.skeditor.contracting.grammar.folParser.FormulaContext;
-import de.tubs.skeditor.contracting.grammar.folParser.SummformulaContext;
+import de.tubs.skeditor.contracting.grammar.folParser.MathematicalExpressionContext;
 import de.tubs.skeditor.contracting.grammar.folParser.TermContext;
 
 import java.util.ArrayList;
@@ -79,10 +79,10 @@ public class Z3ConversionListener extends folBaseListener {
 	private BoolExpr resolveCompareFormula(CompareformulaContext formula) {
 		if(formula.compareformula() != null) {
 			return resolveCompareFormula(formula.compareformula());
-		} else if(formula.summformula() != null && !formula.summformula().isEmpty()) {
+		} else if(formula.mathematicalExpression() != null && !formula.mathematicalExpression().isEmpty()) {
 			BoolExpr res;
-			for(SummformulaContext sum : formula.summformula()) {
-				BoolExpr tmp = resolveSumFormula(sum);
+			for(MathematicalExpressionContext math : formula.mathematicalExpression()) {
+				BoolExpr tmp = resolveMathematicalExpression(math);
 				
 			}
 			
@@ -92,7 +92,7 @@ public class Z3ConversionListener extends folBaseListener {
 		return null;
 	}
 	
-	private BoolExpr resolveSumFormula(SummformulaContext sum) {
+	private BoolExpr resolveMathematicalExpression(MathematicalExpressionContext math) {
 		return null;
 	}
 	

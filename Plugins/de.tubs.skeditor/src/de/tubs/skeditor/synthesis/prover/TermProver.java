@@ -145,13 +145,15 @@ public class TermProver {
 	public static void main(String[] args) {
 		TermProver prover = new TermProver();
 		/*
-		System.out.println("Ergebnis: " + prover.tryParse(
-				"!(!y==(z+(3.12-2*4))||z!=8) & x>4 & \\forall(x; y)(x>y&z==0) & \\true & has(\"Keep_distance_to_leading_vehicle\")"));
-		System.out.println("Ergebnis: " + prover.check("x>4", "x<7", "y>7", "has(\"Accelerate\")"));
-		// System.out.println("Ergebnis: "+prover.check("x>4", "x>7", "x>7&x>7"));
-		// System.out.println("Ergebnis: "+prover.check("x>4", "x>7", "x>7&x>7"));
-		System.out.println("Ergebnis: " + prover.prove("ep>0", "x<7", "x<y", "y==4"));
-		*/
+		 * System.out.println("Ergebnis: " + prover.tryParse(
+		 * "!(!y==(z+(3.12-2*4))||z!=8) & x>4 & \\forall(x; y)(x>y&z==0) & \\true & has(\"Keep_distance_to_leading_vehicle\")"
+		 * )); System.out.println("Ergebnis: " + prover.check("x>4", "x<7", "y>7",
+		 * "has(\"Accelerate\")")); //
+		 * System.out.println("Ergebnis: "+prover.check("x>4", "x>7", "x>7&x>7")); //
+		 * System.out.println("Ergebnis: "+prover.check("x>4", "x>7", "x>7&x>7"));
+		 * System.out.println("Ergebnis: " + prover.prove("ep>0", "x<7", "x<y",
+		 * "y==4"));
+		 */
 	}
 
 	/**
@@ -328,62 +330,62 @@ public class TermProver {
 			return result;
 		}
 
-		@Override
-		public Expr visitSummformula(folParser.SummformulaContext ctx) {
-			if (ctx.faktorformula() == null) {
-				return visitSummformula(ctx.summformula(0));
-			}
-			ArithExpr result = (ArithExpr) visitFaktorformula(ctx.faktorformula());
-			for (int i = 0; i < ctx.summformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
-				switch (ctx.addoperator(i).getText()) {
-				case "+":
-					result = getContext().mkAdd(result, expr);
-					break;
-				case "-":
-					result = getContext().mkSub(result, expr);
-					break;
-				default:
-					result = null;
-				}
-			}
-			return result;
-		}
+//		@Override
+//		public Expr visitSummformula(folParser.SummformulaContext ctx) {
+//			if (ctx.faktorformula() == null) {
+//				return visitSummformula(ctx.summformula(0));
+//			}
+//			ArithExpr result = (ArithExpr) visitFaktorformula(ctx.faktorformula());
+//			for (int i = 0; i < ctx.summformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
+//				switch (ctx.addoperator(i).getText()) {
+//				case "+":
+//					result = getContext().mkAdd(result, expr);
+//					break;
+//				case "-":
+//					result = getContext().mkSub(result, expr);
+//					break;
+//				default:
+//					result = null;
+//				}
+//			}
+//			return result;
+//		}
 
-		@Override
-		public Expr visitFaktorformula(folParser.FaktorformulaContext ctx) {
-			if (ctx.powerformula() == null) {
-				return visitFaktorformula(ctx.faktorformula(0));
-			}
-			ArithExpr result = (ArithExpr) visitPowerformula(ctx.powerformula());
-			for (int i = 0; i < ctx.faktorformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitFaktorformula(ctx.faktorformula(i));
-				switch (ctx.multoperator(i).getText()) {
-				case "*":
-					result = getContext().mkMul(result, expr);
-					break;
-				case "/":
-					result = getContext().mkDiv(result, expr);
-					break;
-				default:
-					result = null;
-				}
-			}
-			return result;
-		}
+//		@Override
+//		public Expr visitFaktorformula(folParser.FaktorformulaContext ctx) {
+//			if (ctx.powerformula() == null) {
+//				return visitFaktorformula(ctx.faktorformula(0));
+//			}
+//			ArithExpr result = (ArithExpr) visitPowerformula(ctx.powerformula());
+//			for (int i = 0; i < ctx.faktorformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitFaktorformula(ctx.faktorformula(i));
+//				switch (ctx.multoperator(i).getText()) {
+//				case "*":
+//					result = getContext().mkMul(result, expr);
+//					break;
+//				case "/":
+//					result = getContext().mkDiv(result, expr);
+//					break;
+//				default:
+//					result = null;
+//				}
+//			}
+//			return result;
+//		}
 
-		@Override
-		public Expr visitPowerformula(folParser.PowerformulaContext ctx) {
-			if (ctx.term() == null) {
-				return visitPowerformula(ctx.powerformula(0));
-			}
-			ArithExpr result = (ArithExpr) visitTerm(ctx.term());
-			for (int i = 0; i < ctx.powerformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitPowerformula(ctx.powerformula(i));
-				result = getContext().mkPower(result, expr);
-			}
-			return result;
-		}
+//		@Override
+//		public Expr visitPowerformula(folParser.PowerformulaContext ctx) {
+//			if (ctx.term() == null) {
+//				return visitPowerformula(ctx.powerformula(0));
+//			}
+//			ArithExpr result = (ArithExpr) visitTerm(ctx.term());
+//			for (int i = 0; i < ctx.powerformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitPowerformula(ctx.powerformula(i));
+//				result = getContext().mkPower(result, expr);
+//			}
+//			return result;
+//		}
 
 		@Override
 		public Expr visitTerm(folParser.TermContext ctx) {
@@ -401,48 +403,48 @@ public class TermProver {
 			}
 		}
 
-		@Override
-		public Expr visitFunctioncall(folParser.FunctioncallContext ctx) {
-			if (ctx.prefix() != null && ctx.prefix().getText().equals("\\")) {
-				String[] knownFunctionNames = Arrays.stream(KnownFunctions.values()).map(Enum::name)
-						.toArray(String[]::new);
-				// boolean isKnownFunction = false;
-				String parsedFunctionName = ctx.functionname().getText();
-				for (String name : knownFunctionNames) {
-					if (parsedFunctionName.equalsIgnoreCase(name)) {
-						// Known function recognized
-						switch (parsedFunctionName) {
-						case "sin":
-							checkParameterListLength(ctx, 1);
-							break;
-						case "cos":
-							checkParameterListLength(ctx, 1);
-							break;
-						case "tan":
-							checkParameterListLength(ctx, 1);
-							break;
-						case "min":
-							checkParameterListLength(ctx, 2);
-							break;
-						case "max":
-							checkParameterListLength(ctx, 2);
-							break;
-						case "abs":
-							checkParameterListLength(ctx, 1);
-							break;
-						}
-						return null;
-					}
-				}
-				return null;
-			}
-			return null;
-		}
-
-		public void checkParameterListLength(FunctioncallContext ctx, int allowedNumber) {
-			String[] formulas = ctx.formula().stream().map(formula -> formula.getText()).toArray(String[]::new);
-			System.out.println(formulas);
-		}
+//		@Override
+//		public Expr visitFunctioncall(folParser.FunctioncallContext ctx) {
+//			if (ctx.prefix() != null && ctx.prefix().getText().equals("\\")) {
+//				String[] knownFunctionNames = Arrays.stream(KnownFunctions.values()).map(Enum::name)
+//						.toArray(String[]::new);
+//				// boolean isKnownFunction = false;
+//				String parsedFunctionName = ctx.functionname().getText();
+//				for (String name : knownFunctionNames) {
+//					if (parsedFunctionName.equalsIgnoreCase(name)) {
+//						// Known function recognized
+//						switch (parsedFunctionName) {
+//						case "sin":
+//							checkParameterListLength(ctx, 1);
+//							break;
+//						case "cos":
+//							checkParameterListLength(ctx, 1);
+//							break;
+//						case "tan":
+//							checkParameterListLength(ctx, 1);
+//							break;
+//						case "min":
+//							checkParameterListLength(ctx, 2);
+//							break;
+//						case "max":
+//							checkParameterListLength(ctx, 2);
+//							break;
+//						case "abs":
+//							checkParameterListLength(ctx, 1);
+//							break;
+//						}
+//						return null;
+//					}
+//				}
+//				return null;
+//			}
+//			return null;
+//		}
+//
+//		public void checkParameterListLength(FunctioncallContext ctx, int allowedNumber) {
+//			String[] formulas = ctx.formula().stream().map(formula -> formula.getText()).toArray(String[]::new);
+//			System.out.println(formulas);
+//		}
 
 	}
 }
