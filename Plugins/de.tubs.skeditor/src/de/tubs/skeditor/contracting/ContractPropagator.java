@@ -76,9 +76,14 @@ public class ContractPropagator {
 		List<SyntaxError> errors = GrammarUtil.tryToParse(assume);
 		errors.addAll(GrammarUtil.tryToParse(safe));
 		if(errors.isEmpty()) {
+			try {
 			Z3Converter converter = new Z3Converter();
 			assume = converter.simplifyFormula(assume);
 			safe = converter.simplifyFormula(safe);
+			} catch (Exception e) {
+				System.err.println("Failed to instantiate Z3Converter. Apparently z3/bin path is missing but can be added to environment variable PATH or in Skeditor preferences.");
+				//e.printStackTrace();
+			}
 		} else {
 			//TODO log errors
 		}

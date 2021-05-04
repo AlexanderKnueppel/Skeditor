@@ -6,7 +6,6 @@ import de.tubs.skeditor.contracting.grammar.folParser.BoolexpressionContext;
 import de.tubs.skeditor.contracting.grammar.folParser.CompareformulaContext;
 import de.tubs.skeditor.contracting.grammar.folParser.ConnectiveformulaContext;
 import de.tubs.skeditor.contracting.grammar.folParser.FormulaContext;
-import de.tubs.skeditor.contracting.grammar.folParser.SummformulaContext;
 import de.tubs.skeditor.contracting.grammar.folParser.TermContext;
 
 import java.util.ArrayList;
@@ -53,49 +52,48 @@ public class Z3ConversionListener extends folBaseListener {
 //		return null;
 //	}
 
-	@Override 
-	public void enterConnectiveformula(ConnectiveformulaContext ctx) {
-		// TODO Auto-generated method stub
-		super.enterConnectiveformula(ctx);
-		if(ctx.boolexpression() != null) {
-			BoolExpr be = resolveBoolExpression(ctx.boolexpression());
-		}
-	}
+//	@Override 
+//	public void enterConnectiveformula(ConnectiveformulaContext ctx) {
+//		// TODO Auto-generated method stub
+//		super.enterConnectiveformula(ctx);
+//		if(ctx.boolexpression() != null) {
+//			BoolExpr be = resolveBoolExpression(ctx.boolexpression());
+//		}
+//	}
 	
-	private BoolExpr resolveBoolExpression(BoolexpressionContext boolexpression) {
-		if(boolexpression.TRUE() != null) {
-			return z3context.mkTrue();
-		} else if(boolexpression.FALSE() != null) {
-			return z3context.mkFalse();
-		} else if(boolexpression.NOT() != null) {
-			return z3context.mkNot(resolveBoolExpression(boolexpression.boolexpression()));
-		} else if(boolexpression.compareformula() != null) {
-			return resolveCompareFormula(boolexpression.compareformula());
-		}
-		
-		return null;
-	}
+//	private BoolExpr resolveBoolExpression(BoolexpressionContext boolexpression) {
+//		if(boolexpression.TRUE() != null) {
+//			return z3context.mkTrue();
+//		} else if(boolexpression.FALSE() != null) {
+//			return z3context.mkFalse();
+//		} else if(boolexpression.NOT() != null) {
+//			return z3context.mkNot(resolveBoolExpression(boolexpression.boolexpression()));
+//		} else if(boolexpression.compareformula() != null) {
+//			return resolveCompareFormula(boolexpression.compareformula());
+//		}
+//		
+//		return null;
+//	}
 	
-	private BoolExpr resolveCompareFormula(CompareformulaContext formula) {
-		if(formula.compareformula() != null) {
-			return resolveCompareFormula(formula.compareformula());
-		} else if(formula.summformula() != null && !formula.summformula().isEmpty()) {
-			BoolExpr res;
-			for(SummformulaContext sum : formula.summformula()) {
-				BoolExpr tmp = resolveSumFormula(sum);
-				
-			}
-			
-			//formula.c
-		}
-		
-		return null;
-	}
+//	private BoolExpr resolveCompareFormula(CompareformulaContext formula) {
+//		if(formula.compareformula() != null) {
+//			return resolveCompareFormula(formula.compareformula());
+//		} else if(formula.summformula() != null && !formula.summformula().isEmpty()) {
+//			BoolExpr res;
+//			for(SummformulaContext sum : formula.summformula()) {
+//				BoolExpr tmp = resolveSumFormula(sum);
+//				
+//			}
+//			
+//			//formula.c
+//		}
+//		
+//		return null;
+//	}
 	
-	private BoolExpr resolveSumFormula(SummformulaContext sum) {
-		return null;
-	}
-	
+//	private BoolExpr resolveSumFormula(SummformulaContext sum) {
+//		return null;
+//	}	
 	@Override 
 	public void enterTerm(TermContext ctx) {
 		// TODO Auto-generated method stub
