@@ -21,16 +21,16 @@ public class ContractPropagator {
 		Category[] categories = { Category.SENSOR, Category.PERCEPTION, Category.PLANNING };
 		return Arrays.asList(categories).contains(node.getCategory());
 	}
-	
+
 	private static boolean isActuatorCategory(Node node) {
 		return node.getCategory().equals(Category.ACTUATOR);
 	}
-	
+
 	private static boolean isControllerCategory(Node node) {
-		Category[] categories = { Category.OBSERVABLE_EXTERNAL_BEHAVIOR, Category.ACTION};
+		Category[] categories = { Category.OBSERVABLE_EXTERNAL_BEHAVIOR, Category.ACTION };
 		return Arrays.asList(categories).contains(node.getCategory());
 	}
-	
+
 	private static boolean isMainCategory(Node node) {
 		return node.getCategory().equals(Category.MAIN);
 	}
@@ -45,7 +45,7 @@ public class ContractPropagator {
 				safe = node.getRequirements().stream().map(n -> n.getTerm().toString())
 						.collect(Collectors.joining(" & "));
 			}
-			
+
 			if (node.getAssumptions().isEmpty()) {
 				assume = "\\true";
 			} else {
@@ -55,44 +55,49 @@ public class ContractPropagator {
 		} else {
 			List<String> assumptions = new ArrayList<String>();
 			List<String> guarantees = new ArrayList<String>();
-			
+
 			for (Node child : GraphUtil.getChildNodes(node)) {
 				assumptions.add(computeContract(child).getAssumption());
 				guarantees.add(computeContract(child).getGuarantee());
 			}
-			
-			guarantees.addAll(node.getRequirements().stream().map(n -> n.getTerm().toString()).collect(Collectors.toList()));
+
+			guarantees.addAll(
+					node.getRequirements().stream().map(n -> n.getTerm().toString()).collect(Collectors.toList()));
 			safe = String.join(" & ", guarantees);
-			
-			assumptions.addAll(node.getAssumptions().stream().map(n -> n.getTerm().toString()).collect(Collectors.toList()));
-			
-			assume = "("+safe+") => " + "(" + String.join(" & ", assumptions) + ")";
-			
-		}
-		
-		assume = assume.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
-		safe = safe.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
-		
-		List<SyntaxError> errors = GrammarUtil.tryToParse(assume);
-		errors.addAll(GrammarUtil.tryToParse(safe));
-		if(errors.isEmpty()) {
-			try {
-			Z3Converter converter = new Z3Converter();
-			assume = converter.simplifyFormula(assume);
-			safe = converter.simplifyFormula(safe);
-			} catch (Exception e) {
-				System.err.println("Failed to instantiate Z3Converter. Apparently z3/bin path is missing but can be added to environment variable PATH or in Skeditor preferences.");
-				//e.printStackTrace();
-			}
-		} else {
-			//TODO log errors
+
+			assumptions.addAll(
+					node.getAssumptions().stream().map(n -> n.getTerm().toString()).collect(Collectors.toList()));
+
+			assume = "(" + safe + ") => " + "(" + String.join(" & ", assumptions) + ")";
+
 		}
 
-		if(assume.isEmpty())
+		assume = assume.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
+		safe = safe.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
+
+		List<SyntaxError> errors = GrammarUtil.tryToParse(assume);
+		errors.addAll(GrammarUtil.tryToParse(safe));
+		if (errors.isEmpty()) {
+			try {
+				Z3Converter converter = new Z3Converter();
+				assume = converter.simplifyFormula(assume);
+				safe = converter.simplifyFormula(safe);
+			} catch (Exception e) {
+				System.err.println(
+						"Failed to instantiate Z3Converter. Apparently z3/bin path is missing but can be added to environment variable PATH or in Skeditor preferences.");
+				// e.printStackTrace();
+			}
+		} else {
+			// TODO log errors
+		}
+
+		if (assume.isEmpty()) {
 			assume = "\\true";
-		if(safe.isEmpty())
+		}
+		if (safe.isEmpty()) {
 			safe = "\\true";
-		
+		}
+
 		return new Contract(assume, safe);
 	}
 

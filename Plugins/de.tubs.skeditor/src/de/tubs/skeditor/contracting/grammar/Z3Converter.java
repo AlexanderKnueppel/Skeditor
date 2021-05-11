@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import com.microsoft.z3.ApplyResult;
@@ -22,51 +23,9 @@ import com.microsoft.z3.Tactic;
 import com.microsoft.z3.Z3Exception;
 import com.microsoft.z3.enumerations.Z3_ast_kind;
 
+import de.tubs.skeditor.contracting.grammar.folParser.MathematicalExpressionContext;
+
 public class Z3Converter {
-
-	public static void main(String[] args) {
-
-		// String formula = "(A==true||B==true)||A==true";
-
-		String formula = "!(y <= (ly+((-1.0)*(0.5*lw))))";
-
-		Z3Converter converter = new Z3Converter();
-
-		Goal goal = converter.getContext().mkGoal(true, false, false);
-		goal.add(converter.getZ3BoolExpression(formula));
-
-		Tactic simplify = converter.getContext().mkTactic("simplify");
-		Tactic ctxSimplify = converter.getContext().mkTactic("ctx-simplify");
-		Tactic ctxSolverSimplify = converter.getContext().mkTactic("ctx-solver-simplify");
-
-		ApplyResult res1 = simplify.apply(goal);
-		ApplyResult res2 = ctxSimplify.apply(goal);
-		ApplyResult res3 = ctxSolverSimplify.apply(goal);
-
-		System.out.println("original term:\n" + converter.getZ3BoolExpression(formula) + "\n");
-		System.out.println("simplify:\n" + res1 + "\n");
-		System.out.println("ctxSimplify:\n" + res2 + "\n");
-		System.out.println("ctxSolverSimplify:\n" + res3 + "\n");
-
-		Solver s = converter.getZ3SolverFromFormula(formula);
-		for (Goal sub : res3.getSubgoals()) {
-			s.add(sub.getFormulas());
-
-			// System.out.println(sub);
-		}
-		if (s.check() == Status.SATISFIABLE)
-			System.out.println("Model: " + s.getModel().toString());
-		else
-			System.out.println("Not satisfiable!");
-
-		BoolExpr be = converter.getZ3BoolExpression(formula);
-
-		for (BoolExpr sub : s.getAssertions()) {
-			System.out.println(converter.toFormulaFromZ3Expression(sub));
-		}
-
-		converter.getContext().close();
-	}
 
 //	public void visit(Expr e) {
 //		if(e.isAnd()) {
@@ -127,6 +86,7 @@ public class Z3Converter {
 	}
 
 	public String simplifyFormula(String formula) {
+		try {
 		Goal goal = getContext().mkGoal(true, false, false);
 		goal.add(getZ3BoolExpression(formula));
 
@@ -155,6 +115,9 @@ public class Z3Converter {
 //		}
 
 		return "\\true";
+		} catch (NullPointerException e) {
+			return null; // this may happen if a function call cannot be evaluated (in that case comparison in visitCompareFormula() is not possible)
+		}
 	}
 
 	private void visitZ3Expr(Expr e, List<String> parts) {
@@ -412,36 +375,39 @@ public class Z3Converter {
 			if (ctx.compareformula() != null) {
 				return visitCompareformula(ctx.compareformula());
 			}
+
 			ArithExpr first = (ArithExpr) visitMathematicalExpression(ctx.mathematicalExpression(0));
 			for (int i = 1; i < ctx.mathematicalExpression().size(); i++) {
 				ArithExpr expr = (ArithExpr) visitMathematicalExpression(ctx.mathematicalExpression(i));
-				switch (ctx.compoperator(i - 1).getText()) {
-				case ">":
-					result = getContext().mkGt(first, expr);
-					first = expr;
-					break;
-				case "<":
-					result = getContext().mkLt(first, expr);
-					first = expr;
-					break;
-				case ">=":
-					result = getContext().mkGe(first, expr);
-					first = expr;
-					break;
-				case "<=":
-					result = getContext().mkLe(first, expr);
-					first = expr;
-					break;
-				case "==":
-					result = getContext().mkEq(first, expr);
-					first = expr;
-					break;
-				case "!=":
-					result = getContext().mkNot(getContext().mkEq(first, expr));
-					first = expr;
-					break;
-				default:
-					return null;
+				if (first != null && expr != null) {
+					switch (ctx.compoperator(i - 1).getText()) {
+					case ">":
+						result = getContext().mkGt(first, expr);
+						first = expr;
+						break;
+					case "<":
+						result = getContext().mkLt(first, expr);
+						first = expr;
+						break;
+					case ">=":
+						result = getContext().mkGe(first, expr);
+						first = expr;
+						break;
+					case "<=":
+						result = getContext().mkLe(first, expr);
+						first = expr;
+						break;
+					case "=":
+						result = getContext().mkEq(first, expr);
+						first = expr;
+						break;
+					case "!=":
+						result = getContext().mkNot(getContext().mkEq(first, expr));
+						first = expr;
+						break;
+					default:
+						return null;
+					}
 				}
 			}
 			return result;
@@ -450,7 +416,8 @@ public class Z3Converter {
 		@Override
 		public Expr visitMathematicalExpression(folParser.MathematicalExpressionContext ctx) {
 			if (ctx.term() != null) {
-				if (ctx.MINUS() != null) {
+				// if (ctx.MINUS() != null) {
+				if (!ctx.MINUS().isEmpty()) {
 					return getContext().mkUnaryMinus((ArithExpr) visitTerm(ctx.term()));
 				}
 				return visitTerm(ctx.term());
@@ -556,9 +523,70 @@ public class Z3Converter {
 				return getContext().mkRealConst(ctx.variable().getText());
 			} else if (ctx.SCIENTIFIC_NUMBER() != null) {
 				return getContext().mkReal(ctx.SCIENTIFIC_NUMBER().getText());
+			} else if (ctx.functioncall() != null) {
+				return visitFunctioncall(ctx.functioncall());
 			} else {
 				return null;
 			}
 		}
+
+		@Override
+		public Expr visitFunctioncall(folParser.FunctioncallContext ctx) {
+			if (ctx.prefix() != null && ctx.prefix().getText().equals("\\")) {
+				for (KnownFunctions function : KnownFunctions.values()) {
+					if (function.name().equalsIgnoreCase(ctx.functionname().getText())) { // known function
+						if (ctx.mathematicalExpression().size() == function.getNumOfParameters()
+								&& ctx.formula().size() == 0) {
+							List<Expr> results = new ArrayList<>();
+							for (MathematicalExpressionContext expr : ctx.mathematicalExpression()) {
+								Expr resultExpr = visitMathematicalExpression(expr);
+								results.add(resultExpr);
+							}
+							// trigonometric functions currently not supported by z3 (can be hand crafted out of supported functions but this is not trivial!)
+							switch (function) {
+							case sin:
+								break;
+							case cos:
+								break;
+							case tan:
+								break;
+							case min:
+								BoolExpr minExpr = getContext().mkLt((ArithExpr) results.get(0),
+										(ArithExpr) results.get(1));
+								String minResult = minExpr.simplify().toString();
+								if (minResult.equals("true")) {
+									return results.get(0);
+								} else if (minResult.equals("false")) {
+									return results.get(1);
+								}
+							case max:
+								BoolExpr maxExpr = getContext().mkGt((ArithExpr) results.get(0),
+										(ArithExpr) results.get(1));
+								String maxResult = maxExpr.simplify().toString();
+								if (maxResult.equals("true")) {
+									return results.get(0);
+								} else if (maxResult.equals("false")) {
+									return results.get(1);
+								}
+							case abs:
+								BoolExpr absExpr = getContext().mkLt((ArithExpr) results.get(0),
+										getContext().mkReal(0));
+								if (absExpr.simplify().toString().equals("true")) {
+									return getContext().mkUnaryMinus((ArithExpr) results.get(0));
+								}
+								return results.get(0);
+							default:
+								break;
+							}
+
+						}
+					}
+				}
+			}
+			SyntaxErrorListener.INSTANCE.syntaxError(null, ctx, 0, 0, "parameter syntax error in known function -" + ctx.functionname().getText(),
+					new RecognitionException(null, null, ctx));
+			return null;
+		}
+
 	}
 }
