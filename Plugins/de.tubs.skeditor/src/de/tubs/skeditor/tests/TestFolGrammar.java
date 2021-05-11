@@ -32,7 +32,7 @@ public class TestFolGrammar {
 		// simple formula with brackets
 		formulas.add("(y-ly) + (v^2/(2*b)) < lw");
 		formulas.add("(y-x) * (20*x) > 25");
-		
+
 		// scientific numbers
 		formulas.add("1E42 + 4");
 		formulas.add("abs(1E42)");
@@ -65,14 +65,12 @@ public class TestFolGrammar {
 		formulas.add("(#a()) -> (#y() & #x() && #z())");
 		formulas.add("(#a() | #b() || #c() | #d()) <-> (#a() & #b() -> #c())");
 		formulas.add("((#a() | #b()) & #c()) <-> \\true");
-		
-		// LL-GRAMMAR
-
 
 		// assertFormulas(testFormulas);
 		formulas.forEach(formula -> {
-			printErrorMessage(formula);
-			Assert.assertTrue(GrammarUtil.tryToParse(formula).isEmpty());
+			List<SyntaxError> errors = GrammarUtil.tryToParse(formula);
+			printSyntaxErrors(formula, errors);
+			Assert.assertFalse(GrammarUtil.tryToParse(formula).isEmpty());
 		});
 
 	}
@@ -86,29 +84,25 @@ public class TestFolGrammar {
 		formulasWithSyntaxErrors.add("- <= 5");
 		formulasWithSyntaxErrors.add("\\foral(a;b)(a > b)");
 
-
 		// missing brackets
 		formulasWithSyntaxErrors.add("abs-23+x) - (a*b*c+3)) + 3) > a+b");
 
 		// not allowed symbols
 		formulasWithSyntaxErrors.add("abs(1+x) $<> + a");
 
-		// cos, sin, tan, abs (empty, parameter list length > 1)
-		//formulasWithSyntaxErrors.add("\\abs() + \\sin(a+3, a, 3, x^2) > a*b*\\tan()^\\cos(x,y)"); // TODO recognize known methods
-
-		// min, max (empty or parameter list length = 1)
-		//formulasWithSyntaxErrors.add("\\min() + \\max() > \\min(-a)"); // TODO recognize known methods
-
 		// assertFormulas(formulasWithSyntaxErrors);
 		formulasWithSyntaxErrors.forEach(formula -> {
-			printErrorMessage(formula);
+			List<SyntaxError> errors = GrammarUtil.tryToParse(formula);
+			printSyntaxErrors(formula, errors);
 			Assert.assertFalse(GrammarUtil.tryToParse(formula).isEmpty());
 		});
 	}
 
-	private void printErrorMessage(String formula) { // TODO remove method
-		for (SyntaxError s : GrammarUtil.tryToParse(formula)) {
-			System.out.println(formula + ": " + s.getMessage());
+	private void printSyntaxErrors(String formula, List<SyntaxError> errors) {
+		if (!errors.isEmpty()) {
+			for (SyntaxError s : errors) {
+				System.out.println(formula + ": " + s.getMessage());
+			}
 		}
 	}
 
