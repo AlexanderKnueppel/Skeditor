@@ -288,103 +288,103 @@ public class TermProver{
 			return result;
 		}
 		
-		@Override 
-		public Expr visitCompareformula(folParser.CompareformulaContext ctx) { 
-			BoolExpr result = null;
-			if(ctx.compareformula() != null) {
-				return visitCompareformula(ctx.compareformula());
-			}
-			ArithExpr first = (ArithExpr) visitSummformula(ctx.summformula(0));
-			for(int i = 1; i < ctx.summformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
-				switch(ctx.compoperator(i-1).getText()) {
-				case ">": 
-					result = getContext().mkGt(first, expr);
-					first = expr;
-					break;
-				case "<":
-					result = getContext().mkLt(first, expr);
-					first = expr;
-					break;
-				case ">=":
-					result = getContext().mkGe(first, expr);
-					first = expr;
-					break;
-				case "<=":
-					result = getContext().mkLe(first, expr);
-					first = expr;
-					break;
-				case "==":
-					result = getContext().mkEq(first, expr);
-					first = expr;
-					break;
-				case "!=":
-					result = getContext().mkNot(getContext().mkEq(first, expr));
-					first = expr;
-					break;
-				default:
-					return null;
-				}
-			}
-			return result;
-		}
+//		@Override 
+//		public Expr visitCompareformula(folParser.CompareformulaContext ctx) { 
+//			BoolExpr result = null;
+//			if(ctx.compareformula() != null) {
+//				return visitCompareformula(ctx.compareformula());
+//			}
+//			ArithExpr first = (ArithExpr) visitSummformula(ctx.summformula(0));
+//			for(int i = 1; i < ctx.summformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
+//				switch(ctx.compoperator(i-1).getText()) {
+//				case ">": 
+//					result = getContext().mkGt(first, expr);
+//					first = expr;
+//					break;
+//				case "<":
+//					result = getContext().mkLt(first, expr);
+//					first = expr;
+//					break;
+//				case ">=":
+//					result = getContext().mkGe(first, expr);
+//					first = expr;
+//					break;
+//				case "<=":
+//					result = getContext().mkLe(first, expr);
+//					first = expr;
+//					break;
+//				case "==":
+//					result = getContext().mkEq(first, expr);
+//					first = expr;
+//					break;
+//				case "!=":
+//					result = getContext().mkNot(getContext().mkEq(first, expr));
+//					first = expr;
+//					break;
+//				default:
+//					return null;
+//				}
+//			}
+//			return result;
+//		}
 		
-		@Override 
-		public Expr visitSummformula(folParser.SummformulaContext ctx) { 
-			if(ctx.faktorformula() == null) {
-				return visitSummformula(ctx.summformula(0));
-			}
-			ArithExpr result = (ArithExpr) visitFaktorformula(ctx.faktorformula());
-			for(int i = 0; i < ctx.summformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
-				switch(ctx.addoperator(i).getText()) {
-				case "+":
-					result = getContext().mkAdd(result, expr);
-					break;
-				case "-":
-					result = getContext().mkSub(result, expr);
-					break;
-				default:
-					result = null;
-				}
-			}
-			return result;
-		}
+//		@Override 
+//		public Expr visitSummformula(folParser.SummformulaContext ctx) { 
+//			if(ctx.faktorformula() == null) {
+//				return visitSummformula(ctx.summformula(0));
+//			}
+//			ArithExpr result = (ArithExpr) visitFaktorformula(ctx.faktorformula());
+//			for(int i = 0; i < ctx.summformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitSummformula(ctx.summformula(i));
+//				switch(ctx.addoperator(i).getText()) {
+//				case "+":
+//					result = getContext().mkAdd(result, expr);
+//					break;
+//				case "-":
+//					result = getContext().mkSub(result, expr);
+//					break;
+//				default:
+//					result = null;
+//				}
+//			}
+//			return result;
+//		}
 		
-		@Override 
-		public Expr visitFaktorformula(folParser.FaktorformulaContext ctx) { 
-			if(ctx.powerformula() == null) {
-				return visitFaktorformula(ctx.faktorformula(0));
-			}
-			ArithExpr result = (ArithExpr) visitPowerformula(ctx.powerformula());
-			for(int i = 0; i < ctx.faktorformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitFaktorformula(ctx.faktorformula(i));
-				switch(ctx.multoperator(i).getText()) {
-				case "*":
-					result = getContext().mkMul(result, expr);
-					break;
-				case "/":
-					result = getContext().mkDiv(result, expr);
-					break;
-				default:
-					result = null;
-				}
-			}
-			return result;
-		}
+//		@Override 
+//		public Expr visitFaktorformula(folParser.FaktorformulaContext ctx) { 
+//			if(ctx.powerformula() == null) {
+//				return visitFaktorformula(ctx.faktorformula(0));
+//			}
+//			ArithExpr result = (ArithExpr) visitPowerformula(ctx.powerformula());
+//			for(int i = 0; i < ctx.faktorformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitFaktorformula(ctx.faktorformula(i));
+//				switch(ctx.multoperator(i).getText()) {
+//				case "*":
+//					result = getContext().mkMul(result, expr);
+//					break;
+//				case "/":
+//					result = getContext().mkDiv(result, expr);
+//					break;
+//				default:
+//					result = null;
+//				}
+//			}
+//			return result;
+//		}
 		
-		@Override 
-		public Expr visitPowerformula(folParser.PowerformulaContext ctx) { 
-			if(ctx.term() == null) {
-				return visitPowerformula(ctx.powerformula(0));
-			}
-			ArithExpr result = (ArithExpr) visitTerm(ctx.term());
-			for(int i = 0; i < ctx.powerformula().size(); i++) {
-				ArithExpr expr = (ArithExpr) visitPowerformula(ctx.powerformula(i));
-				result = getContext().mkPower(result, expr);
-			}
-			return result;
-		}
+//		@Override 
+//		public Expr visitPowerformula(folParser.PowerformulaContext ctx) { 
+//			if(ctx.term() == null) {
+//				return visitPowerformula(ctx.powerformula(0));
+//			}
+//			ArithExpr result = (ArithExpr) visitTerm(ctx.term());
+//			for(int i = 0; i < ctx.powerformula().size(); i++) {
+//				ArithExpr expr = (ArithExpr) visitPowerformula(ctx.powerformula(i));
+//				result = getContext().mkPower(result, expr);
+//			}
+//			return result;
+//		}
 		
 		@Override
 		public Expr visitTerm(folParser.TermContext ctx) {
@@ -395,8 +395,8 @@ public class TermProver{
 				return visitTerm(ctx.term());
 			} else if(ctx.variable() != null) {
 				return getContext().mkRealConst(ctx.variable().getText());
-			} else if(ctx.NUMBER() != null) {
-				return getContext().mkReal(ctx.NUMBER().getText());
+			} else if(ctx.SCIENTIFIC_NUMBER() != null) {
+				return getContext().mkReal(ctx.SCIENTIFIC_NUMBER().getText());
 			} else {
 				return null;
 			}

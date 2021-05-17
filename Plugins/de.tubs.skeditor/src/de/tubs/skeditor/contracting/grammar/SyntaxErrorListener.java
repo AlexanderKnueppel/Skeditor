@@ -15,10 +15,10 @@ public class SyntaxErrorListener extends BaseErrorListener {
 	
 	public static SyntaxErrorListener INSTANCE = new SyntaxErrorListener();
 
-	SyntaxErrorListener() {
+	public SyntaxErrorListener() {
 	}
 
-	List<SyntaxError> getSyntaxErrors() {
+	public List<SyntaxError> getSyntaxErrors() {
 		return syntaxErrors;
 	}
 

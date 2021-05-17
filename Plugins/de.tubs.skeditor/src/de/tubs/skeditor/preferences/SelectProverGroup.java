@@ -34,7 +34,7 @@ public class SelectProverGroup extends Group {
 
 	public SelectProverGroup(Composite parent, int style) {
 		super(parent, style);
-		setText("Select KeymaeraX prover (.exe)");
+		setText("Select KeymaeraX prover (binary)");
 		setLayout(new RowLayout(SWT.VERTICAL));
 		createWidgets();
 	}
