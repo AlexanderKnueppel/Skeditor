@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.apache.logging.log4j.core.Filter.Result;
 
 import com.microsoft.z3.ApplyResult;
 import com.microsoft.z3.ArithExpr;
@@ -17,7 +18,9 @@ import com.microsoft.z3.FuncDecl;
 import com.microsoft.z3.Goal;
 import com.microsoft.z3.IntNum;
 import com.microsoft.z3.RatNum;
+import com.microsoft.z3.RealSort;
 import com.microsoft.z3.Solver;
+import com.microsoft.z3.Sort;
 import com.microsoft.z3.Status;
 import com.microsoft.z3.Tactic;
 import com.microsoft.z3.Z3Exception;
@@ -86,7 +89,6 @@ public class Z3Converter {
 	}
 
 	public String simplifyFormula(String formula) {
-		try {
 		Goal goal = getContext().mkGoal(true, false, false);
 		goal.add(getZ3BoolExpression(formula));
 
@@ -115,9 +117,6 @@ public class Z3Converter {
 //		}
 
 		return "\\true";
-		} catch (NullPointerException e) {
-			return null; // this may happen if a function call cannot be evaluated (in that case comparison in visitCompareFormula() is not possible)
-		}
 	}
 
 	private void visitZ3Expr(Expr e, List<String> parts) {
@@ -532,24 +531,19 @@ public class Z3Converter {
 
 		@Override
 		public Expr visitFunctioncall(folParser.FunctioncallContext ctx) {
+			List<Expr> results = new ArrayList<>();
+			for (MathematicalExpressionContext expr : ctx.mathematicalExpression()) {
+				Expr resultExpr = visitMathematicalExpression(expr);
+				results.add(resultExpr);
+			}
 			if (ctx.prefix() != null && ctx.prefix().getText().equals("\\")) {
 				for (KnownFunctions function : KnownFunctions.values()) {
 					if (function.name().equalsIgnoreCase(ctx.functionname().getText())) { // known function
 						if (ctx.mathematicalExpression().size() == function.getNumOfParameters()
 								&& ctx.formula().size() == 0) {
-							List<Expr> results = new ArrayList<>();
-							for (MathematicalExpressionContext expr : ctx.mathematicalExpression()) {
-								Expr resultExpr = visitMathematicalExpression(expr);
-								results.add(resultExpr);
-							}
-							// trigonometric functions currently not supported by z3 (can be hand crafted out of supported functions but this is not trivial!)
+							RealSort range = getContext().mkRealSort();
+							RealSort[] domain = new RealSort[] { getContext().mkRealSort(), getContext().mkRealSort() };
 							switch (function) {
-							case sin:
-								break;
-							case cos:
-								break;
-							case tan:
-								break;
 							case min:
 								BoolExpr minExpr = getContext().mkLt((ArithExpr) results.get(0),
 										(ArithExpr) results.get(1));
@@ -558,6 +552,9 @@ public class Z3Converter {
 									return results.get(0);
 								} else if (minResult.equals("false")) {
 									return results.get(1);
+								} else {
+									return getContext().mkApp(getContext().mkFuncDecl("min", domain, range),
+											results.toArray(new Expr[0]));
 								}
 							case max:
 								BoolExpr maxExpr = getContext().mkGt((ArithExpr) results.get(0),
@@ -567,26 +564,44 @@ public class Z3Converter {
 									return results.get(0);
 								} else if (maxResult.equals("false")) {
 									return results.get(1);
+								} else {
+									return getContext().mkApp(getContext().mkFuncDecl("max", domain, range),
+											results.toArray(new Expr[0]));
 								}
 							case abs:
 								BoolExpr absExpr = getContext().mkLt((ArithExpr) results.get(0),
 										getContext().mkReal(0));
 								if (absExpr.simplify().toString().equals("true")) {
 									return getContext().mkUnaryMinus((ArithExpr) results.get(0));
+								} else if (absExpr.simplify().toString().equals("false")) {
+									return results.get(0);
+								} else {
+									return getContext().mkApp(getContext().mkFuncDecl("abs", domain[0], range),
+											results.toArray(new Expr[0]));
 								}
-								return results.get(0);
 							default:
-								break;
+								return getContext().mkApp(getContext()
+										.mkFuncDecl(ctx.functionname().getText().toLowerCase(), domain[0], range),
+										results.toArray(new Expr[0]));
 							}
 
 						}
 					}
 				}
-			}
-			SyntaxErrorListener.INSTANCE.syntaxError(null, ctx, 0, 0, "parameter syntax error in known function -" + ctx.functionname().getText(),
-					new RecognitionException(null, null, ctx));
-			return null;
-		}
+				SyntaxErrorListener.INSTANCE.syntaxError(null, ctx, 0, 0,
+						"parameter syntax error in known function -" + ctx.functionname().getText(),
+						new RecognitionException(null, null, ctx));
+				return getContext().mkReal(0); //
+			} else {
+				Sort[] domain = new Sort[results.size()];
+				for (int i = 0; i < results.size(); i++) {
+					domain[i] = results.get(i).getSort();
+				}
 
+				return getContext().mkApp(getContext().mkFuncDecl(ctx.functionname().getText().toLowerCase(), domain,
+						getContext().mkRealSort()), results.toArray(new Expr[0])); // Placeholder return type
+			}
+		}
 	}
+
 }
