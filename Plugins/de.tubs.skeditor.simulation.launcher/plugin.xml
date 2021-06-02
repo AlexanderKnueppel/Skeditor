@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+	    <launchConfigurationType
+	        name="Launch Skill Graph"
+	        delegate="de.tubs.skeditor.simulation.core.launch.Launcher"
+	        modes="run, debug"
+	        id="de.tubs.skeditor.simulation.core.launch.launchConfigurationType">
+	    </launchConfigurationType>
+	</extension>
+	
+	<extension
+	    point="org.eclipse.debug.ui.launchShortcuts">
+	    <shortcut
+	        class="de.tubs.skeditor.simulation.core.launch.LaunchShortcut"
+	        icon="icons/run.png"
+	        id="de.tubs.skeditor.simulation.core.launch.shortcut"
+	        label="Run Skill Graph"
+	        modes="run, debug">
+	        <contextualLaunch>
+	            <enablement>
+	                <with
+	                    variable="selection">
+	                    <count
+	                        value="+">
+	                    </count>
+	                </with>
+	            </enablement>
+	        </contextualLaunch>
+	    </shortcut>
+	</extension>
+	
+	<extension
+    		point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+	    <launchConfigurationTabGroup
+	        class="de.tubs.skeditor.simulation.core.launch.TabGroup"
+	        id="de.tubs.skeditor.simulation.core.launch.launchConfigurationTabGroup"
+	        type="de.tubs.skeditor.simulation.core.launch.launchConfigurationType">
+	    </launchConfigurationTabGroup>
+	</extension>
+
+	<extension
+	        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+	    <launchConfigurationTypeImage
+	            id="de.tubs.skeditor.simulation.core.launch.launchconfigurationtypeimage"
+	            configTypeID="de.tubs.skeditor.simulation.core.launch.launchConfigurationType"
+	            icon="icons/run.png">
+	    </launchConfigurationTypeImage>
+	</extension>
+</plugin>

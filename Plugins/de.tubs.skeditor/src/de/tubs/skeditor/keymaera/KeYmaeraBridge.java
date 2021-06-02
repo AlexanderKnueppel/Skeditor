@@ -79,7 +79,17 @@ public class KeYmaeraBridge {
 
 	public static java.util.HashMap<String, String> getZ3Config() {
 		java.util.HashMap<String, String> c = new HashMap<String, String>();
-		c.put("z3Path", SkeditorSettings.getInstance().getZ3Exe());
+		
+		String z3Path = edu.cmu.cs.ls.keymaerax.tools.install.Z3Installer.defaultZ3Path();
+		
+		String libpath = System.getProperty("java.library.path");
+		
+		System.out.println("z3 path: " + z3Path);
+		System.out.println("libpath: " + libpath);
+		
+		//c.put("z3Path", SkeditorSettings.getInstance().getZ3Exe());
+		c.put("z3Path", z3Path);
+		
 		return c;
 	}
 
@@ -88,10 +98,11 @@ public class KeYmaeraBridge {
 	}
 
 	private void init() {
-		setProver();
-
 		edu.cmu.cs.ls.keymaerax.Configuration$.MODULE$
 				.setConfiguration(edu.cmu.cs.ls.keymaerax.FileConfiguration$.MODULE$);
+		
+		setProver();
+
 
 		HashMap<String, String> javaConfig = new HashMap<String, String>();
 		javaConfig.put(edu.cmu.cs.ls.keymaerax.tools.KeYmaeraXTool.INIT_DERIVATION_INFO_REGISTRY(), "false");
@@ -108,10 +119,13 @@ public class KeYmaeraBridge {
 	}
 	
 	public void setProver() {
+		edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
+		.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
+		
 		switch(SkeditorSettings.getInstance().getSelectedProver()) {
 		case "z3":
-			edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
-			.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
+			//edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$
+			//.setProvider(new edu.cmu.cs.ls.keymaerax.btactics.Z3ToolProvider(toScalaMap(getZ3Config())));
 			break;
 		case "mathematica":
 			edu.cmu.cs.ls.keymaerax.btactics.ToolProvider$.MODULE$

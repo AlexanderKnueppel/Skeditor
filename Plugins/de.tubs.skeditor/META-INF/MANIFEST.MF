@@ -32,7 +32,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: SkillGraph,
  SkillGraph.impl,
  SkillGraph.util,
- de.tubs.skeditor
+ de.tubs.skeditor,
+ de.tubs.skeditor.keymaera,
+ de.tubs.skeditor.utils,
+ scala.collection.immutable,
+ scala.collection.mutable
 Bundle-Activator: de.tubs.skeditor.Activator
 Import-Package: de.tubs.skeditor.sdl,
  de.tubs.skeditor.ui.handler,
