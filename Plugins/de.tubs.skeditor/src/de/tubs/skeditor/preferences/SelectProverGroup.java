@@ -155,7 +155,7 @@ public class SelectProverGroup extends Group {
 
 			Button browseButton = new Button(this, SWT.PUSH);
 			browseButton.setText("Browse...");
-			browseButton.addSelectionListener(new FileDialogSelectionListener(this.getShell(), directoryText, ""));
+			browseButton.addSelectionListener(new FileDialogSelectionListener(this.getShell(), directoryText));
 			browseButton.pack();
 
 			parent.getBrowseButtonsMap().put(radioButton, browseButton);

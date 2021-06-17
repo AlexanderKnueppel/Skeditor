@@ -22,7 +22,7 @@ public class FileDialogSelectionListener extends SelectionAdapter {
 
 	private static final String[] FILTER_EXTS = { "*.exe" };
 
-	public FileDialogSelectionListener(Shell shell, Text target, String entity) {
+	public FileDialogSelectionListener(Shell shell, Text target) {
 		this.shell = Preconditions.checkNotNull(shell);
 		this.target = target;
 	}
