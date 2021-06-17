@@ -34,6 +34,7 @@ Export-Package: SkillGraph,
  SkillGraph.util,
  de.tubs.skeditor,
  de.tubs.skeditor.keymaera,
+ de.tubs.skeditor.preferences,
  de.tubs.skeditor.utils,
  scala.collection.immutable,
  scala.collection.mutable

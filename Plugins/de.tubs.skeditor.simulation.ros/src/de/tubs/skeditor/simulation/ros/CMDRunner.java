@@ -21,9 +21,11 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-
+import de.tubs.skeditor.simulation.ros.core.RosLaunchConfigAttributes;
 import de.tubs.skeditor.utils.FileUtils;
 
 public class CMDRunner {
@@ -73,9 +75,10 @@ public class CMDRunner {
 //		} catch (LaunchException | IOException e) {
 //
 //		}
-		
+
 		try {
-			FileUtils.copyFromResource("resources/project_template/CMakeLists.txt", "F:\\Homeoffice\\skeditor\\Ros\\catkin_ws\\src\\Control_Robot/CMakeLists.txt");
+			FileUtils.copyFromResource("resources/project_template/CMakeLists.txt",
+					"F:\\Homeoffice\\skeditor\\Ros\\catkin_ws\\src\\Control_Robot/CMakeLists.txt");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -93,6 +96,9 @@ public class CMDRunner {
 	private String logFile;
 	private MessageConsoleStream out;
 	private MessageConsole console;
+
+	public static ILaunchConfiguration configuration;
+	public static String workingDirectory;
 
 	private CMDRunner() {
 	}
@@ -115,7 +121,7 @@ public class CMDRunner {
 		return this;
 	}
 
-	public int runBlocking() throws IOException {
+	public int runBlocking() throws IOException, CoreException {
 		boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
 		ProcessBuilder pb = null;
@@ -126,9 +132,25 @@ public class CMDRunner {
 			// command.add("start");
 			command.add("cmd.exe");
 			command.add("/c");
-			command.add(
-					"\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\VsDevCmd.bat\" -arch=amd64 -host_arch=amd64 && set ChocolateyInstall=c:\\opt\\chocolatey && c:\\opt\\ros\\noetic\\x64\\setup.bat && "
-							+ cmd);
+//			command.add(
+//					"\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\VsDevCmd.bat\" -arch=amd64 -host_arch=amd64 && set ChocolateyInstall=c:\\opt\\chocolatey && c:\\opt\\ros\\noetic\\x64\\setup.bat && "
+//							+ cmd);
+//			command.add(
+//					"\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\VsDevCmd.bat\" -arch=amd64 -host_arch=amd64 && C:\\Users\\dibol\\gazebo\\devel\\setup.bat && "
+//							+ cmd);
+			// && set ChocolateyInstall=C:\\ProgramData\\chocolatey
+
+			// String vscCmdPath =
+			// configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, "");
+			// String setupPath = workingDirectory + "\\devel\\setup.bat";
+			String a = configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, (String) null);
+			String b = workingDirectory;
+			String c = "\"" + configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, (String) null)
+			+ "\" -arch=amd64 -host_arch=amd64 && " + workingDirectory + "\\devel\\setup.bat" + " && " + cmd;
+			
+			command.add("\"" + configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, (String) null)
+					+ "\" -arch=amd64 -host_arch=amd64 && " + workingDirectory + "\\devel\\setup.bat" + " && " + cmd);
+
 			pb = new ProcessBuilder(command).redirectErrorStream(true);
 		} else
 			pb = new ProcessBuilder("bash", "-ic", cmd).redirectErrorStream(true);
@@ -176,19 +198,22 @@ public class CMDRunner {
 				} catch (IOException e) {
 					out.println(name + " failed");
 					e.printStackTrace(new PrintStream(System.out));
+				} catch (CoreException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		});
 
 	}
-	
+
 	public synchronized static void runAllSheduled() {
-		for(Runnable runnable: SCHEDULED_TASKS) {
+		for (Runnable runnable : SCHEDULED_TASKS) {
 			runnable.run();
 		}
 		SCHEDULED_TASKS.clear();
 	}
-	
+
 	public void scheduleTask(String name) {
 		SCHEDULED_TASKS.add(new Runnable() {
 			@Override
@@ -243,11 +268,11 @@ public class CMDRunner {
 		@Override
 		public void run() {
 			try {
-	            InputStreamReader isr = new InputStreamReader(is);
-	            BufferedReader br = new BufferedReader(isr);
-	            String line = null;
-	            while ((line = br.readLine()) != null) {
-	            	os.write(line.getBytes());
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					os.write(line.getBytes());
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

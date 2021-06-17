@@ -3,6 +3,7 @@ package de.tubs.skeditor.simulation.ros;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 import SkillGraph.Node;
@@ -22,7 +23,7 @@ public class NodeRunner {
 		this.programPath = node.getProgramPath();
 	}
 
-	public void buildAndRun(String buildPath) throws LaunchException {
+	public void buildAndRun(String buildPath) throws LaunchException, CoreException {
 		this.buildPath = buildPath;
 		new File(buildPath).mkdir();
 
@@ -45,7 +46,7 @@ public class NodeRunner {
 
 	}
 
-	private void initCMake() throws LaunchException {
+	private void initCMake() throws LaunchException, CoreException {
 		try {
 			if (CMDRunner.cmd("cmake " + node.getProgramPath()).dir(buildPath).logFile("cmake.log")
 					.runBlocking() != 0) {
@@ -57,7 +58,7 @@ public class NodeRunner {
 		}
 	}
 
-	private void makeProject() throws LaunchException {
+	private void makeProject() throws LaunchException, CoreException {
 
 		try {
 			if (CMDRunner.cmd("make").dir(buildPath).logFile("cmake.log").runBlocking() != 0) {

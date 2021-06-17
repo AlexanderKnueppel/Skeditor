@@ -25,3 +25,4 @@ Import-Package: SkillGraph,
  org.osgi.framework;version="1.10.0",
  scala.collection.immutable,
  scala.collection.mutable
+Export-Package: de.tubs.skeditor.simulation.ros.core

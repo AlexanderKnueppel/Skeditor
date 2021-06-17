@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.swt.widgets.Group;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,30 +26,29 @@ import de.tubs.skeditor.simulation.core.ASimulatorFactory;
 
 public class SimulatorLoader {
 
-	public static List<SimulatorDescription<String>> simulatorList = Collections.synchronizedList(new ArrayList<>());
-
+	public static List<SimulatorDescription<ASimulatorFactory>> simulatorList = Collections.synchronizedList(new ArrayList<>());
 	/**
 	 * Loads classes implementing the given interface
 	 * 
 	 * @param cl Class implementing the interface <b>T</b>
 	 * @return List
 	 */
-	public static <T> List<SimulatorDescription<T>> load(Class<T> cl) {
+	/*public static <T> List<SimulatorDescription<T>> load(Class<T> cl) {
 		final List<SimulatorDescription<T>> list = new ArrayList<>();
-		for (SimulatorDescription<String> desc : simulatorList) {
+		for (SimulatorDescription<Object> desc : simulatorList) {
 			ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
 			try {
-				Class<?> loadClass = systemClassLoader.loadClass(desc.getSimulator());
+				//Class<?> loadClass = systemClassLoader.loadClass(desc.getSimulator());
 				list.add(new SimulatorDescription<>(cl.cast(loadClass.newInstance()), desc.getName(), desc.getHandle(),
 						desc.getDescription()));
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-			list.add(new SimulatorDescription<T>(cl.cast(desc.getSimulator()), desc.getName(), desc.getHandle(),
-					desc.getDescription()));
+//			list.add(new SimulatorDescription<T>(cl.cast(desc.getSimulator()), desc.getName(), desc.getHandle(),
+//					desc.getDescription()));
 		}
 		return list;
-	}
+	}*/
 	
 //	private static List<SimulatorDescription<String>> registerClasses() {
 //		List<SimulatorDescription<String>> simulators = new ArrayList<>();

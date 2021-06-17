@@ -34,13 +34,13 @@ public class Launcher extends LaunchConfigurationDelegate {
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-		String name = configuration.getAttribute(LaunchConfigurationAttributes.SIMULATOR_NAME, "");
+		String name = configuration.getAttribute(LaunchConfigAttributes.SIMULATOR_NAME, "");
 
 		if (("none").equalsIgnoreCase(name)) {
 			System.out.println("No plug-in selected!");
 		} else {
 			Optional<SimulatorDescription<ASimulatorFactory>> simDescription = SimulatorLoader
-					.load(ASimulatorFactory.class).stream().filter(sim -> sim.getName().equalsIgnoreCase(name))
+					.simulatorList.stream().filter(sim -> sim.getName().equalsIgnoreCase(name))
 					.findFirst();
 			if (simDescription.isPresent()) {
 				simDescription.get().getSimulator().launch(configuration, mode, launch, monitor);
