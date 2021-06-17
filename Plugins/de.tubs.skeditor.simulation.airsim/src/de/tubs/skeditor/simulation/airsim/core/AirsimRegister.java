@@ -2,9 +2,9 @@ package de.tubs.skeditor.simulation.airsim.core;
 
 import org.eclipse.ui.IStartup;
 
-import de.tubs.skeditor.simulation.core.ASimulatorFactory;
-import de.tubs.skeditor.simulation.core.loader.SimulatorDescription;
-import de.tubs.skeditor.simulation.core.loader.SimulatorLoader;
+import de.tubs.skeditor.simulation.plugin.core.ASimulatorFactory;
+import de.tubs.skeditor.simulation.plugin.handle.SimulatorDescription;
+import de.tubs.skeditor.simulation.plugin.handle.SimulatorLoader;
 
 public class AirsimRegister implements IStartup {
 

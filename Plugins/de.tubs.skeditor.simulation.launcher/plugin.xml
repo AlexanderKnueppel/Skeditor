@@ -4,7 +4,7 @@
   <extension point="org.eclipse.debug.core.launchConfigurationTypes">
 	    <launchConfigurationType
 	        name="Launch Skill Graph"
-	        delegate="de.tubs.skeditor.simulation.core.launch.Launcher"
+	        delegate="de.tubs.skeditor.simulation.plugin.handle.Launcher"
 	        modes="run, debug"
 	        id="de.tubs.skeditor.simulation.core.launch.launchConfigurationType">
 	    </launchConfigurationType>
@@ -13,7 +13,7 @@
 	<extension
 	    point="org.eclipse.debug.ui.launchShortcuts">
 	    <shortcut
-	        class="de.tubs.skeditor.simulation.core.launch.LaunchShortcut"
+	        class="de.tubs.skeditor.simulation.plugin.handle.LaunchShortcut"
 	        icon="icons/run.png"
 	        id="de.tubs.skeditor.simulation.core.launch.shortcut"
 	        label="Run Skill Graph"
@@ -34,7 +34,7 @@
 	<extension
     		point="org.eclipse.debug.ui.launchConfigurationTabGroups">
 	    <launchConfigurationTabGroup
-	        class="de.tubs.skeditor.simulation.core.launch.TabGroup"
+	        class="de.tubs.skeditor.simulation.plugin.handle.TabGroup"
 	        id="de.tubs.skeditor.simulation.core.launch.launchConfigurationTabGroup"
 	        type="de.tubs.skeditor.simulation.core.launch.launchConfigurationType">
 	    </launchConfigurationTabGroup>

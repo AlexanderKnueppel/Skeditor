@@ -1,4 +1,4 @@
-package de.tubs.skeditor.simulation.core.launch;
+package de.tubs.skeditor.simulation.utils;
 
 import com.google.common.base.Preconditions;
 import org.eclipse.swt.SWT;
@@ -8,19 +8,14 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-//import com.google.common.base.Preconditions;
-
 /**
- * 
- * @author Dibo Gonda
- *
- */
+* A simple file browser dialog
+*/
 public class FileDialogSelectionListener extends SelectionAdapter {
 
 	private final Shell shell;
 	private final Text target;
 //	private static final String[] FILTER_NAMES = { "Executable (*.exe)" };
-//
 	private final String[] filterExtensions;
 
 	public FileDialogSelectionListener(Shell shell, Text target, String[] filterExtensions) {

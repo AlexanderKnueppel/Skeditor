@@ -1,28 +1,13 @@
 package de.tubs.skeditor.simulation.ros.core;
 
-import java.io.PrintStream;
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.ui.console.MessageConsole;
-
-import SkillGraph.Graph;
-
-import java.io.File;
-import java.io.IOException;
-//import java.io.PrintStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-
-//import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.FileLocator;
-//import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-//import org.eclipse.debug.core.ILaunch;
-//import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -31,36 +16,35 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-//import org.eclipse.emf.transaction.TransactionalEditingDomain;
-//import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-//import org.eclipse.ui.console.MessageConsole;
+
+import SkillGraph.Graph;
+
+import java.io.PrintStream;
+import java.io.File;
+import java.io.IOException;
+
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.osgi.framework.Bundle;
-//import scala.collection.immutable.HashMap;
+
 import SkillGraph.Category;
-//import SkillGraph.Graph;
 import SkillGraph.Node;
 import SkillGraph.Parameter;
-import de.tubs.skeditor.simulation.core.ASimulatorFactory;
-import de.tubs.skeditor.simulation.core.SettingsObject;
-import de.tubs.skeditor.simulation.core.SimConfigGroup;
-//import de.tubs.skeditor.simulation.launch.CMDRunner;
-//import de.tubs.skeditor.simulation.launch.CodeGenerator;
-//import de.tubs.skeditor.simulation.launch.LaunchConfigurationAttributes;
-//import de.tubs.skeditor.simulation.launch.LaunchException;
+import de.tubs.skeditor.simulation.plugin.core.ASimConfigGroup;
+import de.tubs.skeditor.simulation.plugin.core.ASimulatorFactory;
+import de.tubs.skeditor.simulation.plugin.handle.LaunchException;
 import de.tubs.skeditor.utils.FileUtils;
-
-//import de.tubs.skeditor.simulation.core.ASimulatorFactory;
-//import de.tubs.skeditor.simulation.core.SettingsObject;
-import de.tubs.skeditor.simulation.core.launch.LaunchConfigAttributes;
-import de.tubs.skeditor.simulation.core.launch.LaunchException;
 import de.tubs.skeditor.simulation.ros.CMDRunner;
 import de.tubs.skeditor.simulation.ros.CodeGenerator;
 
 public class RosFactory extends ASimulatorFactory {
+	
+	private RosFactory instance;
 
 	private String skedPath;
 	private PrintStream out;
@@ -71,11 +55,18 @@ public class RosFactory extends ASimulatorFactory {
 
 	private Graph graph;
 	private HashMap<String, String> parameters = new HashMap<>();
-
 	private IProgressMonitor monitor;
 	
 	@Override
-	public SimConfigGroup buildSimConfigGroup(Composite parent) {
+	public ASimulatorFactory getInstance() {
+		if (instance == null) {
+			instance = new RosFactory();
+		}
+		return instance;
+	}
+
+	@Override
+	public ASimConfigGroup buildSimConfigGroup(Composite parent) {
 		return new RosConfigGroup(parent, 0);
 	}
 
@@ -102,11 +93,11 @@ public class RosFactory extends ASimulatorFactory {
 			catkinWorkspacePath = catkinWorkspacePath.substring(0, chop);
 		}
 		CMDRunner.workingDirectory = catkinWorkspacePath;
-		
+
 		worldPath = configuration.getAttribute(RosLaunchConfigAttributes.WORLD_PATH, (String) null);
 
 		isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-		
+
 		Bundle bundle = Platform.getBundle(de.tubs.skeditor.Activator.PLUGIN_ID);
 		URL fileURL = bundle.getEntry("resources");
 		try {
@@ -116,20 +107,20 @@ public class RosFactory extends ASimulatorFactory {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		try {
 			try {
-				File workspaceFolder = new File(catkinWorkspacePath);   // creating folder
+				File workspaceFolder = new File(catkinWorkspacePath); // creating folder
 				if (!workspaceFolder.exists()) {
 					workspaceFolder.mkdirs();
 				}
-				
+
 				if (isWindows) {
 					CMDRunner.cmd("roscore").dir(catkinWorkspacePath).run("roscore");
 				} else {
 					CMDRunner.cmd("/opt/ros/noetic/bin/roscore").dir(catkinWorkspacePath).run("roscore");
 				}
-				
+
 				try {
 					buildWorkspace(workspaceFolder);
 				} catch (IOException e) {
@@ -258,8 +249,6 @@ public class RosFactory extends ASimulatorFactory {
 				pkg.mkdir();
 				new File(pkg, "src").mkdir();
 
-				
-
 				if (resourcesDir == null)
 					throw new LaunchException("Resouces do not exist!");
 
@@ -292,17 +281,18 @@ public class RosFactory extends ASimulatorFactory {
 		out.println();
 		out.println("Check whether catkin workspace exists... ");
 
-		//File workspace = new File(catkinWorkspacePath);
-		
+		// File workspace = new File(catkinWorkspacePath);
+
 		if (!new File(catkinWorkspacePath + "/.catkin_workspace").exists()) {
 			out.print("does not exist... build " + catkinWorkspacePath + "... ");
-			FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/.catkin_workspace", workspace.getAbsolutePath() + "/.catkin_workspace");
+			FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/.catkin_workspace",
+					workspace.getAbsolutePath() + "/.catkin_workspace");
 			String srcDir = workspace.getAbsolutePath() + "/src";
 			new File(srcDir).mkdir();
 			String stoDir = srcDir + "/Select_target_object";
 			new File(stoDir).mkdir();
 			new File(stoDir + "/src").mkdir();
-			
+
 			// Package does not exist yet!
 			File pkg = new File(stoDir);
 			if (!new File(pkg, "CMakeLists.txt").exists()) {
@@ -310,7 +300,6 @@ public class RosFactory extends ASimulatorFactory {
 
 				pkg.mkdir();
 				new File(pkg, "src").mkdir();
-
 
 				if (resourcesDir == null)
 					throw new LaunchException("Resources do not exist!");
@@ -333,7 +322,6 @@ public class RosFactory extends ASimulatorFactory {
 			} else {
 				out.println(" - ALREADY EXISTS (Skip)");
 			}
-
 
 			try {
 				CMDRunner.cmd("catkin_make").dir(workspace.getAbsolutePath()).runBlocking();

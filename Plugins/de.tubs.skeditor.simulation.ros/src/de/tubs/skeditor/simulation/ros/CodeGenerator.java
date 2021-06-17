@@ -16,7 +16,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 import de.tubs.skeditor.keymaera.KeYmaeraBridge;
-import de.tubs.skeditor.simulation.core.launch.LaunchException;
+import de.tubs.skeditor.simulation.plugin.handle.LaunchException;
 import de.tubs.skeditor.utils.FileUtils;
 
 public class CodeGenerator {

@@ -1,4 +1,4 @@
-package de.tubs.skeditor.simulation.core.loader;
+package de.tubs.skeditor.simulation.plugin.handle;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,7 +22,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.tubs.skeditor.simulation.core.ASimulatorFactory;
+import de.tubs.skeditor.simulation.plugin.core.ASimulatorFactory;
 
 public class SimulatorLoader {
 

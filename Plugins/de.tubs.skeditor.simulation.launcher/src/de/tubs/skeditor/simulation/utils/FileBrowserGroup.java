@@ -1,4 +1,4 @@
-package de.tubs.skeditor.simulation.core;
+package de.tubs.skeditor.simulation.utils;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -10,8 +10,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
-import de.tubs.skeditor.simulation.core.launch.FileDialogSelectionListener;
+import de.tubs.skeditor.simulation.utils.FileDialogSelectionListener;
 
+/**
+ * SWT Group for File Browsing
+ */
 public class FileBrowserGroup extends Group {
 
 	private Text pathText;

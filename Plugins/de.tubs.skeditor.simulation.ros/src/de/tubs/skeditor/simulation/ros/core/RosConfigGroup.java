@@ -10,10 +10,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import de.tubs.skeditor.simulation.core.FileBrowserGroup;
-import de.tubs.skeditor.simulation.core.SimConfigGroup;
+import de.tubs.skeditor.simulation.plugin.core.ASimConfigGroup;
+import de.tubs.skeditor.simulation.utils.FileBrowserGroup;
 
-public class RosConfigGroup extends SimConfigGroup {
+/**
+ * The ROS Configuration Widget 
+ */
+public class RosConfigGroup extends ASimConfigGroup {
 
 	private Map<String, FileBrowserGroup> configMap;
 
@@ -83,11 +86,6 @@ public class RosConfigGroup extends SimConfigGroup {
 
 	public Map<String, FileBrowserGroup> getCompositeMap() {
 		return this.configMap;
-	}
-
-	@Override
-	protected void checkSubclass() {
-		// allow subclass
 	}
 
 }

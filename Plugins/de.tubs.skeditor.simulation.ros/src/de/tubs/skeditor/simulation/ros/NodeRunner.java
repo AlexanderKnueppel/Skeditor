@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 import SkillGraph.Node;
-import de.tubs.skeditor.simulation.core.launch.LaunchException;
+import de.tubs.skeditor.simulation.plugin.handle.LaunchException;
 
 public class NodeRunner {
 

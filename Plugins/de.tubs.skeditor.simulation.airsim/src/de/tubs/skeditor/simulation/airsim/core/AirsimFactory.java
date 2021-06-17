@@ -6,14 +6,24 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.swt.widgets.Composite;
 
-import de.tubs.skeditor.simulation.core.ASimulatorFactory;
-import de.tubs.skeditor.simulation.core.SimConfigGroup;
+import de.tubs.skeditor.simulation.plugin.core.ASimConfigGroup;
+import de.tubs.skeditor.simulation.plugin.core.ASimulatorFactory;
 
 
 public class AirsimFactory extends ASimulatorFactory {
+	
+	private AirsimFactory instance;
+	
+	@Override
+	public ASimulatorFactory getInstance() {
+		if (instance == null) {
+			instance = new AirsimFactory();
+		}
+		return instance;
+	}
 
 	@Override
-	public SimConfigGroup buildSimConfigGroup(Composite parent) {
+	public ASimConfigGroup buildSimConfigGroup(Composite parent) {
 		return new AirsimConfigGroup(parent, 0);
 	}
 

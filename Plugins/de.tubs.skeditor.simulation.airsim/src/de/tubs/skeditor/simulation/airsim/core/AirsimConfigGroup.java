@@ -5,9 +5,9 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.widgets.Composite;
 
-import de.tubs.skeditor.simulation.core.SimConfigGroup;
+import de.tubs.skeditor.simulation.plugin.core.ASimConfigGroup;
 
-public class AirsimConfigGroup extends SimConfigGroup {
+public class AirsimConfigGroup extends ASimConfigGroup {
 
 	public AirsimConfigGroup(Composite parent, int style) {
 		super(parent, style);
@@ -25,11 +25,6 @@ public class AirsimConfigGroup extends SimConfigGroup {
 	public void applyAttributes(ILaunchConfigurationWorkingCopy configuration) throws CoreException {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	@Override
-	protected void checkSubclass() {
-		// allow subclass
 	}
 
 }

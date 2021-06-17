@@ -1,4 +1,4 @@
-package de.tubs.skeditor.simulation.core.loader;
+package de.tubs.skeditor.simulation.plugin.handle;
 
 public class SimulatorDescription<T> {
 
