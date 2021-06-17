@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Airsim
+Bundle-SymbolicName: de.tubs.skeditor.simulation.airsim;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Automatic-Module-Name: de.tubs.skeditor.simulation.airsim
+Bundle-RequiredExecutionEnvironment: JavaSE-15
+Import-Package: de.tubs.skeditor.simulation.core,
+ de.tubs.skeditor.simulation.core.loader,
+ org.eclipse.core.runtime;version="3.7.0",
+ org.eclipse.debug.core,
+ org.eclipse.swt.widgets,
+ org.eclipse.ui,
+ org.eclipse.xtext
