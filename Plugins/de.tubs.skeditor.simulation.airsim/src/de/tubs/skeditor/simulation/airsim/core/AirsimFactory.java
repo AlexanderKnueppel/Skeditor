@@ -23,7 +23,7 @@ public class AirsimFactory extends ASimulatorFactory {
 	}
 
 	@Override
-	public ASimConfigGroup buildSimConfigGroup(Composite parent) {
+	public ASimConfigGroup buildSimConfigGroup(Composite parent, Runnable callback) {
 		return new AirsimConfigGroup(parent, 0);
 	}
 
@@ -32,6 +32,10 @@ public class AirsimFactory extends ASimulatorFactory {
 			throws CoreException {
 		// TODO implement launch
 		
+	}
+
+	@Override
+	public void cleanAfterClose() {	
 	}
 
 }

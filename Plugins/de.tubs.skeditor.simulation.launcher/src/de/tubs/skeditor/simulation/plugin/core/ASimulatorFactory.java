@@ -16,12 +16,17 @@ public abstract class ASimulatorFactory {
 	/**
 	 * Creates an instance of a simulators configuration group.
 	 */
-	public abstract ASimConfigGroup buildSimConfigGroup(Composite parent);
+	public abstract ASimConfigGroup buildSimConfigGroup(Composite parent, Runnable callBack);
 
 	/**
-	 * Toe launch the simulator application
+	 * To launch the simulator application
 	 */
 	public abstract void launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
 			IProgressMonitor monitor) throws CoreException;
+	
+	/**
+	 * To clean processes that run outside of eclipse
+	 */
+	public abstract void cleanAfterClose();
 
 }

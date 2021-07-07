@@ -6,6 +6,9 @@ import de.tubs.skeditor.simulation.plugin.core.ASimulatorFactory;
 import de.tubs.skeditor.simulation.plugin.handle.SimulatorDescription;
 import de.tubs.skeditor.simulation.plugin.handle.SimulatorLoader;
 
+/**
+ * Register AirSim to plugin system
+ */
 public class AirsimRegister implements IStartup {
 
 	@Override

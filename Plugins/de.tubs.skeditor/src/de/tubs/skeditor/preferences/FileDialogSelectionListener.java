@@ -9,11 +9,6 @@ import org.eclipse.swt.widgets.Text;
 
 import com.google.common.base.Preconditions;
 
-/**
- * 
- * @author Dibo Gonda
- *
- */
 public class FileDialogSelectionListener extends SelectionAdapter {
 
 	private final Shell shell;

@@ -1,6 +1,7 @@
 package de.tubs.skeditor.simulation.ros.core;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -15,8 +16,15 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.IPageListener;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -43,7 +51,7 @@ import de.tubs.skeditor.simulation.ros.CMDRunner;
 import de.tubs.skeditor.simulation.ros.CodeGenerator;
 
 public class RosFactory extends ASimulatorFactory {
-	
+
 	private RosFactory instance;
 
 	private String skedPath;
@@ -56,7 +64,7 @@ public class RosFactory extends ASimulatorFactory {
 	private Graph graph;
 	private HashMap<String, String> parameters = new HashMap<>();
 	private IProgressMonitor monitor;
-	
+
 	@Override
 	public ASimulatorFactory getInstance() {
 		if (instance == null) {
@@ -66,13 +74,14 @@ public class RosFactory extends ASimulatorFactory {
 	}
 
 	@Override
-	public ASimConfigGroup buildSimConfigGroup(Composite parent) {
-		return new RosConfigGroup(parent, 0);
+	public ASimConfigGroup buildSimConfigGroup(Composite parent, Runnable callback) {
+		return new RosConfigGroup(parent, 0, callback);
 	}
 
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
+		
 		CMDRunner.configuration = configuration;
 		MessageConsole console = findConsole("Skill");
 		console.activate();
@@ -98,7 +107,7 @@ public class RosFactory extends ASimulatorFactory {
 
 		isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
-		Bundle bundle = Platform.getBundle(de.tubs.skeditor.Activator.PLUGIN_ID);
+		Bundle bundle = Platform.getBundle(de.tubs.skeditor.Activator.PLUGIN_ID); // semantical error | just ignore it
 		URL fileURL = bundle.getEntry("resources");
 		try {
 			resourcesDir = new File(FileLocator.resolve(fileURL).toURI());
@@ -170,6 +179,38 @@ public class RosFactory extends ASimulatorFactory {
 
 		}
 	}
+	
+	@Override
+	public void cleanAfterClose() {
+		List<Node> nodeList = graph.getNodes();
+
+		if (isWindows) {
+			System.out.println("Cleaning " + nodeList.size() + " Nodes");
+			Runtime rt = Runtime.getRuntime();
+			for (Node node : nodeList) {
+				String killTaskCommand = "taskkill /im " + node.getName().replaceAll(" ", "_") + ".exe /t /f";
+				System.out.println(killTaskCommand);
+				try {
+					rt.exec("cmd /c " + killTaskCommand);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			try {
+				rt.exec("cmd /c taskkill /im roslaunch.exe /t /f");
+				rt.exec("cmd /c taskkill /im roscore.exe /t /f");
+				rt.exec("cmd /c taskkill /im rosmaster.exe /t /f");
+				rt.exec("cmd /c taskkill /im rosout.exe /t /f");
+				rt.exec("cmd /c taskkill /im gzclient.exe /t /f");
+				rt.exec("cmd /c taskkill /im gzserver.exe /t /f");
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}		
+	}
 
 	private void compileAndRun(EList<Node> nodes) throws LaunchException, CoreException {
 		out.print("CATKIN_MAKE ");
@@ -210,7 +251,7 @@ public class RosFactory extends ASimulatorFactory {
 
 			if (node.getController() != null) {
 				for (int i = 0; i < node.getController().size(); i++) {
-					String ctrl = node.getController().get(i).getCtrl(); // TODO
+					String ctrl = node.getController().get(i).getCtrl(); // TODO Skill Definition
 					String name = node.getName().replace(" ", "_");
 
 					out.print("generate executable for kyx script");

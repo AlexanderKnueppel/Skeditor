@@ -41,7 +41,25 @@ public class SkeditorSettings {
 		// Initialize values on program start
 		Preferences preferences = InstanceScope.INSTANCE.getNode("de.tubs.skeditor.preferences.page");
 		Preferences sub = preferences.node("node");
-		selectedProver = sub.get("selected_radio_button", "default");
+		
+		
+		String prover = sub.get(PreferenceSettings.SELECTED_PROVER.toString(), "default");
+		if (!prover.equalsIgnoreCase("")) {
+			selectedProver = prover;
+		} else {
+			selectedProver = sub.get(PreferenceSettings.SELECTED_PROVER_DEFAULT.toString(), "default");
+		}
+		
+		String z3Path = sub.get(PreferenceSettings.Z3_PATH.toString(), "default");
+		if (!prover.equalsIgnoreCase("")) {
+			z3Exe = z3Path;
+		} else {
+			z3Exe = sub.get(PreferenceSettings.Z3_PATH_DEFAULT.toString(), "default");
+		}
+		
+		mathematicaExe = sub.get(PreferenceSettings.MATHEMATICA_PATH.toString(), "default");
+		
+		selectedProver = sub.get("selected_prover", "default");
 		currentOs = System.getProperty("os.name").toLowerCase();
 		z3Exe = sub.get("z3_exe", "");
 		mathematicaExe = sub.get("mathematica_exe", "");

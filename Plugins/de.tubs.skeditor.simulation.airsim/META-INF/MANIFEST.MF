@@ -4,7 +4,7 @@ Bundle-Name: Airsim
 Bundle-SymbolicName: de.tubs.skeditor.simulation.airsim;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: de.tubs.skeditor.simulation.airsim
-Bundle-RequiredExecutionEnvironment: JavaSE-15
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: de.tubs.skeditor.simulation.launcher;bundle-version="1.0.0",
  org.eclipse.jface,
  de.tubs.skeditor,

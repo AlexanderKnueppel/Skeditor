@@ -29,7 +29,7 @@ import de.tubs.skeditor.simulation.ros.core.RosLaunchConfigAttributes;
 import de.tubs.skeditor.utils.FileUtils;
 
 public class CMDRunner {
-
+	
 	public static void main(String[] args) {
 //		final ArrayList<String> command = new ArrayList<String>();
 //		System.out.println("Batch file path : " + new File("resources/ros_cmd_win64.sh").getAbsolutePath());
@@ -160,7 +160,7 @@ public class CMDRunner {
 		}
 
 		Process p = pb.start();
-
+		
 		if (out != null) {
 			InputStream is = p.getInputStream();
 			InputStream er = p.getErrorStream();

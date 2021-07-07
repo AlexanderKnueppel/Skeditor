@@ -11,10 +11,9 @@ import org.eclipse.swt.widgets.Group;
  * Using a SWT Group to visually encapsulate each Simulator Configuration.
  */
 public abstract class ASimConfigGroup extends Group {
-
+	
 	public ASimConfigGroup(Composite parent, int style) {
 		super(parent, style);
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**

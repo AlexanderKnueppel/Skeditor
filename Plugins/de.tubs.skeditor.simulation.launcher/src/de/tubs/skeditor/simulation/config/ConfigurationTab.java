@@ -1,8 +1,12 @@
 package de.tubs.skeditor.simulation.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -15,19 +19,26 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.IPageListener;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 import de.tubs.skeditor.simulation.plugin.core.ASimConfigGroup;
+import de.tubs.skeditor.simulation.plugin.core.ASimulatorFactory;
 import de.tubs.skeditor.simulation.plugin.handle.SimulatorDescription;
 import de.tubs.skeditor.simulation.plugin.handle.SimulatorLoader;
 
 public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 
-	private List<ASimConfigGroup> configGroups;
+	private Map<String, ASimConfigGroup> configGroups;
 	private Combo dropDownMenu;
+	private String selectedSmulatorDesc;
 
 	@Override
 	public void createControl(Composite parent) {
-		configGroups = new ArrayList<>();
+		configGroups = new HashMap<>();
 
 		Group generalGroup = new Group(parent, SWT.NONE);
 		generalGroup.setText("Simulator Settings");
@@ -37,8 +48,11 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		initSimulatorSelectionComponent(generalGroup);
 
 		SimulatorLoader.simulatorList.stream().forEach(simulatorDesc -> {
-			ASimConfigGroup configGroup = simulatorDesc.getSimulator().buildSimConfigGroup(generalGroup);
-			this.configGroups.add(configGroup);
+			ASimConfigGroup configGroup = simulatorDesc.getSimulator().buildSimConfigGroup(generalGroup, () -> {
+				setDirty(true);
+				updateLaunchConfigurationDialog();
+			});
+			this.configGroups.put(simulatorDesc.getDescription(), configGroup);
 			configGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 			configGroup.addListener(0, new Listener() {
 				public void handleEvent(Event event) {
@@ -49,7 +63,39 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 			configGroup.pack();
 		});
 
+		parent.pack();
 		this.setDirty(true);
+
+		// Kill simulator processes on window closing
+
+		IWorkbench wb = PlatformUI.getWorkbench();
+		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+
+		win.addPageListener(new IPageListener() {
+
+			@Override
+			public void pageActivated(IWorkbenchPage page) {
+			}
+
+			@Override
+			public void pageClosed(IWorkbenchPage page) {
+				Optional<SimulatorDescription<ASimulatorFactory>> simulator = SimulatorLoader.simulatorList.stream()
+						.filter(sim -> sim.getName().equalsIgnoreCase("ros")).findFirst();
+				if (simulator != null) {
+					System.out.println(simulator.get().getName());
+					try {
+						simulator.get().getSimulator().cleanAfterClose();
+					} catch (Exception e) {
+						//
+					}
+				}
+			}
+
+			@Override
+			public void pageOpened(IWorkbenchPage page) {
+			}
+
+		});
 	}
 
 	private void initSimulatorSelectionComponent(Composite comp) {
@@ -77,6 +123,15 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 				System.out.println(dropDownMenu.getText());
 				setDirty(true);
 				updateLaunchConfigurationDialog();
+				selectedSmulatorDesc = dropDownMenu.getText();
+				configGroups.entrySet().stream().forEach(entry -> {
+					if (entry.getKey().equalsIgnoreCase(selectedSmulatorDesc)) {
+						entry.getValue().setVisible(true);
+					} else {
+						entry.getValue().setVisible(false);
+					}
+				});
+				comp.pack();
 			}
 		});
 	}
@@ -93,6 +148,24 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 		String simulatorName = "";
 		try {
 			simulatorName = configuration.getAttribute(LaunchConfigAttributes.SIMULATOR_NAME, "");
+			final String copy = simulatorName;
+			Optional<SimulatorDescription<ASimulatorFactory>> simulator = SimulatorLoader.simulatorList.stream()
+					.filter(sim -> sim.getName().equalsIgnoreCase(copy)).findFirst();
+			if (simulator.isPresent()) {
+				this.selectedSmulatorDesc = simulator.get().getDescription();
+			}
+			
+			this.configGroups.entrySet().stream().forEach(entry -> {
+				if (entry.getKey().equalsIgnoreCase(selectedSmulatorDesc)) {
+					entry.getValue().setVisible(true);
+				} else {
+					entry.getValue().setVisible(false);
+				}
+			});
+			
+			this.configGroups.get(selectedSmulatorDesc).getParent().pack();
+			
+			
 		} catch (CoreException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -104,9 +177,9 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 					.collect(Collectors.toList()).indexOf(simulatorName) + 1);
 		}
 
-		this.configGroups.stream().forEach(configGroup -> {
+		this.configGroups.entrySet().forEach(entry -> {
 			try {
-				configGroup.initializeAttributes(configuration);
+				entry.getValue().initializeAttributes(configuration);
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -126,9 +199,9 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 					SimulatorLoader.simulatorList.get(dropDownMenu.getSelectionIndex() - 1).getName());
 		}
 
-		this.configGroups.stream().forEach(configGroup -> {
+		this.configGroups.entrySet().stream().forEach(entry -> {
 			try {
-				configGroup.applyAttributes(configuration);
+				entry.getValue().applyAttributes(configuration);
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -19,7 +19,7 @@ public class FileBrowserGroup extends Group {
 
 	private Text pathText;
 
-	public FileBrowserGroup(Composite parent, int style, String desc, String[] filterExtensions) {
+	public FileBrowserGroup(Composite parent, int style, String desc, String[] filterExtensions, Runnable callback) {
 		super(parent, style);
 		this.setText(desc);
         this.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
@@ -33,7 +33,9 @@ public class FileBrowserGroup extends Group {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				// TODO group event
+				if(callback != null) {
+					callback.run();
+				}
 			}
 		});
 		text.pack();

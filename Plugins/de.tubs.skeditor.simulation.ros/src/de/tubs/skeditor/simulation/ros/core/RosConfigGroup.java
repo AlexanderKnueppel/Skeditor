@@ -20,7 +20,7 @@ public class RosConfigGroup extends ASimConfigGroup {
 
 	private Map<String, FileBrowserGroup> configMap;
 
-	public RosConfigGroup(Composite parent, int style) {
+	public RosConfigGroup(Composite parent, int style, Runnable callback) {
 		super(parent, style);
 		this.setText("ROS");
 		FillLayout fillLayout = new FillLayout(SWT.VERTICAL);
@@ -33,21 +33,21 @@ public class RosConfigGroup extends ASimConfigGroup {
 		comp.setLayout(fillLayout);
 
 		configMap = new HashMap<>();
-		FileBrowserGroup skedFileBrowser = new FileBrowserGroup(comp, SWT.NONE, "*.sked", new String[] { "*.sked" });
+		FileBrowserGroup skedFileBrowser = new FileBrowserGroup(comp, SWT.NONE, "*.sked", new String[] { "*.sked" }, callback);
 		skedFileBrowser.pack();
 		configMap.put(RosLaunchConfigAttributes.SKED_PATH, skedFileBrowser);
 
 		FileBrowserGroup catkinWorkspaceFileBrowser = new FileBrowserGroup(comp, SWT.NONE, ".catkin_workspace",
-				new String[] { ".catkin_workspace" });
+				new String[] { ".catkin_workspace" }, callback);
 		catkinWorkspaceFileBrowser.pack();
 		configMap.put(RosLaunchConfigAttributes.CATKIN_WORKSPACE_PATH, catkinWorkspaceFileBrowser);
 
-		FileBrowserGroup worldFileBrowser = new FileBrowserGroup(comp, SWT.NONE, "*.world", new String[] { "*.world" });
+		FileBrowserGroup worldFileBrowser = new FileBrowserGroup(comp, SWT.NONE, "*.world", new String[] { "*.world" }, callback);
 		worldFileBrowser.pack();
 		configMap.put(RosLaunchConfigAttributes.WORLD_PATH, worldFileBrowser);
 
 		FileBrowserGroup vscCmdFileBrowser = new FileBrowserGroup(comp, SWT.NONE, "VsDevCmd.bat",
-				new String[] { "*.bat" });
+				new String[] { "*.bat" }, callback);
 		configMap.put(RosLaunchConfigAttributes.VSC_CMD_PATH, vscCmdFileBrowser);
 		vscCmdFileBrowser.pack();
 

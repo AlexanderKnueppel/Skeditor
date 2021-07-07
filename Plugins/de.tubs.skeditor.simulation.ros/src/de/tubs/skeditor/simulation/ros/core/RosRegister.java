@@ -6,12 +6,16 @@ import de.tubs.skeditor.simulation.plugin.core.ASimulatorFactory;
 import de.tubs.skeditor.simulation.plugin.handle.SimulatorDescription;
 import de.tubs.skeditor.simulation.plugin.handle.SimulatorLoader;
 
+/**
+ * Register ROS to plugin system
+ */
 public class RosRegister implements IStartup {
 
 	@Override
 	public void earlyStartup() {
 		System.out.println("register ROS plugin");
-		SimulatorLoader.simulatorList.add(new SimulatorDescription<ASimulatorFactory>(new RosFactory(), "ros", "handle", "ROS (Robot Operating System)"));
+		SimulatorLoader.simulatorList.add(new SimulatorDescription<ASimulatorFactory>(new RosFactory(), "ros", "handle",
+				"ROS (Robot Operating System)"));
 	}
 
 }
