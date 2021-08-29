@@ -1,20 +1,22 @@
 package de.tubs.skeditor.simulation.ros;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -23,7 +25,6 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 import de.tubs.skeditor.simulation.ros.core.RosLaunchConfigAttributes;
 import de.tubs.skeditor.utils.FileUtils;
@@ -143,42 +144,48 @@ public class CMDRunner {
 			// String vscCmdPath =
 			// configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, "");
 			// String setupPath = workingDirectory + "\\devel\\setup.bat";
-			String a = configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, (String) null);
-			String b = workingDirectory;
-			String c = "\"" + configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, (String) null)
-			+ "\" -arch=amd64 -host_arch=amd64 && " + workingDirectory + "\\devel\\setup.bat" + " && " + cmd;
 			
-			command.add("\"" + configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, (String) null)
-					+ "\" -arch=amd64 -host_arch=amd64 && " + workingDirectory + "\\devel\\setup.bat" + " && " + cmd);
-
+			if (Paths.get(workingDirectory, "devel", "setup.bat").toFile().exists() /*&& !cmd.equals("catkin_make")*/) {
+				command.add("\"" + configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, (String) null)
+				+ "\" -arch=amd64 -host_arch=amd64 && " + workingDirectory + "\\devel\\setup.bat" + " && " + cmd);	
+			} else {
+				command.add("\"" + configuration.getAttribute(RosLaunchConfigAttributes.VSC_CMD_PATH, (String) null)
+				+ "\" -arch=amd64 -host_arch=amd64 && c:\\opt\\ros\\noetic\\x64\\setup.bat && " + cmd);
+			}
+			
 			pb = new ProcessBuilder(command).redirectErrorStream(true);
-		} else
+		} else {
 			pb = new ProcessBuilder("bash", "-ic", cmd).redirectErrorStream(true);
-
+		}
+		
 		if (path != null) {
 			pb = pb.directory(new File(path));
 		}
 
+		System.out.printf("start \"%s\" with args:%n%s%n", cmd, pb.command().stream().collect(Collectors.joining(" ")));
 		Process p = pb.start();
 		
+		InputStream is = p.getInputStream();
+		InputStream er = p.getErrorStream();
+		
 		if (out != null) {
-			InputStream is = p.getInputStream();
-			InputStream er = p.getErrorStream();
-			new StreamGobbler(is, out).start();
-			new StreamGobbler(er, out).start();
+			new StreamGobbler(is, out, cmd).start();
+			new StreamGobbler(er, out, cmd).start();
 		}
 
 		if (logFile != null) {
 			FileOutputStream fos = new FileOutputStream(new File(path + "/" + logFile));
-			InputStream is = p.getInputStream();
-			InputStream er = p.getErrorStream();
-			new StreamGobbler(is, fos).start();
-			new StreamGobbler(er, fos).start();
+			new StreamGobbler(is, fos, cmd).start();
+			new StreamGobbler(er, fos, cmd).start();
 		}
 
 		try {
-			return p.waitFor();
+			int r = p.waitFor();
+			System.out.printf("%s exit code: %d%n", cmd, r);
+			return r;
 		} catch (InterruptedException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
 			p.destroy();
 			return -1;
 		}
@@ -197,7 +204,8 @@ public class CMDRunner {
 					out.println(name + " ended");
 				} catch (IOException e) {
 					out.println(name + " failed");
-					e.printStackTrace(new PrintStream(System.out));
+					System.err.println(name + " failed");
+					e.printStackTrace(new PrintStream(out));
 				} catch (CoreException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -260,9 +268,16 @@ public class CMDRunner {
 		InputStream is;
 		OutputStream os;
 
+		String prefix;
+		
 		private StreamGobbler(InputStream is, OutputStream os) {
+			this(is, os, "");
+		}
+		
+		private StreamGobbler(InputStream is, OutputStream os, String prefix) {
 			this.is = is;
 			this.os = os;
+			this.prefix = prefix;
 		}
 
 		@Override
@@ -270,9 +285,17 @@ public class CMDRunner {
 			try {
 				InputStreamReader isr = new InputStreamReader(is);
 				BufferedReader br = new BufferedReader(isr);
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
 				String line = null;
 				while ((line = br.readLine()) != null) {
-					os.write(line.getBytes());
+					if (line.contains("does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.")) {
+						continue;
+					}
+					synchronized (os) {
+						bw.write(String.format("%s%n", line));	
+						bw.flush();	
+					}
+					System.out.printf("%s %s%n", prefix, line);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

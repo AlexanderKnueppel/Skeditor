@@ -11,6 +11,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileUtils {
 	public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation)
@@ -26,9 +30,20 @@ public class FileUtils {
 		});
 	}
 
-	public static void copyFromResource(String sourceDirectoryLocation, String destinationDirectoryLocation)
+	public static void copyFolder(String src, String dest) throws IOException {
+		// skip the first path because it is the folder itself
+		List<Path> paths = Files.walk(new File(src).toPath()).skip(1).collect(Collectors.toList());
+		Path sourcePath = Paths.get(src);
+
+		for (Path path : paths) {
+			copyFromResource(path.toString(), Paths.get(dest).resolve(sourcePath.relativize(path)).toString());
+		}
+	}
+	
+	public static void copyFromResource(String sourceLocation, String destinationLocation)
 			throws IOException {
-		Files.copy(new File(sourceDirectoryLocation).toPath(), new File(destinationDirectoryLocation).toPath(),
+		System.out.printf("copy from \"%s\" to \"%s\" %n", sourceLocation, destinationLocation);
+		Files.copy(new File(sourceLocation).toPath(), new File(destinationLocation).toPath(),
 				StandardCopyOption.REPLACE_EXISTING);
 	}
 
@@ -46,7 +61,7 @@ public class FileUtils {
 		Path path = Paths.get(pathStr);
 		Charset charset = StandardCharsets.UTF_8;
 		String content = String.join("\n", Files.readAllLines(path, charset));
-		content = content.replaceAll(search, replace);
+		content = content.replace(search, replace);
 		Files.write(path, content.getBytes(charset));
 	}
 

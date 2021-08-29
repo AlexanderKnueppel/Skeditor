@@ -1,0 +1,53 @@
+{
+  "SeeDocsAt": "https://github.com/Microsoft/AirSim/blob/master/docs/settings.md",
+  "SettingsVersion": 1.2,
+  "SimMode": "Car",
+  "Vehicles": {
+    "PhysXCar": {
+      "VehicleType": "PhysXCar",
+      "DefaultVehicleState": "",
+      "AutoCreate": true,
+      "PawnPath": "",
+      "EnableCollisionPassthrogh": false,
+      "EnableCollisions": true,
+      "RC": {
+        "RemoteControlID": -1
+      },
+      "Sensors": {
+        "Gps": {
+          "SensorType": 3,
+          "Enabled" : true,
+          "EphTimeConstant": 0.9,
+          "EpvTimeConstant": 0.9,
+          "EphInitial": 25,
+          "EpvInitial": 25,
+          "EphFinal": 0.1,
+          "EpvFinal": 0.1,
+          "EphMin3d": 3,
+          "EphMin2d": 4,
+          "UpdateLatency": 0.2,
+          "UpdateFrequency": 50,
+          "StartupDelay": 1
+        },
+        "Lidar": {
+            "SensorType": 6,
+            "Enabled" : true,
+            "NumberOfChannels": 3,
+            "PointsPerSecond": 10,
+            "RotationsPerSecond": 10,
+            "X": 0, "Y": 0, "Z": -1,
+            "DrawDebugPoints": true
+        },
+        "Distance": {
+          "SensorType": 5,
+          "Enabled" : true,
+          "MinDistance": 0.1,
+          "MaxDistance": 400,
+          "X": 0, "Y": 0, "Z": -1,
+          "Yaw": 0, "Pitch": 0, "Roll": 0,
+          "DrawDebugPoints": true
+        }
+      }
+    }
+  }
+}

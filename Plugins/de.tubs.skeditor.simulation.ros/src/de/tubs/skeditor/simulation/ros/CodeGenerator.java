@@ -166,7 +166,7 @@ public class CodeGenerator {
 
 			for (String param : parameters) {
 				String value = graphParameters.getOrDefault(param, null);
-				if (value != null) {
+				if (value != null && !value.trim().isEmpty()) { // maybe this works
 					writer.println("    params." + param + " = " + value + ";");
 				} else {
 					//throw new LaunchException("could not find Parameter " + param + " in sked file");

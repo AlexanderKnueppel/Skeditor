@@ -2,6 +2,7 @@ package de.tubs.skeditor.simulation.ros.core;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -39,6 +40,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 import SkillGraph.Category;
 import SkillGraph.Node;
@@ -107,7 +109,7 @@ public class RosFactory extends ASimulatorFactory {
 
 		isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
 
-		Bundle bundle = Platform.getBundle(de.tubs.skeditor.Activator.PLUGIN_ID); // semantical error | just ignore it
+		Bundle bundle = FrameworkUtil.getBundle(this.getClass());
 		URL fileURL = bundle.getEntry("resources");
 		try {
 			resourcesDir = new File(FileLocator.resolve(fileURL).toURI());
@@ -120,8 +122,11 @@ public class RosFactory extends ASimulatorFactory {
 		try {
 			try {
 				File workspaceFolder = new File(catkinWorkspacePath); // creating folder
-				if (!workspaceFolder.exists()) {
-					workspaceFolder.mkdirs();
+				
+				try {
+					buildWorkspace(workspaceFolder);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 
 				if (isWindows) {
@@ -129,13 +134,7 @@ public class RosFactory extends ASimulatorFactory {
 				} else {
 					CMDRunner.cmd("/opt/ros/noetic/bin/roscore").dir(catkinWorkspacePath).run("roscore");
 				}
-
-				try {
-					buildWorkspace(workspaceFolder);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
+				
 				Thread.sleep(1000); // make sure roscore initialized
 
 				parseSked(skedPath);
@@ -143,16 +142,18 @@ public class RosFactory extends ASimulatorFactory {
 				buildPrograms(graph.getNodes());
 				buildHybridPrograms(graph.getNodes());
 
+				
+				//Thread.sleep(10000); // make sure gazebo is inizialized
+
+				compileAndRun(graph.getNodes());
+				
 				if (isWindows) {
-					CMDRunner.cmd("cd devel && setup.bat && cd.. && roslaunch myrobot_gazebo world.launch --wait")
+					CMDRunner.cmd(/*"cd devel && setup.bat && cd.. && " + */"roslaunch myrobot_gazebo world.launch --wait")
 							.dir(catkinWorkspacePath).run("gazebo");
 				} else {
 					CMDRunner.cmd("rosrun gazebo_ros gazebo " + worldPath).dir(catkinWorkspacePath).run("gazebo");
 				}
-
-				Thread.sleep(10000); // make sure gazebo is inizialized
-
-				compileAndRun(graph.getNodes());
+				
 				out.println("====DONE====");
 
 			} catch (LaunchException e) {
@@ -221,6 +222,8 @@ public class RosFactory extends ASimulatorFactory {
 						+ new File(catkinWorkspacePath, "SKEDITOR_CMAKE.log").getAbsolutePath());
 			}
 		} catch (IOException | LaunchException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
 			throw new LaunchException("could not cmake project");
 		}
 		out.print("- OK");
@@ -288,21 +291,13 @@ public class RosFactory extends ASimulatorFactory {
 				out.print(" - DOES NOT EXIST ");
 
 				pkg.mkdir();
-				new File(pkg, "src").mkdir();
 
 				if (resourcesDir == null)
 					throw new LaunchException("Resouces do not exist!");
 
 				try {
-					FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/project_template/CMakeLists.txt",
-							pkg.getAbsolutePath() + "/CMakeLists.txt");
-					FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/project_template/package.xml",
-							pkg.getAbsolutePath() + "/package.xml");
-					FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/project_template/src/Skill.h",
-							pkg.getAbsolutePath() + "/src/Skill.h");
-					FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/project_template/src/main.cpp",
-							pkg.getAbsolutePath() + "/src/main.cpp");
-
+					FileUtils.copyFolder(resourcesDir.getAbsolutePath() + "/project_template/", pkg.getAbsolutePath());
+					
 					FileUtils.replaceInFile(pkg.getAbsolutePath() + "/CMakeLists.txt", "SKILL_NAME", name);
 					FileUtils.replaceInFile(pkg.getAbsolutePath() + "/package.xml", "SKILL_NAME", name);
 					FileUtils.replaceInFile(pkg.getAbsolutePath() + "/src/main.cpp", "SKILL_NAME", name);
@@ -318,52 +313,25 @@ public class RosFactory extends ASimulatorFactory {
 		}
 	}
 
+	
+	
 	private void buildWorkspace(File workspace) throws LaunchException, IOException, CoreException {
 		out.println();
 		out.println("Check whether catkin workspace exists... ");
 
 		// File workspace = new File(catkinWorkspacePath);
 
-		if (!new File(catkinWorkspacePath + "/.catkin_workspace").exists()) {
+		if (!workspace.exists()) {
+			System.out.println("create workspace folder");
+			workspace.mkdirs();
+		}
+		
+		if (!new File(workspace.getAbsoluteFile() + "/.catkin_workspace").exists()) {
 			out.print("does not exist... build " + catkinWorkspacePath + "... ");
-			FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/.catkin_workspace",
-					workspace.getAbsolutePath() + "/.catkin_workspace");
-			String srcDir = workspace.getAbsolutePath() + "/src";
-			new File(srcDir).mkdir();
-			String stoDir = srcDir + "/Select_target_object";
-			new File(stoDir).mkdir();
-			new File(stoDir + "/src").mkdir();
-
-			// Package does not exist yet!
-			File pkg = new File(stoDir);
-			if (!new File(pkg, "CMakeLists.txt").exists()) {
-				out.print(" - DOES NOT EXIST ");
-
-				pkg.mkdir();
-				new File(pkg, "src").mkdir();
-
-				if (resourcesDir == null)
-					throw new LaunchException("Resources do not exist!");
-
-				try {
-					FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/project_template/CMakeLists.txt",
-							pkg.getAbsolutePath() + "/CMakeLists.txt");
-					FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/project_template/package.xml",
-							pkg.getAbsolutePath() + "/package.xml");
-					FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/project_template/src/Skill.h",
-							pkg.getAbsolutePath() + "/src/Skill.h");
-					FileUtils.copyFromResource(resourcesDir.getAbsolutePath() + "/project_template/src/main.cpp",
-							pkg.getAbsolutePath() + "/src/main.cpp");
-				} catch (IOException io) {
-					io.printStackTrace();
-					FileUtils.deleteDirectory(pkg);
-					return;
-				}
-				out.println(" - CREATED");
-			} else {
-				out.println(" - ALREADY EXISTS (Skip)");
-			}
-
+			FileUtils.copyFolder(resourcesDir.getAbsolutePath() + "/project_root/", workspace.getAbsolutePath());
+			
+			System.out.println("run catkin_make");
+			
 			try {
 				CMDRunner.cmd("catkin_make").dir(workspace.getAbsolutePath()).runBlocking();
 			} catch (IOException e) {
@@ -389,7 +357,8 @@ public class RosFactory extends ASimulatorFactory {
 			throw new LaunchException("could not find executable " + execPath.getAbsolutePath());
 
 		if (isWindows) {
-			CMDRunner.cmd("cd devel && setup.bat && cd.. && rosrun " + name + " " + name).dir(catkinWorkspacePath)
+			// cd devel && setup.bat && cd.. &&
+			CMDRunner.cmd("rosrun " + name + " " + name).dir(catkinWorkspacePath)
 					.run(name);
 		} else {
 			CMDRunner.cmd(execPath.getAbsolutePath()).dir(buildPath.getAbsolutePath()).run(name);
@@ -415,7 +384,13 @@ public class RosFactory extends ASimulatorFactory {
 					graph = (Graph) o;
 					for (Parameter param : graph.getParameterList()) {
 						out.println("Found " + param.getAbbreviation() + "=" + param.getDefaultValue());
-						parameters.put(param.getAbbreviation(), param.getDefaultValue());
+						if (param.getDefaultValue().trim().isEmpty()) {
+							System.err.println("Warning " + param.getAbbreviation() + " has no default value!"); // use 0 instead");
+							out.println("Warning " + param.getAbbreviation() + " has no default value!"); // use 0 instead");
+						//	parameters.put(param.getAbbreviation(), "0");
+						} //else {
+							parameters.put(param.getAbbreviation(), param.getDefaultValue());	
+						//}
 					}
 				}
 			}
