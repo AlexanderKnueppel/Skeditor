@@ -8,6 +8,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import de.tubs.skeditor.simulation.plugin.core.ASimConfigGroup;
@@ -20,15 +21,17 @@ public class RosConfigGroup extends ASimConfigGroup {
 
 	private Map<String, FileBrowserGroup> configMap;
 
+	
 	public RosConfigGroup(Composite parent, int style, Runnable callback) {
-		super(parent, style);
-		this.setText("ROS");
+		super("ROS", parent, style);
+		//this.setText("ROS");
+		
 		FillLayout fillLayout = new FillLayout(SWT.VERTICAL);
 		fillLayout.spacing = 3;
 		fillLayout.marginHeight = 3;
-		fillLayout.marginWidth = 3;
-		this.setLayout(fillLayout);
-
+		fillLayout.marginWidth = 3;		
+		//this.setLayout(fillLayout);
+		
 		Composite comp = new Composite(this, SWT.NONE);
 		comp.setLayout(fillLayout);
 

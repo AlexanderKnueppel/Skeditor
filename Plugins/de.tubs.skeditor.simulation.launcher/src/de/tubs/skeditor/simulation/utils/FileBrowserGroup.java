@@ -17,6 +17,7 @@ import de.tubs.skeditor.simulation.utils.FileDialogSelectionListener;
  */
 public class FileBrowserGroup extends Group {
 
+	private Button browseButton;
 	private Text pathText;
 
 	public FileBrowserGroup(Composite parent, int style, String desc, String[] filterExtensions, Runnable callback) {
@@ -40,7 +41,7 @@ public class FileBrowserGroup extends Group {
 		});
 		text.pack();
 
-		Button browseButton = new Button(this, SWT.PUSH);
+		browseButton = new Button(this, SWT.PUSH);
 		browseButton.setText("Browse...");
 		browseButton.addSelectionListener(new FileDialogSelectionListener(this.getShell(), text, filterExtensions));
 		browseButton.pack();
@@ -48,6 +49,10 @@ public class FileBrowserGroup extends Group {
 
 	public Text getPathText() {
 		return this.pathText;
+	}
+	
+	public Button getBrowseButton() {
+		return this.browseButton;
 	}
 	
 	@Override

@@ -77,7 +77,7 @@ public class RosFactory extends ASimulatorFactory {
 
 	@Override
 	public ASimConfigGroup buildSimConfigGroup(Composite parent, Runnable callback) {
-		return new RosConfigGroup(parent, 0, callback);
+		return new RosConfigGroup(parent, SWT.NONE, callback);
 	}
 
 	@Override

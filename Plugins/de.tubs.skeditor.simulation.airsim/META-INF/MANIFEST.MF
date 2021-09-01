@@ -22,5 +22,6 @@ Import-Package: SkillGraph,
  org.eclipse.emf.transaction.util,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
+ org.eclipse.ui.console,
  org.eclipse.xtext,
  org.osgi.framework;version="1.10.0"

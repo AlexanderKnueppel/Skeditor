@@ -2,6 +2,7 @@ package de.tubs.skeditor.simulation.airsim.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -25,7 +26,12 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -57,6 +63,8 @@ import de.tubs.skeditor.utils.FileUtils;
 public class AirsimFactory extends ASimulatorFactory {
 
 	private AirsimFactory instance;
+	private PrintStream out;
+	private IProgressMonitor monitor;
 	private File resourcesDir;
 	private static final String AIRSIM_FOLDER_PATH_PLACEHOLDER = "XXX_AIRSIM_FOLDER_XXX";
 
@@ -70,7 +78,7 @@ public class AirsimFactory extends ASimulatorFactory {
 
 	@Override
 	public ASimConfigGroup buildSimConfigGroup(Composite parent, Runnable callback) {
-		return new AirsimConfigGroup(parent, 0, callback);
+		return new AirsimConfigGroup(parent, SWT.NONE, callback);
 	}
 
 	/**
@@ -79,6 +87,15 @@ public class AirsimFactory extends ASimulatorFactory {
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
+		
+		MessageConsole console = findConsole("Skill");
+		console.activate();
+		console.clearConsole();
+		out = new PrintStream(console.newOutputStream());
+		this.monitor = monitor;
+
+		out.println("===Generating Project...===");
+		out.println("");
 
 		initRecourceFolder(); 
 
@@ -100,6 +117,7 @@ public class AirsimFactory extends ASimulatorFactory {
 			if (airsim.endsWith("AirSim.sln")) {
 				int chop = airsim.length() - ("\\AirSim.sln").length();
 				airsim = airsim.substring(0, chop);
+				airsim = airsim.replace("\\", "/");
 			}
 			
 			insertAirsimRepoPath(projectPath, airsim);
@@ -130,6 +148,7 @@ public class AirsimFactory extends ASimulatorFactory {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		out.println("===Success!===");
 	}
 
 	@Override
@@ -211,14 +230,16 @@ public class AirsimFactory extends ASimulatorFactory {
 	 */
 	private Map<String, String> parseParameters(Graph graph) {
 		Map<String, String> parameters = new HashMap<>();
+		out.println("> Parameter List");
 		for (Parameter param : graph.getParameterList()) {
 			String value = param.getDefaultValue().trim();
 			if (value.isEmpty()) {
 				System.err.println("Warning " + param.getAbbreviation() + " has no default value!");
 			}
 			parameters.put(param.getAbbreviation().trim(), value);
+			out.println(param.getAbbreviation());
 		}
-
+		out.println("");
 		return parameters;
 	}
 
@@ -233,7 +254,7 @@ public class AirsimFactory extends ASimulatorFactory {
 			if (node.getController() != null) {
 				for (int i = 0; i < node.getController().size(); i++) {
 					String name = node.getName().replace(' ', '_');
-					System.out.println(node.getController().get(i).getCtrl());
+					System.out.println("Control: " + node.getController().get(i).getCtrl());
 					String ctrl = node.getController().get(i).getCtrl(); // controller code
 
 					stateMachines.add(new StateMachine(name, ctrl));
@@ -251,6 +272,7 @@ public class AirsimFactory extends ASimulatorFactory {
 	private List<SensorAndActuator> getSensorAndActuatorNames(Graph graph) {
 		List<SensorAndActuator> sensorAndActuators = new ArrayList<>();
 
+		out.println("> Nodes");
 		for (Node node : graph.getNodes()) {
 
 			// Controller node
@@ -260,7 +282,9 @@ public class AirsimFactory extends ASimulatorFactory {
 			}
 
 			sensorAndActuators.add(new SensorAndActuator(node.getName().replace(' ', '_')));
+			out.println(node.getName());
 		}
+		out.println("");
 		return sensorAndActuators;
 	}
 
@@ -428,5 +452,18 @@ public class AirsimFactory extends ASimulatorFactory {
 		
 		Files.writeString(mainCpp, sb);
 
+	}
+	
+	private MessageConsole findConsole(String name) {
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		IConsole[] existing = conMan.getConsoles();
+		for (int i = 0; i < existing.length; i++)
+			if (name.equals(existing[i].getName()))
+				return (MessageConsole) existing[i];
+		// no console found, so create a new one
+		MessageConsole myConsole = new MessageConsole(name, null);
+		conMan.addConsoles(new IConsole[] { myConsole });
+		return myConsole;
 	}
 }

@@ -35,6 +35,8 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 	private Map<String, ASimConfigGroup> configGroups;
 	private Combo dropDownMenu;
 	private String selectedSmulatorDesc;
+	
+	private ASimConfigGroup group;
 
 	@Override
 	public void createControl(Composite parent) {
@@ -53,7 +55,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 				updateLaunchConfigurationDialog();
 			});
 			this.configGroups.put(simulatorDesc.getDescription(), configGroup);
-			configGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+			//configGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 			configGroup.addListener(0, new Listener() {
 				public void handleEvent(Event event) {
 					setDirty(true);
@@ -131,6 +133,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 						entry.getValue().setVisible(false);
 					}
 				});
+				
 				comp.pack();
 			}
 		});
@@ -163,7 +166,7 @@ public class ConfigurationTab extends AbstractLaunchConfigurationTab {
 				}
 			});
 			
-			this.configGroups.get(selectedSmulatorDesc).getParent().pack();
+			//this.configGroups.get(selectedSmulatorDesc).getParent().pack();
 			
 			
 		} catch (CoreException e1) {

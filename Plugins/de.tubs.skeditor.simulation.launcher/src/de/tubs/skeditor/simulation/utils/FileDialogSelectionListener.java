@@ -4,13 +4,14 @@ import com.google.common.base.Preconditions;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
-* A simple file browser dialog
-*/
+ * A simple file browser dialog
+ */
 public class FileDialogSelectionListener extends SelectionAdapter {
 
 	private final Shell shell;
@@ -27,16 +28,27 @@ public class FileDialogSelectionListener extends SelectionAdapter {
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		// User has selected to open a single file
-		FileDialog dlg = new FileDialog(shell, SWT.OPEN);
-		String currentOs = System.getProperty("os.name").toLowerCase();
-		if (currentOs.contains("windows")) {
-//			dlg.setFilterNames(FILTER_NAMES);
-			dlg.setFilterExtensions(filterExtensions);
-		}
-		String fn = dlg.open();
-		if (fn != null) {
-			target.setText(fn);
+		if (filterExtensions != null) {
+			FileDialog dlg = new FileDialog(shell, SWT.OPEN);
+			String currentOs = System.getProperty("os.name").toLowerCase();
+			if (currentOs.contains("windows")) {
+				// dlg.setFilterNames(FILTER_NAMES);
+				dlg.setFilterExtensions(filterExtensions);
+				dlg.setFilterPath(null);
+			}
+			String fn = dlg.open();
+			if (fn != null) {
+				target.setText(fn);
+			}
+		} else {
+			DirectoryDialog dialog = new DirectoryDialog(shell);
+			String currentOs = System.getProperty("os.name").toLowerCase();
+			if (currentOs.contains("windows")) {
+				dialog.setFilterPath("c:\\");
+			} else {
+				// TODO for Linux
+			}
+			System.out.println("RESULT=" + dialog.open());
 		}
 	}
-
 }

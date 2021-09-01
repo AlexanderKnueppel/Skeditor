@@ -7,7 +7,7 @@ project(airsim_skeletton)
 set(AIRSIM_DIR "XXX_AIRSIM_FOLDER_XXX")
 
 IF(NOT UNIX)
-    set(CMAKE_GENERATOR_PLATFORM Win64)
+    #set(CMAKE_GENERATOR_PLATFORM Win64)
     set(MyArch x64)
 ENDIF()
 

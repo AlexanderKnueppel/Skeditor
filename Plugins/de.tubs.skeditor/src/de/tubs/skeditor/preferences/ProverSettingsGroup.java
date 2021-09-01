@@ -21,9 +21,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.service.prefs.Preferences;
+
+import de.tubs.skeditor.keymaera.KeYmaeraBridge;
 import de.tubs.skeditor.simulation.utils.FileBrowserGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,11 +38,14 @@ public class ProverSettingsGroup extends Group {
 	private Map<PreferenceSettings, String> settingsMap;
 
 	private List<Button> radioButtons;
-	private Map<Button, Text> textAreasMap;
+	private Map<String, Text> textAreasMap;
 	private Map<Button, Button> browseButtonsMap;
+	
+	private Combo dropDownMenu;
 
 	public ProverSettingsGroup(Composite parent, int style) {
 		super(parent, style);
+		textAreasMap = new HashMap<>();
 		setText("Prover Settings");
 		GridLayout gridLayout = new GridLayout(1, false);
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -61,12 +67,24 @@ public class ProverSettingsGroup extends Group {
 		selectSimulatorGroup.setLayout(new GridLayout(1, false));
 		selectSimulatorGroup.setText("Select prover to use");
 
-		Combo dropDownMenu = new Combo(selectSimulatorGroup, SWT.BORDER);
+		dropDownMenu = new Combo(selectSimulatorGroup, SWT.BORDER);
 		dropDownMenu.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Default
 		dropDownMenu.setItems(items.toArray(new String[0]));
-		dropDownMenu.select(0);
+		String selectedProver = sub.get(PreferenceSettings.SELECTED_PROVER.toString(), "");
+		if (!selectedProver.equalsIgnoreCase("")) {
+			switch(selectedProver) {
+			case "z3": 	
+				dropDownMenu.select(0);
+				break;
+			case "Mathematica":	
+				dropDownMenu.select(1);
+				break;
+			}
+		} else {
+			dropDownMenu.select(0);
+		}
 
 		dropDownMenu.addListener(SWT.Selection, new Listener() {
 			@Override
@@ -82,7 +100,7 @@ public class ProverSettingsGroup extends Group {
 				}
 				sub.put(PreferenceSettings.SELECTED_PROVER.toString(), selectedProver);
 				System.out.println(dropDownMenu.getText());
-
+				KeYmaeraBridge.getInstance().setProver();
 			}
 		});
 		dropDownMenu.pack();
@@ -100,13 +118,14 @@ public class ProverSettingsGroup extends Group {
 		fileBrowserGroup.setLayout(fillLayout);
 		fileBrowserGroup.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 
-		FileBrowserGroup z3Browser = new FileBrowserGroup(fileBrowserGroup, SWT.NONE, "z3 (.exe) - REQUIRED",
+		PreferenceFileBrowserGroup z3Browser = new PreferenceFileBrowserGroup(fileBrowserGroup, SWT.NONE,"z3", "z3 (.exe) - REQUIRED",
 				new String[] { "*.exe" }, null);
+		textAreasMap.put("z3", z3Browser.getPathText());
 		z3Browser.pack();
 
-		FileBrowserGroup mathematicaBrowser = new FileBrowserGroup(fileBrowserGroup, SWT.NONE, "Mathematica (.exe)",
+		PreferenceFileBrowserGroup mathematicaBrowser = new PreferenceFileBrowserGroup(fileBrowserGroup, SWT.NONE, "Mathematica", "Mathematica (.exe)",
 				new String[] { "*.exe" }, null);
-		z3Browser.pack();
+		textAreasMap.put("mathematica", mathematicaBrowser.getPathText());
 		mathematicaBrowser.pack();
 		this.pack();
 
@@ -259,12 +278,16 @@ public class ProverSettingsGroup extends Group {
 		return this.radioButtons;
 	}
 
-	public Map<Button, Text> getTextAreasMap() {
+	public Map<String, Text> getTextAreasMap() {
 		return this.textAreasMap;
 	}
 
 	public Map<Button, Button> getBrowseButtonsMap() {
 		return this.browseButtonsMap;
+	}
+	
+	public Combo getDropDownMenu() {
+		return this.dropDownMenu;
 	}
 
 	@Override

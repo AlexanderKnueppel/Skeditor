@@ -9,15 +9,13 @@ import org.osgi.service.prefs.Preferences;
 import de.tubs.skeditor.keymaera.KeYmaeraBridge;
 
 /**
- * 
- * @author Dibo Gonda
- *
+ *  To manage the Skeditor preference settings
  */
-public class SkeditorSettings {
+public class SkeditorSettingsManager {
 
-	private static final SkeditorSettings instance = new SkeditorSettings();
+	private static final SkeditorSettingsManager instance = new SkeditorSettingsManager();
 
-	public static SkeditorSettings getInstance() {
+	public static SkeditorSettingsManager getInstance() {
 		return instance;
 	}
 
@@ -28,41 +26,32 @@ public class SkeditorSettings {
 
 	private String currentOs;
 
-	private SkeditorSettings() {
+	private SkeditorSettingsManager() {
 		IEclipsePreferences pref = InstanceScope.INSTANCE.getNode("de.tubs.skeditor.preferences.page");
-		pref.addPreferenceChangeListener(new IPreferenceChangeListener() {
-			@Override
-			public void preferenceChange(PreferenceChangeEvent event) {
-				refreshPath();
-				KeYmaeraBridge.getInstance().setProver();
-			}
-		});
+		Preferences sub = pref.node("node");
+//		pref.addPreferenceChangeListener(new IPreferenceChangeListener() {
+//			@Override
+//			public void preferenceChange(PreferenceChangeEvent event) {
+//				System.out.println("preference change");
+//				
+//				selectedProver = sub.get(PreferenceSettings.SELECTED_PROVER.toString(), "");
+//				refreshPath();
+//				KeYmaeraBridge.getInstance().setProver();
+//			}
+//		});
 
 		// Initialize values on program start
-		Preferences preferences = InstanceScope.INSTANCE.getNode("de.tubs.skeditor.preferences.page");
-		Preferences sub = preferences.node("node");
+		selectedProver = sub.get(PreferenceSettings.SELECTED_PROVER.toString(), "");
+		z3Exe = sub.get(PreferenceSettings.Z3_PATH.toString(), "");
+		mathematicaExe = sub.get(PreferenceSettings.MATHEMATICA_PATH.toString(), "");
 		
-		
-		String prover = sub.get(PreferenceSettings.SELECTED_PROVER.toString(), "default");
-		if (!prover.equalsIgnoreCase("")) {
-			selectedProver = prover;
-		} else {
-			selectedProver = sub.get(PreferenceSettings.SELECTED_PROVER_DEFAULT.toString(), "default");
-		}
-		
-		String z3Path = sub.get(PreferenceSettings.Z3_PATH.toString(), "default");
-		if (!prover.equalsIgnoreCase("")) {
-			z3Exe = z3Path;
-		} else {
-			z3Exe = sub.get(PreferenceSettings.Z3_PATH_DEFAULT.toString(), "default");
-		}
-		
-		mathematicaExe = sub.get(PreferenceSettings.MATHEMATICA_PATH.toString(), "default");
-		
-		selectedProver = sub.get("selected_prover", "default");
 		currentOs = System.getProperty("os.name").toLowerCase();
-		z3Exe = sub.get("z3_exe", "");
-		mathematicaExe = sub.get("mathematica_exe", "");
+		
+		System.out.println("Skeditor Settings " + selectedProver);
+		System.out.println("Skeditor Settings " + z3Exe);
+		System.out.println("Skeditor Settings " + mathematicaExe);
+		System.out.println("Skeditor Settings " + currentOs);
+
 	}
 
 	public void refreshPath() {
@@ -92,5 +81,17 @@ public class SkeditorSettings {
 
 	public String getMathematicaLibs() {
 		return mathematicaLibs;
+	}
+	
+	public void setSelectedProver(String selectedProver) {
+		this.selectedProver = selectedProver;
+	}
+	
+	public void setZ3Exe(String z3Exe) {
+		this.z3Exe = z3Exe;
+	}
+	
+	public void setMathematicaExe(String mathematicaExe) {
+		this.mathematicaExe = mathematicaExe;
 	}
 }
