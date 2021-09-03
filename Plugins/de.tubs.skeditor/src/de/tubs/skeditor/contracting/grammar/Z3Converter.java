@@ -22,6 +22,8 @@ import com.microsoft.z3.Tactic;
 import com.microsoft.z3.Z3Exception;
 import com.microsoft.z3.enumerations.Z3_ast_kind;
 
+import de.tubs.skeditor.keymaera.KeYmaeraBridge;
+
 public class Z3Converter {
 
 	public static void main(String[] args) {
@@ -80,6 +82,8 @@ public class Z3Converter {
 	private Context z3context;
 
 	public Z3Converter() {
+		// just to init the instance
+		KeYmaeraBridge instance = KeYmaeraBridge.getInstance();
 		z3context = new Context();
 	}
 
