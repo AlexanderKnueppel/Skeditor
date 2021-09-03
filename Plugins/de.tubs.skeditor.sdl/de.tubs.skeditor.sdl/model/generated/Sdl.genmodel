@@ -45,6 +45,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/parameters"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/hpprogram"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/behavior"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Invariant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Invariant/name"/>
@@ -84,6 +85,35 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/alias"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/aliasname"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Behavior">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Behavior/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Behavior/args"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Behavior/stateIDList"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Behavior/initialState"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Behavior/states"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//State">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//State/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//State/req"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//State/effect"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//State/dynamics"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//State/transitions"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Transition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Transition/when"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Transition/toState"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//DynamicMode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//DynamicMode/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//DynamicMode/application"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//DynamicMode/dynamics"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Argument">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Argument/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Argument/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Argument/array"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Argument/name"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Import">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Import/importedNamespace"/>

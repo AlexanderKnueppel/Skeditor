@@ -21,6 +21,7 @@ Skill returns Skill:
 	//(propertyCollection = PropertyField)?
 //	(invariants += Invariant)?
 	(hpprogram = HybridProgram)?
+	(behavior = Behavior)?
 	'}';
 
 Invariant:
@@ -124,6 +125,57 @@ HPInterfaceElement returns HPInterfaceElement:
 	{HPInterfaceElement}
 		(hp?='HP'| bool?="Bool" | real?="Real") name=STRING alias?='as' aliasname=STRING ';'
 	;
+	
+Behavior returns Behavior:
+	{Behavior}
+	'Behavior' name=ID '(' (args+=Argument (',' args+=Argument)*)? ')' ':'
+	
+	('States' (stateIDList += ID (',' stateIDList += ID)* ) ';')?
+	('Initial' initialState=ID ';')?
+	(states += State)*
+	//('Dynamics' dynamics += DynamicMode 'End.')?
+	'End.'
+;
+
+State returns State:
+	{State}
+	'State' name=ID ('requires' req=STRING)? '{'
+	('effect' ':' effect=STRING ';')?
+	('dynamics' ':' dynamics=STRING ';')?
+	('transitions' ':' transitions+=Transition)?
+	'}'
+;
+
+Transition returns Transition:
+	{Transition}
+	'on' when=STRING '->' toState=ID ";"
+;
+
+DynamicMode returns DynamicMode:
+	{DynamicMode}
+	'Evolution' name=ID ('when' application=STRING)? ':='
+	(dynamics=STRING)? //hybrid program syntax
+	';'
+;
+
+//Statement returns Statement:
+//	{Statement}
+//	Assignment
+//	| IfThenElse
+//	| If
+//	| Skip
+//	| Call
+//	| NonDet
+//	;
+//	
+//Assignment returns Assignment:
+//	{Assignment}
+//	variable=ID ':=' ';'
+//;
+
+Argument:
+	(comment=AnnotationBlock)?
+	type=TypeRef (array?='[' ']')? name=ID;
 //
 //Property:
 //	implementation=Implementation | program = Program | source = SourceFile 
