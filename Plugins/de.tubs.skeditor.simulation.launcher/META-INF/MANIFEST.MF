@@ -10,8 +10,6 @@ Export-Package: de.tubs.skeditor.simulation.config,
  de.tubs.skeditor.simulation.plugin.handle,
  de.tubs.skeditor.simulation.utils
 Import-Package: com.google.common.base;version="21.0.0",
- org.apache.logging.log4j.core.util;version="2.8.2",
- org.eclipse.core.runtime;version="3.7.0",
  org.eclipse.debug.core,
  org.eclipse.debug.core.model,
  org.eclipse.debug.ui,
@@ -22,4 +20,6 @@ Import-Package: com.google.common.base;version="21.0.0",
  org.eclipse.swt.layout,
  org.eclipse.swt.widgets,
  org.eclipse.ui
-Require-Bundle: org.eclipse.swt
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.core.runtime;bundle-version="3.18.0",
+ org.apache.log4j;bundle-version="1.2.15"

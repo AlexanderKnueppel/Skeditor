@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -450,7 +451,8 @@ public class AirsimFactory extends ASimulatorFactory {
 			Files.move(mainCpp, bakPath);
 		}
 		
-		Files.writeString(mainCpp, sb);
+		//Files.writeString(mainCpp, sb);
+		Files.write(mainCpp, sb.toString().getBytes());
 
 	}
 	
