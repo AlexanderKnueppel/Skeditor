@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="de.tubs.skeditor/CPSModel" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:complexType name="CPSModel">
+		<xs:sequence>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			
+			<xs:element name="locationSets" minOccurs="0">
+        		<xs:complexType>
+          			<xs:sequence>
+            			<xs:element name="locationSet" type="functionDeclaration" minOccurs="0" maxOccurs="unbounded"/>
+         		 	</xs:sequence>
+        		</xs:complexType>
+      		</xs:element>
+			
+		</xs:sequence>
+		
+		<xs:attribute name="name" type="xs:string"/>
+    	<xs:attribute name="version" type="xs:string"/>
+		
+	</xs:complexType>
+	
+	
+	  <xs:complexType name="functionDeclaration">
+    <xs:complexContent>
+        <xs:sequence>
+          <xs:element name="resultSortName" type="xs:string" default="Real" minOccurs="0"/>
+          <xs:element name="argSort" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="funcName" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+	
+	  <xs:complexType name="predicateDeclaration">
+    <xs:sequence>
+      <xs:element name="argSort" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="predName" type="xs:string"/>
+  </xs:complexType>
+	
+
+</xs:schema>
