@@ -1,0 +1,16 @@
+﻿/* Exported from KeYmaera X v4.9.1 */
+
+Theorem "New Entry - Simple test"
+ProgramVariables 
+    Real x;
+End.
+
+Problem
+  x>=0 -> [x:=x+1;]x>=1
+End.
+
+Tactic "New Entry - Simple test: Proof"
+implyR(1) ; assignb(1) ; QE
+End.
+
+End.

@@ -1,10 +1,11 @@
 package de.tubs.skeditor.preferences;
 
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 public class SkeditorSettingsComposite extends Composite {
 
-	private SelectProverGroup selectProverGroup;
+	private ProverSettingsGroup selectProverGroup;
 
 	public SkeditorSettingsComposite(Composite parent, int style) {
 		super(parent, style);
@@ -12,10 +13,11 @@ public class SkeditorSettingsComposite extends Composite {
 	}
 
 	private void createProverGroup(Composite parent) {
-		selectProverGroup = new SelectProverGroup(parent, 0);
+		parent.setLayout(new GridLayout(1, false));
+		selectProverGroup = new ProverSettingsGroup(parent, 0);
 	}
 
-	public SelectProverGroup getSelectProverGroup() {
+	public ProverSettingsGroup getSelectProverGroup() {
 		return this.selectProverGroup;
 	}
 

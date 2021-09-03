@@ -26,15 +26,23 @@ Require-Bundle: org.eclipse.graphiti;bundle-version="0.14.0",
  org.eclipse.emf.mwe.core,
  org.eclipse.ui.console;bundle-version="3.9.200",
  org.eclipse.debug.core,
- org.eclipse.swt
+ org.eclipse.swt,
+ org.eclipse.equinox.preferences,
+ org.eclipse.equinox.registry
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: SkillGraph,
  SkillGraph.impl,
  SkillGraph.util,
- de.tubs.skeditor
+ de.tubs.skeditor,
+ de.tubs.skeditor.keymaera,
+ de.tubs.skeditor.preferences,
+ de.tubs.skeditor.utils,
+ scala.collection.immutable,
+ scala.collection.mutable
 Bundle-Activator: de.tubs.skeditor.Activator
 Import-Package: de.tubs.skeditor.sdl,
+ de.tubs.skeditor.simulation.utils,
  de.tubs.skeditor.ui.handler,
  org.eclipse.debug.core,
  org.eclipse.debug.ui
