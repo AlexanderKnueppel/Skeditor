@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SkillGraph="www.thisisnotarealuri.de" xmlns:al="http://eclipse.org/graphiti/mm/algorithms" xmlns:pi="http://eclipse.org/graphiti/mm/pictograms">
+  <pi:Diagram visible="true" gridUnit="10" diagramTypeId="SkillGraph" name="SafeHaltStraightLine.sked" snapToGrid="true" pictogramLinks="/0/@children.0/@link /0/@children.0/@children.0/@link /0/@children.1/@link /0/@children.1/@children.0/@link /0/@children.2/@link /0/@children.2/@children.0/@link /0/@children.3/@link /0/@children.3/@children.0/@link /0/@children.4/@link /0/@children.4/@children.0/@link /0/@children.5/@link /0/@children.5/@children.0/@link /0/@children.6/@link /0/@children.6/@children.0/@link /0/@children.7/@link /0/@children.7/@children.0/@link /0/@children.8/@link /0/@children.8/@children.0/@link /0/@children.9/@link /0/@children.9/@children.0/@link /0/@connections.0/@link /0/@connections.1/@link /0/@connections.2/@link /0/@connections.3/@link /0/@connections.4/@link /0/@connections.5/@link /0/@connections.6/@link /0/@connections.7/@link /0/@connections.8/@link /0/@connections.9/@link" version="0.17.0">
+    <graphicsAlgorithm xsi:type="al:Rectangle" background="/0/@colors.1" foreground="/0/@colors.0" lineWidth="1" transparency="0.0" width="1000" height="1000"/>
+    <link businessObjects="/1"/>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.3" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="430" y="100" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@rootNode"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.0"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="SafeHaltStraightLine"/>
+        <link businessObjects="/1/@rootNode"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.4" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="430" y="180" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.0"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.1 /0/@connections.7" incomingConnections="/0/@connections.0"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Safe Halt"/>
+        <link businessObjects="/1/@nodes.0"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.5" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="430" y="270" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.1"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.2 /0/@connections.3" incomingConnections="/0/@connections.1"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Control longitudinal dynamics"/>
+        <link businessObjects="/1/@nodes.1"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.5" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="350" y="360" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.2"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.4 /0/@connections.5" incomingConnections="/0/@connections.2"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Decelerate"/>
+        <link businessObjects="/1/@nodes.2"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.5" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="510" y="360" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.3"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.6" incomingConnections="/0/@connections.3"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Accelerate"/>
+        <link businessObjects="/1/@nodes.3"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.6" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="350" y="450" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.4"/>
+      <anchors xsi:type="pi:ChopboxAnchor" incomingConnections="/0/@connections.4"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Brake system"/>
+        <link businessObjects="/1/@nodes.4"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.6" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="510" y="450" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.5"/>
+      <anchors xsi:type="pi:ChopboxAnchor" incomingConnections="/0/@connections.5 /0/@connections.6"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Powertrain"/>
+        <link businessObjects="/1/@nodes.5"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.7" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="160" y="270" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.6"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.8" incomingConnections="/0/@connections.7"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Select target object"/>
+        <link businessObjects="/1/@nodes.6"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.8" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="160" y="360" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.7"/>
+      <anchors xsi:type="pi:ChopboxAnchor" outgoingConnections="/0/@connections.9" incomingConnections="/0/@connections.8"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="Perceive objects"/>
+        <link businessObjects="/1/@nodes.7"/>
+      </children>
+    </children>
+    <children xsi:type="pi:ContainerShape" visible="true" active="true">
+      <graphicsAlgorithm xsi:type="al:RoundedRectangle" background="/0/@colors.9" foreground="/0/@colors.2" lineWidth="2" transparency="0.0" width="120" height="50" x="160" y="450" cornerHeight="5" cornerWidth="5"/>
+      <link businessObjects="/1/@nodes.8"/>
+      <anchors xsi:type="pi:ChopboxAnchor" incomingConnections="/0/@connections.9"/>
+      <children visible="true">
+        <graphicsAlgorithm xsi:type="al:MultiText" foreground="/0/@colors.2" lineWidth="1" filled="false" transparency="0.0" width="120" height="50" font="/0/@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="3-Point Laser"/>
+        <link businessObjects="/1/@nodes.8"/>
+      </children>
+    </children>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.0/@anchors.0" end="/0/@children.1/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@rootNode/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.1/@anchors.0" end="/0/@children.2/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.0/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.2/@anchors.0" end="/0/@children.3/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.1/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.2/@anchors.0" end="/0/@children.4/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.1/@childEdges.1"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.3/@anchors.0" end="/0/@children.5/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.2/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.3/@anchors.0" end="/0/@children.6/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.2/@childEdges.1"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.4/@anchors.0" end="/0/@children.6/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.3/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.1/@anchors.0" end="/0/@children.7/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.0/@childEdges.1"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.7/@anchors.0" end="/0/@children.8/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.6/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="/0/@children.8/@anchors.0" end="/0/@children.9/@anchors.0">
+      <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0"/>
+      <link businessObjects="/1/@nodes.7/@childEdges.0"/>
+      <connectionDecorators visible="true" locationRelative="true" location="1.0">
+        <graphicsAlgorithm xsi:type="al:Polyline" foreground="/0/@colors.2" lineWidth="2" filled="false" transparency="0.0">
+          <points x="-15" y="10"/>
+          <points/>
+          <points x="-15" y="-10"/>
+        </graphicsAlgorithm>
+      </connectionDecorators>
+    </connections>
+    <colors red="227" green="238" blue="249"/>
+    <colors red="255" green="255" blue="255"/>
+    <colors/>
+    <colors red="187" green="187" blue="187"/>
+    <colors red="255" green="255"/>
+    <colors red="255" green="179"/>
+    <colors red="204" green="51" blue="51"/>
+    <colors red="102" green="217" blue="255"/>
+    <colors green="230" blue="173"/>
+    <colors green="128" blue="255"/>
+    <fonts name="Arial" size="8" bold="true"/>
+    <fonts name="Verdana" size="9" italic="true"/>
+  </pi:Diagram>
+  <SkillGraph:Graph>
+    <nodes category="yellow" name="Safe Halt" parentNodes="/1/@rootNode" SDLModel="skill &quot;Safe Halt&quot; : ObservableBehavior {&#xA;/* Empty Skill Description */ &#xA;&#x9;version {&#xA;&#x9;&#x9;major 0&#xA;&#x9;&#x9;minor 1&#xA;&#x9;}&#xA;&#x9;variables {&#xA;&#x9;&#x9;input {&#xA;&#x9;&#x9;&#x9;x,v,D : Real; &#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;output {&#xA;&#x9;&#x9;&#x9;a : Real; &#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;parameters {&#xA;&#x9;&#x9;vmax, A, B: Real;&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;assumption:&#xA;&#x9;&#x9;v >= 0 &amp;&amp; v &lt;= vmax &amp;&amp; D >= v^2/(2*B)&#xA;&#x9;;&#xA;&#x9;&#xA;&#x9;guarantee:&#xA;&#x9;&#x9;v &lt;= vmax &amp;&amp; D>=0&#xA;&#x9;;&#xA;&#x9;&#xA;&#x9;Automaton SafeHalt_Automaton.&#xA;&#x9;init M_Stop&#xA;&#x9;behavior M_Stop {&#xA;&#x9;&#x9;controller {&#xA;&#x9;&#x9;&#x9;skip;smode CLD_Automaton[c->3]&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;transitions {&#xA;&#x9;&#x9;&#x9;on {v==0 &amp;&amp; (v^2/(2*b) + (A/b+1)*((A/2)*ep^2 + ep*v)) > D} -> M_Stop;&#xA;&#x9;&#x9;&#x9;on {(v^2/(2*b) + (A/b+1)*((A/2)*ep^2 + ep*v)) &lt;= D} -> M_Forward;&#xA;&#x9;&#x9;&#x9;on {v!=0 &amp;&amp; (v^2/(2*b) + (A/b+1)*((A/2)*ep^2 + ep*v)) > D} -> M_Brake;&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;behavior M_Forward {&#xA;&#x9;&#x9;controller {&#xA;&#x9;&#x9;&#x9;skip;smode CLD_Automaton[c->1]&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;transitions {&#xA;&#x9;&#x9;&#x9;on {v!=0 &amp;&amp; (v^2/(2*b) + (A/b+1)*((A/2)*ep^2 + ep*v)) > D} -> M_Brake;&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;behavior M_Brake {&#xA;&#x9;&#x9;controller {&#xA;&#x9;&#x9;&#x9;skip;smode CLD_Automaton[c->2]&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;transitions {&#xA;&#x9;&#x9;&#x9;on {v==0} -> M_Stop;&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;AutomatonEnd.&#xA;}">
+      <childEdges parentNode="/1/@nodes.0" childNode="/1/@nodes.1"/>
+      <childEdges parentNode="/1/@nodes.0" childNode="/1/@nodes.6"/>
+    </nodes>
+    <nodes category="orange" name="Control longitudinal dynamics" parentNodes="/1/@nodes.0" SDLModel="dyn ODE(a,x,v,t,ep) &#xA;&#x9;requires true;&#xA;&#x9;ensures true;&#xA;&#x9;:= {x'=v, v'= a, t'=1 &amp; t &lt;= ep &amp;&amp; v >= 0}&#xA;&#xA;skill &quot;Control Longitudinal Dynamics&quot; : Action {&#xA;/* Empty Skill Description */ &#xA;&#x9;version {&#xA;&#x9;&#x9;major 0&#xA;&#x9;&#x9;minor 1&#xA;&#x9;}&#xA;&#x9;variables {&#xA;&#x9;&#x9;input {&#xA;&#x9;&#x9;&#x9;c,x,v : Real; &#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;output {&#xA;&#x9;&#x9;&#x9;a : Real; &#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;parameters {&#xA;&#x9;&#x9;vmax, vmargin, A, B : Real;&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;assumption:&#xA;&#x9;&#x9;v &lt;= vmax &amp;&amp; vmargin >= 0 &amp;&amp; vmargin >= ep*A&#xA;&#x9;;&#xA;&#x9;&#xA;&#x9;guarantee:&#xA;&#x9;&#x9;v &lt;= vmax&#xA;&#x9;;&#xA;&#x9;&#xA;&#x9;Automaton CLD_Automaton.&#xA;&#x9;init M_Idle&#xA;&#x9;behavior M_Idle {&#xA;&#x9;&#x9;controller {&#xA;&#x9;&#x9;&#x9;skip&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;transitions {&#xA;&#x9;&#x9;&#x9;on {c==1 &amp;&amp; v&lt;= vmax-vmargin} -> M_Accelerate;&#xA;&#x9;&#x9;&#x9;on {c==1 &amp;&amp; v> vmax-vmargin} -> M_Cruise;&#xA;&#x9;&#x9;&#x9;on {c==2} -> M_Brake;&#xA;&#x9;&#x9;&#x9;on {c==3} -> M_Cruise;&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;behavior M_Accelerate {&#xA;&#x9;&#x9;controller {&#xA;&#x9;&#x9;&#x9;skip;smode Accelerate_Automaton[set -> A]&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;dynamics {&#xA;&#x9;&#x9;&#x9;invoke ODE(a,x,v,t,ep)&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;transitions {&#xA;&#x9;&#x9;&#x9;on {v >= vmax-vmargin} -> M_Cruise;&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;behavior M_Cruise {&#xA;&#x9;&#x9;controller {&#xA;&#x9;&#x9;&#x9;skip;smode Accelerate_Automaton[set -> 0]&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;dynamics {&#xA;&#x9;&#x9;&#x9;invoke ODE(a,x,v,t,ep)&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;transitions {&#xA;&#x9;&#x9;&#x9;on {v &lt; vmax-vmargin} -> M_Accelerate;&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;&#xA;&#x9;behavior M_Brake {&#xA;&#x9;&#x9;controller {&#xA;&#x9;&#x9;&#x9;skip;smode Decelerate_Automaton[set -> B]&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;dynamics {&#xA;&#x9;&#x9;&#x9;invoke ODE(a,x,v,t,ep)&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;AutomatonEnd.&#xA;}">
+      <childEdges parentNode="/1/@nodes.1" childNode="/1/@nodes.2"/>
+      <childEdges parentNode="/1/@nodes.1" childNode="/1/@nodes.3"/>
+    </nodes>
+    <nodes category="orange" name="Decelerate" parentNodes="/1/@nodes.1" SDLModel="skill &quot;Decelerate&quot; : Action {&#xA;/* Empty Skill Description */ &#xA;&#x9;version {&#xA;&#x9;&#x9;major 0&#xA;&#x9;&#x9;minor 1&#xA;&#x9;}&#xA;&#x9;variables {&#xA;&#x9;&#x9;input {&#xA;&#x9;&#x9;&#x9;set : Real; &#xA;&#x9;&#x9;}&#xA;//&#x9;&#x9;local {&#xA;//&#x9;&#x9;&#x9;c,x,v : Real; &#xA;//&#x9;&#x9;}&#xA;&#x9;&#x9;output {&#xA;&#x9;&#x9;&#x9;a : Real; &#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;parameters {&#xA;&#x9;&#x9;/* empty */&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;assumption:&#xA;&#x9;&#x9;set >= 0&#xA;&#x9;;&#xA;&#x9;&#xA;&#x9;guarantee:&#xA;&#x9;&#x9;a  == -set&#xA;&#x9;;&#xA;&#x9;&#xA;&#x9;Automaton Decelerate_Automaton.&#xA;&#x9;init M_0&#xA;&#x9;behavior M_0 {&#xA;&#x9;&#x9;controller {&#xA;&#x9;&#x9;&#x9;a:=-set&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#xA;&#x9;AutomatonEnd.&#xA;}">
+      <childEdges parentNode="/1/@nodes.2" childNode="/1/@nodes.4"/>
+      <childEdges parentNode="/1/@nodes.2" childNode="/1/@nodes.5"/>
+    </nodes>
+    <nodes category="orange" name="Accelerate" parentNodes="/1/@nodes.1" SDLModel="skill &quot;Accelerate&quot; : Action {&#xA;/* Empty Skill Description */ &#xA;&#x9;version {&#xA;&#x9;&#x9;major 0&#xA;&#x9;&#x9;minor 1&#xA;&#x9;}&#xA;&#x9;variables {&#xA;&#x9;&#x9;input {&#xA;&#x9;&#x9;&#x9;set : Real; &#xA;&#x9;&#x9;}&#xA;//&#x9;&#x9;local {&#xA;//&#x9;&#x9;&#x9;c,x,v : Real; &#xA;//&#x9;&#x9;}&#xA;&#x9;&#x9;output {&#xA;&#x9;&#x9;&#x9;a : Real; &#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#x9;parameters {&#xA;&#x9;&#x9;/* empty */&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;assumption:&#xA;&#x9;&#x9;set >= 0&#xA;&#x9;;&#xA;&#x9;&#xA;&#x9;guarantee:&#xA;&#x9;&#x9;a  == set&#xA;&#x9;;&#xA;&#x9;&#xA;&#x9;Automaton Accelerate_Automaton.&#xA;&#x9;init M_0&#xA;&#x9;behavior M_0 {&#xA;&#x9;&#x9;controller {&#xA;&#x9;&#x9;&#x9;a:=set&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;&#xA;&#x9;AutomatonEnd.&#xA;}">
+      <childEdges parentNode="/1/@nodes.3" childNode="/1/@nodes.5"/>
+    </nodes>
+    <nodes category="red" name="Brake system" parentNodes="/1/@nodes.2"/>
+    <nodes category="red" name="Powertrain" parentNodes="/1/@nodes.2 /1/@nodes.3"/>
+    <nodes category="lightblue" name="Select target object" parentNodes="/1/@nodes.0">
+      <childEdges parentNode="/1/@nodes.6" childNode="/1/@nodes.7"/>
+    </nodes>
+    <nodes category="green" name="Perceive objects" parentNodes="/1/@nodes.6">
+      <childEdges parentNode="/1/@nodes.7" childNode="/1/@nodes.8"/>
+    </nodes>
+    <nodes category="blue" name="3-Point Laser" parentNodes="/1/@nodes.7"/>
+    <rootNode name="SafeHaltStraightLine">
+      <childEdges parentNode="/1/@rootNode" childNode="/1/@nodes.0"/>
+      <requirements comment="New Requirement Comment" term="a &lt; b"/>
+      <assumptions comment="New Assumption Comment" term="\true"/>
+    </rootNode>
+    <parameterList name="Control cycle" abbreviation="ep" unit="s" defaultValue="(0:)"/>
+    <parameterList name="Clock" abbreviation="_time" unit="s" defaultValue="" variable="true" available="false"/>
+    <parameterList name="[empty]" abbreviation="a" unit="[empty]" defaultValue="" variable="true"/>
+    <parameterList name="[empty]" abbreviation="c" unit="[empty]" defaultValue="" variable="true"/>
+    <parameterList name="[empty]" abbreviation="set" unit="[empty]" defaultValue="" variable="true"/>
+    <parameterList name="[empty]" abbreviation="D" unit="[empty]" defaultValue="" variable="true"/>
+    <parameterList name="[empty]" abbreviation="v" unit="[empty]" defaultValue="" variable="true"/>
+    <parameterList name="[empty]" abbreviation="x" unit="[empty]" defaultValue="" variable="true"/>
+    <parameterList name="Time" abbreviation="t" unit="[time]" defaultValue="" variable="true"/>
+  </SkillGraph:Graph>
+</xmi:XMI>

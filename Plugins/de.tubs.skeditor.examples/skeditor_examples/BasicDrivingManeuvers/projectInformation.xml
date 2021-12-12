@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<exampleWizard>
+	<contentProvider name="General">
+		<path>Simple</path>
+	</contentProvider>
+	<description>
+		Example showcases different basic driving maneuvers, such as ACC, Lane Keeping Assistance, and Safe Halt.
+	</description>
+</exampleWizard>
