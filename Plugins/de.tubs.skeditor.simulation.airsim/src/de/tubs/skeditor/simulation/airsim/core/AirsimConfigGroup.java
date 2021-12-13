@@ -8,6 +8,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import de.tubs.skeditor.simulation.plugin.core.ASimConfigGroup;
@@ -26,9 +27,12 @@ public class AirsimConfigGroup extends ASimConfigGroup {
 		fillLayout.marginHeight = 3;
 		fillLayout.marginWidth = 3;
 		//this.setLayout(fillLayout);
+		
+		
 
 		Composite comp = new Composite(this, SWT.NONE);
-		comp.setLayout(fillLayout);
+		//comp.setLayout(fillLayout);
+		comp.setLayout(new GridLayout(1, true));
 
 		configMap = new HashMap<>();
 		FileBrowserGroup skedFileBrowser = new FileBrowserGroup(comp, SWT.NONE, "*.sked", new String[] { "*.sked" },

@@ -4,6 +4,10 @@
 package de.tubs.skeditor.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
+
+import de.tubs.skeditor.ide.SDLSemanticHighlighterCalculator;
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -12,5 +16,13 @@ public class SdlUiModule extends AbstractSdlUiModule {
 
 	public SdlUiModule(AbstractUIPlugin plugin) {
 		super(plugin);
+	}
+	
+	public Class<? extends ISemanticHighlightingCalculator> bindISemanticHighlightingCalculator() {
+		return SDLSemanticHighlighterCalculator.class;
+	}
+	
+	public Class<? extends IHighlightingConfiguration> bindIHighlightingConfiguration() {
+		return SDLHighlightingConfiguration.class;
 	}
 }

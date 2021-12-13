@@ -39,13 +39,42 @@
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Skill">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/invocations"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Skill/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Skill/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/version"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/variables"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/parameters"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/hpprogram"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/behavior"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/assumption"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/guarantee"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Skill/hma"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Variable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Variable/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Variable/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Guarantee">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Guarantee/formula"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Assumption">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Assumption/formula"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Invocation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Invocation/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Invocation/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Invocation/args"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Invocation/req"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Invocation/ens"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//CtrlInvocation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//CtrlInvocation/controller"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//DynInvocation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//DynInvocation/dynamics"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//InvocationArgument">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//InvocationArgument/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//InvocationArgument/name"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Invariant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Invariant/name"/>
@@ -54,19 +83,31 @@
     <genClasses ecoreClass="Sdl.ecore#//Variables">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Variables/requires"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Variables/provides"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Variables/locals"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Parameters">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Parameters/variables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Parameters/vardecls"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//VariableDeclarations">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//VariableDeclarations/variables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//VariableDeclarations/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//VariableType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//VariableType/boolean"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//VariableType/real"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Version">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Version/major"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Version/minor"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Requires">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Requires/variables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Requires/vardecls"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Provides">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Provides/variables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Provides/vardecls"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Locals">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Locals/vardecls"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//HybridProgram">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//HybridProgram/interface"/>
@@ -86,29 +127,116 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/alias"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HPInterfaceElement/aliasname"/>
     </genClasses>
-    <genClasses ecoreClass="Sdl.ecore#//Behavior">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Behavior/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Behavior/args"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Behavior/stateIDList"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Behavior/initialState"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Behavior/states"/>
+    <genClasses ecoreClass="Sdl.ecore#//HMA">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//HMA/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HMA/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//HMA/init"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//HMA/abstract_behaviors"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//HMA/normal_behaviors"/>
     </genClasses>
-    <genClasses ecoreClass="Sdl.ecore#//State">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//State/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//State/req"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//State/effect"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//State/dynamics"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//State/transitions"/>
+    <genClasses ecoreClass="Sdl.ecore#//NormalBehavior">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//NormalBehavior/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//NormalBehavior/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//NormalBehavior/controller"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//NormalBehavior/hasSmode"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//NormalBehavior/smodes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//NormalBehavior/dynamics"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//NormalBehavior/invocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//NormalBehavior/transitions"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//SubMode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//SubMode/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//SubMode/bindings"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//SubMode/hidings"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//OutputHiding"/>
+    <genClasses ecoreClass="Sdl.ecore#//InputBinding">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//InputBinding/variable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//InputBinding/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//AbstractBehavior">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//AbstractBehavior/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//AbstractBehavior/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//AbstractBehavior/hoare"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//AbstractBehavior/transitions"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Controller">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Controller/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Controller/stmt"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Statement"/>
+    <genClasses ecoreClass="Sdl.ecore#//Assignment">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Assignment/variable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Assignment/expr"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Havoc">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Havoc/variables"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Assume">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Assume/formula"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Assert">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Assert/formula"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//IfThenElse">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//IfThenElse/expression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//IfThenElse/ifcase"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//IfThenElse/elsecase"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Hoare">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Hoare/preconditon"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Hoare/identifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Hoare/postcondition"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Hoare/frame"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Hoare/framevars"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Invoke">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Invoke/call"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//InvocationFunction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//InvocationFunction/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//InvocationFunction/args"/>
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Transition">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Transition/when"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Transition/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Transition/when"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Transition/toState"/>
     </genClasses>
-    <genClasses ecoreClass="Sdl.ecore#//DynamicMode">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//DynamicMode/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//DynamicMode/application"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//DynamicMode/dynamics"/>
+    <genClasses ecoreClass="Sdl.ecore#//Dynamics">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Dynamics/comment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Dynamics/ode"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Dynamics/evolution"/>
     </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//ODE">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//ODE/variable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//ODE/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Expression"/>
+    <genClasses ecoreClass="Sdl.ecore#//Function"/>
+    <genClasses ecoreClass="Sdl.ecore#//Past">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Past/variable"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Min">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Min/exp1"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Min/exp2"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Max">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Max/exp1"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Max/exp2"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Abs">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Abs/exp1"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Forall">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Forall/variable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Forall/formula"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Exists">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Exists/variable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Exists/formula"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//LiteralExpression"/>
+    <genClasses ecoreClass="Sdl.ecore#//Formula"/>
     <genClasses ecoreClass="Sdl.ecore#//Argument">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Argument/comment"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Argument/type"/>
@@ -183,6 +311,70 @@
     </genClasses>
     <genClasses ecoreClass="Sdl.ecore#//Annotation">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Annotation/rawText"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//SkipStatement"/>
+    <genClasses ecoreClass="Sdl.ecore#//Plus">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Plus/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Plus/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Minus">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Minus/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Minus/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//MultiOrDivOrMod">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//MultiOrDivOrMod/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//MultiOrDivOrMod/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//MultiOrDivOrMod/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Power">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Power/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Power/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Power/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//BooleanNegation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//BooleanNegation/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//ArithmeticSigned">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//ArithmeticSigned/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//FunctionReference">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//FunctionReference/ref"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//VariableReference">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//VariableReference/ref"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//NumberLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//NumberLiteral/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//VariableLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//VariableLiteral/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//StringLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//StringLiteral/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//NullLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//NullLiteral/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//BooleanLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//BooleanLiteral/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//ParenthesizedExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//ParenthesizedExpression/expr"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//BooleanExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//BooleanExpression/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//BooleanExpression/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//BooleanExpression/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Comparison">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Comparison/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Comparison/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Comparison/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Sdl.ecore#//Equals">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Equals/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Sdl.ecore#//Equals/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Sdl.ecore#//Equals/right"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

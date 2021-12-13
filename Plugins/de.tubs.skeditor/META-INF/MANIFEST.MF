@@ -42,7 +42,9 @@ Export-Package: SkillGraph,
  scala.collection.mutable
 Bundle-Activator: de.tubs.skeditor.Activator
 Import-Package: de.tubs.skeditor.sdl,
+ de.tubs.skeditor.sdl.util,
  de.tubs.skeditor.simulation.utils,
  de.tubs.skeditor.ui.handler,
  org.eclipse.debug.core,
- org.eclipse.debug.ui
+ org.eclipse.debug.ui,
+ org.eclipse.emf.ecore.xmi.impl

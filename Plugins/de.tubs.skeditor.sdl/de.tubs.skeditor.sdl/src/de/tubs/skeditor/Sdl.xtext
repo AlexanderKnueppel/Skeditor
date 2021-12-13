@@ -13,6 +13,7 @@ SDLModel:
 Skill returns Skill:
 	{Skill}
 	(comment=AnnotationBlock)?
+	(invocations+=Invocation)*
 	'skill' name=STRING ':' type=SkillType
 	'{'
 	('version' version=Version)?
@@ -20,9 +21,50 @@ Skill returns Skill:
 	(parameters = Parameters)?
 	//(propertyCollection = PropertyField)?
 //	(invariants += Invariant)?
-	(hpprogram = HybridProgram)?
-	(behavior = Behavior)?
+	(assumption = Assumption)?
+	(guarantee = Guarantee)?
+	//(hpprogram = HybridProgram)?
+	//(behavior = Behavior)?
+	(hma = HMA)?
 	'}';
+
+Variable:
+	(comment=AnnotationBlock)?
+	name=ID;
+
+Guarantee:
+	{Guarantee}
+	'guarantee' ':' formula=Formula ';'
+;
+
+Assumption:
+	{Assumption}
+	'assumption' ':' formula=Formula ';'
+;
+	
+Invocation:
+	DynInvocation | CtrlInvocation
+	;
+
+CtrlInvocation:
+	(comment=AnnotationBlock)?
+	'ctrl' name=ID '('args+=InvocationArgument (',' args+=InvocationArgument)*')'
+	'requires' req=Formula ';'
+	'ensures' ens=Formula ';'
+	':=' controller = Controller
+;
+
+DynInvocation:
+	(comment=AnnotationBlock)?
+	'dyn' name=ID '('args+=InvocationArgument (',' args+=InvocationArgument)*')'
+	'requires' req=Formula ';'
+	'ensures' ens=Formula ';'
+	':=' dynamics = Dynamics
+;
+
+InvocationArgument:
+	(comment=AnnotationBlock)?
+	name=ID;
 
 Invariant:
 	'invariant' name=ID ':' invariant = STRING ';' 
@@ -30,17 +72,27 @@ Invariant:
 
 Variables returns Variables:
 	{Variables}
-	'Variables' '{'
+	'variables' '{'
 	(requires = Requires)?
 	(provides = Provides)?
+	(locals = Locals)?
 	'}'
 ;
 
 Parameters returns Parameters:
 	{Parameters}
-	'Parameters' '{'
-	(variables+=Field ';')*
+	'parameters' '{'
+	(vardecls+=VariableDeclarations)*
 	'}'
+;
+
+VariableDeclarations:
+	(variables+=Variable (',' variables+=Variable)* ':' type=VariableType ';')
+;
+
+VariableType:
+	boolean = 'Boolean' |
+	real = 'Real' 
 ;
 
 //skill "Control dynamics" : Action {
@@ -94,15 +146,22 @@ Version returns Version:
 	
 Requires returns Requires:
 	{Requires}
-	'requires' '{'
-	(variables+=Field ';')*
+	'input' '{'
+	(vardecls+=VariableDeclarations)*
 	'}'
 ;
 
 Provides returns Provides:
 	{Provides}
-	'provides' '{'
-	(variables+=Field ';')*
+	'output' '{'
+	(vardecls+=VariableDeclarations)*
+	'}'
+;
+
+Locals returns Locals:
+	{Locals}
+	'locals' '{'
+	(vardecls+=VariableDeclarations)*
 	'}'
 ;
 
@@ -125,53 +184,208 @@ HPInterfaceElement returns HPInterfaceElement:
 	{HPInterfaceElement}
 		(hp?='HP'| bool?="Bool" | real?="Real") name=STRING alias?='as' aliasname=STRING ';'
 	;
-	
-Behavior returns Behavior:
-	{Behavior}
-	'Behavior' name=ID '(' (args+=Argument (',' args+=Argument)*)? ')' ':'
-	
-	('States' (stateIDList += ID (',' stateIDList += ID)* ) ';')?
-	('Initial' initialState=ID ';')?
-	(states += State)*
-	//('Dynamics' dynamics += DynamicMode 'End.')?
-	'End.'
+
+HMA returns HMA:
+	{HMA}
+	(comment=AnnotationBlock)?
+	'Automaton' name=ID '.'
+	('init' init=ID)
+	(abstract_behaviors += AbstractBehavior)*
+	(normal_behaviors += NormalBehavior)*
+	'AutomatonEnd.'
 ;
 
-State returns State:
-	{State}
-	'State' name=ID ('requires' req=STRING)? '{'
-	('effect' ':' effect=STRING ';')?
-	('dynamics' ':' dynamics=STRING ';')?
-	('transitions' ':' transitions+=Transition)?
+NormalBehavior returns NormalBehavior:
+	{NormalBehavior}
+	(comment=AnnotationBlock)?
+	'behavior' name=ID  '{'
+	('controller' '{' controller=Controller (';' hasSmode?='smode' smodes+=SubMode ('||' smodes+=SubMode)*)?'}')
+	('dynamics' '{' (dynamics=Dynamics|invocation=Invoke )'}')?
+	('transitions' '{' (transitions+=Transition)* '}')?
 	'}'
+;
+
+SubMode returns SubMode:
+	{SubMode}
+	name=ID ('[' bindings+=InputBinding (',' bindings+=InputBinding)* ']')? ('\\' '{' hidings+=OutputHiding (',' hidings+=OutputHiding)* '}')?
+;
+
+OutputHiding:
+	Variable
+;
+
+InputBinding returns InputBinding:
+	variable=Variable '->' value=Expression
+;
+
+AbstractBehavior returns AbstractBehavior:
+	{AbstractBehavior}
+	(comment=AnnotationBlock)?
+	'abstract_behavior' name=ID  '{'
+	hoare=Hoare
+	('transitions' '{' (transitions+=Transition)* '}')?
+	'}'
+;
+
+Controller returns Controller:
+	{Controller}
+	(comment=AnnotationBlock)?
+	stmt += Statement (';' stmt += Statement)*
+	;
+	
+Statement:
+	Assignment
+	| {SkipStatement} Skip
+	| IfThenElse
+	| Havoc
+	| Assume
+	| Assert
+	| Invoke
+	| Hoare
+	;
+
+Assignment:
+	variable=Variable ':=' expr=Expression
+;
+
+Skip:
+	'skip'
+;
+
+Havoc:
+	'havoc' variables+=Variable (',' variables+=Variable)*
+;
+
+Assume:
+	'assume' formula=Formula
+;
+
+Assert:
+	'assert' formula=Formula
+;
+
+IfThenElse:
+  'if' expression=Formula
+  '{' ifcase=Controller '}'
+  'else' '{' elsecase=Controller '}'
+;
+
+Hoare:
+  '(|' preconditon=Formula '|)'
+  identifier = ID
+  '(|' postcondition=Formula '|)'
+  (frame?='['framevars+=Variable (',' framevars+=Variable)* ']')?
+;
+
+Invoke:
+	'invoke' call=InvocationFunction
+;
+
+InvocationFunction:
+  name=ID '('args+=InvocationArgument (',' args+=InvocationArgument)*')'
 ;
 
 Transition returns Transition:
 	{Transition}
-	'on' when=STRING '->' toState=ID ";"
+	(comment=AnnotationBlock)?
+	'on' '{' when=Formula '}' '->' toState=ID ';'
 ;
 
-DynamicMode returns DynamicMode:
-	{DynamicMode}
-	'Evolution' name=ID ('when' application=STRING)? ':='
-	(dynamics=STRING)? //hybrid program syntax
-	';'
+Dynamics returns Dynamics:
+	{Dynamics}
+	(comment=AnnotationBlock)?
+	'{' (ode+=ODE (',' ode+=ODE)* ) ('&' evolution=Formula)? '}'
+	| (ode+=ODE (',' ode+=ODE)* ) ('&' evolution=Formula)?
 ;
 
-//Statement returns Statement:
-//	{Statement}
-//	Assignment
-//	| IfThenElse
-//	| If
-//	| Skip
-//	| Call
-//	| NonDet
-//	;
-//	
-//Assignment returns Assignment:
-//	{Assignment}
-//	variable=ID ':=' ';'
-//;
+ODE returns ODE:
+	{ODE}
+	variable=ODEID '=' expression=Expression
+	;
+
+Expression returns Expression:
+	Addition
+	;
+	
+Addition returns Expression:
+  Multiplication
+  (=>({Plus.left=current} '+' | {Minus.left=current} '-')
+  right=Multiplication)*;
+  
+Multiplication returns Expression:
+  Power 
+  (({MultiOrDivOrMod.left=current} op=("*"|"/"|"%")) right=Power)*;
+  
+Power returns Expression:
+  Prefixed 
+  (({Power.left=current} op=("^")) right=Prefixed)*;
+  
+Prefixed returns Expression:
+  {BooleanNegation} "!" expression=Atomic | /* right associativity */
+  {ArithmeticSigned} '-' expression=Atomic | /* right associativity */
+  Atomic;
+  //TODO: unary addition operator can be supported in ArithmeticSigned
+
+Atomic returns Expression:
+  LiteralExpression |	
+  ParenthesizedExpression |
+  {FunctionReference} ref=Function | 
+  {VariableReference} ref=Variable 
+;
+
+Function:
+  Past | Min | Max | Forall | Exists | Abs
+;
+
+Past:
+  'past(' variable = ID ')'
+;
+Min:
+  'min(' exp1=Expression ',' exp2=Expression ')'
+;
+Max:
+  'max(' exp1=Expression ',' exp2=Expression ')'
+;
+Abs:
+  'abs(' exp1=Expression ')'
+;
+Forall:
+  '\\forall' variable=Variable ':' formula=Formula
+;
+Exists:
+  '\\exists' variable=Variable ':' formula=Formula
+;
+
+
+LiteralExpression:
+  {NumberLiteral} value=REAL |
+  {VariableLiteral} value=ID |
+  {StringLiteral} value=STRING |
+  {NullLiteral} value= 'null' |
+  {BooleanLiteral} value=('true'|'false')
+;
+
+ParenthesizedExpression returns Expression:
+	{ParenthesizedExpression}
+	'(' expr=Expression ')'
+;
+
+Formula returns Formula:
+	BooleanFormula 
+;
+
+BooleanFormula returns Formula:
+  Comparison
+  (({BooleanExpression.left=current} op=("||"|"&&"|"and"|"or"|"->"|"<->"|"implies"|"equals")) right=Comparison)*;
+  
+Comparison returns Formula:
+  Equals
+  (({Comparison.left=current} op=("<" | ">" | "<=" | ">=")) right=Equals)*;
+
+Equals returns Formula:
+  Expression
+  (({Equals.left=current} op=("==" | "!=" | "=~" | "!~" | "is")) right=Expression)*;
+
 
 Argument:
 	(comment=AnnotationBlock)?
@@ -347,12 +561,21 @@ ID_WITH_SELECTOR:
 // basic types
 Boolean returns ecore::EBoolean:
 	'false' | 'true';
+	
+	
+REAL returns ecore::EDoubleObject:
+	'-'? INT | '-'? INT '.' INT ('e' '-'? INT)?;
+	
+terminal ODEID:
+	ID'\''
+;
 
 E_BigInteger returns ecore::EBigInteger:
 	INT | HEX | BINARY;
 
 terminal E_DOUBLE_OBJECT returns ecore::EDoubleObject:
 	INT '.' INT ('e' '-'? INT)? 'd';
+
 
 terminal E_FLOAT_OBJECT returns ecore::EFloatObject:
 	INT '.' INT ('e' '-'? INT)? 'f';
@@ -362,6 +585,14 @@ terminal HEX:
 
 terminal BINARY:
 	('0b' | '0B') ('0' | '1')+;
+	
+	
+//terminal fragment DIGIT: '0'..'9';
+
+//terminal fragment EXPONENT: 'e' ('+'|'-')? DIGIT+;
+//terminal INTEGER returns ecore::EInt: '-'? DIGIT+;
+//terminal FLOAT returns ecore::EFloat: INTEGER ('.' DIGIT* EXPONENT?)?;
+	
 
 terminal ANNOTATION_STRING returns ecore::EString:
 	'@' (('a'..'z') | '-')+ (' ' | '\t')* ':'

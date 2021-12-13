@@ -1,5 +1,8 @@
 package de.tubs.skeditor.views;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.emf.transaction.util.TransactionUtil;
@@ -18,6 +21,8 @@ import org.eclipse.ui.part.ViewPart;
 import SkillGraph.Graph;
 import SkillGraph.Parameter;
 import SkillGraph.SkillGraphFactory;
+import de.tubs.skeditor.utils.GraphUtil;
+import de.tubs.skeditor.utils.ParameterUtil;
 import de.tubs.skeditor.views.parameterlistview.AbbreviationEditingSupport;
 import de.tubs.skeditor.views.parameterlistview.ContentProvider;
 import de.tubs.skeditor.views.parameterlistview.IsVariableEditingSupport;
@@ -65,6 +70,10 @@ public class ParameterListView extends ViewPart {
 		columnIsVariable.getColumn().setText("Type");
 		columnIsVariable.setEditingSupport(new IsVariableEditingSupport(viewer));
 
+		TableViewerColumn columnFromWhere = new TableViewerColumn(viewer, SWT.NONE);
+		columnFromWhere.getColumn().setWidth(50);
+		columnFromWhere.getColumn().setText("From?");
+
 		viewer.setContentProvider(new ContentProvider());
 		viewer.setLabelProvider(new LabelProvider());
 
@@ -74,10 +83,11 @@ public class ParameterListView extends ViewPart {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Parameter parameter = SkillGraphFactory.eINSTANCE.createParameter();
-				parameter.setName("Acceleration");
-				parameter.setAbbreviation("a");
+				parameter.setName("Acceleration Constant");
+				parameter.setAbbreviation("A");
 				parameter.setUnit("m/s²");
 				parameter.setDefaultValue("");
+				parameter.setVariable(false);
 				Graph graph = (Graph) viewer.getInput();
 				TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(graph);
 				domain.getCommandStack().execute(new RecordingCommand(domain) {
@@ -90,12 +100,70 @@ public class ParameterListView extends ViewPart {
 			}
 		});
 
+		Button button2 = new Button(parent, SWT.NONE);
+		button2.setText("Refresh");
+		button2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Graph graph = (Graph) viewer.getInput();
+				Set<String> variables = GraphUtil.getVariableNames(graph);
+
+				// Update availability
+				for (Parameter parameter : graph.getParameterList()) {
+					if (!parameter.isVariable())
+						continue;
+
+					TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(parameter);
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							parameter.eSet(parameter.eClass().getEStructuralFeature("available"),
+									variables.contains(parameter.getAbbreviation()));
+						}
+					});
+				}
+
+				// Add new variables
+				for (String abbr : variables) {
+					if (graph.getParameterList().stream().map(p -> p.getAbbreviation()).collect(Collectors.toSet())
+							.contains(abbr))
+						continue;
+					Parameter parameter = SkillGraphFactory.eINSTANCE.createParameter();
+					parameter.setName("[empty]");
+					parameter.setAbbreviation(abbr);
+					parameter.setUnit("[empty]");
+					parameter.setDefaultValue("");
+					parameter.setVariable(true);
+					TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(graph);
+					domain.getCommandStack().execute(new RecordingCommand(domain) {
+						@Override
+						protected void doExecute() {
+							graph.getParameterList().add(parameter);
+						}
+					});
+				}
+				
+				// Add globals
+				ParameterUtil.addGlobalParameters(graph);
+				viewer.refresh();
+			}
+		});
+
 		MenuManager manager = new MenuManager();
 		viewer.getControl().setMenu(manager.createContextMenu(viewer.getControl()));
 		manager.add(new Action("Delete Parameter") {
 			@Override
+			public boolean isEnabled() {
+				Parameter deletParameter = (Parameter) viewer.getStructuredSelection().getFirstElement();
+				return !deletParameter.isVariable() || (deletParameter.isVariable() && !deletParameter.isAvailable());
+			}
+
+			@Override
 			public void run() {
 				Parameter deletParameter = (Parameter) viewer.getStructuredSelection().getFirstElement();
+//				if (deletParameter.isVariable())
+//					return;
+
 				Graph graph = ((Graph) viewer.getInput());
 
 				TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(graph);

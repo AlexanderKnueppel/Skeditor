@@ -10,7 +10,7 @@ import SkillGraph.Node;
 public class ConstraintUtil {
 
 	private static Category[] mainParent = {Category.MAIN}, mainChild = { Category.OBSERVABLE_EXTERNAL_BEHAVIOR, Category.ACTION, Category.PLANNING , Category.PERCEPTION, Category.ACTUATOR  };
-	private static Category[] obsParent = { Category.MAIN }, obsChild = { Category.ACTION, Category.PLANNING };
+	private static Category[] obsParent = { Category.MAIN,Category.OBSERVABLE_EXTERNAL_BEHAVIOR }, obsChild = { Category.ACTION, Category.PLANNING, Category.OBSERVABLE_EXTERNAL_BEHAVIOR};
 	private static Category[] actionParent = { Category.MAIN, Category.OBSERVABLE_EXTERNAL_BEHAVIOR, Category.ACTION },
 			actionChild = { Category.ACTION, Category.PERCEPTION, Category.PLANNING, Category.SENSOR, Category.ACTUATOR };
 	private static Category[] actuatorParent = { Category.MAIN, Category.ACTION }, actuatorChild = {};

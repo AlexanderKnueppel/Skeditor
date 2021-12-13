@@ -19,7 +19,8 @@ public class IsVariableEditingSupport extends EditingSupport {
 
 	@Override
 	protected boolean canEdit(Object arg0) {
-		return true;
+		// Currently, no change possible
+		return false;
 	}
 
 	@Override
@@ -41,10 +42,8 @@ public class IsVariableEditingSupport extends EditingSupport {
 			@Override
 			protected void doExecute() {
 				parameter.eSet(parameter.eClass().getEStructuralFeature("variable"), (boolean) value);
-
 			}
 		});
-		System.out.println((boolean) value);
 		getViewer().update(element, null);
 	}
 }

@@ -11,6 +11,9 @@ package de.tubs.skeditor.features;
 
 import java.io.IOException;
 
+import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.emf.transaction.TransactionalEditingDomain;
+import org.eclipse.emf.transaction.util.TransactionUtil;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
@@ -113,9 +116,17 @@ public class EditSkillDescriptionFeature extends AbstractCustomFeature {
 				SkillDescriptionLanguageHandler descHandler = new SkillDescriptionLanguageHandler();
 				try {
 					String changedModel = descHandler.openDialog(content);
-					if(changedModel != null) {
-						node.setSDLModel(changedModel);
+					if(changedModel != null && (node.getSDLModel() == null || !node.getSDLModel().equals(changedModel))) {
+						TransactionalEditingDomain domain = TransactionUtil.getEditingDomain(node);
+						domain.getCommandStack().execute(new RecordingCommand(domain) {
+							@Override
+							protected void doExecute() {
+								node.setSDLModel(changedModel);
+							}
+						});
+						hasDoneChanges = true;
 					}
+					
 					getFeatureProvider().getDiagramTypeProvider().getDiagramBehavior().refresh();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
