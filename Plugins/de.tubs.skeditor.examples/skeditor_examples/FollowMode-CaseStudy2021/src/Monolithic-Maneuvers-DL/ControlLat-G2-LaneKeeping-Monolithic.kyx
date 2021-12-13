@@ -1,0 +1,105 @@
+ArchiveEntry "FollowMode/G2-LaneKeeping-Monolithic"
+
+Definitions
+   Real lw;
+   Real ep;
+   Real A;
+   Real b;
+End.
+
+ProgramVariables
+   Real r;
+   Real a;
+   Real apast;
+   Real c;
+   Real cpast;
+   Real currentA;
+   Real currentApast;
+   Real lwpast;
+   Real currentY;
+   Real currentYpast;
+   Real ly;
+   Real lypast;
+   Real rpast;
+   Real dx;
+   Real dxpast;
+   Real currentX;
+   Real currentXpast;
+   Real dy;
+   Real dypast;
+   Real v;
+   Real vpast;
+   Real currentV;
+   Real currentVpast;
+   Real w;
+   Real wpast;
+   Real x;
+   Real xpast;
+   Real y;
+   Real ypast;
+   Real state;
+   Real t;
+   Real assert;
+End.
+
+Problem
+abs(y-ly) + v^2/(2*b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & lw > 0 & y = ly & r >0 & dx^2 + dy^2 = 1 & v >= 0.0  & a=apast & c=cpast & currentA=currentApast & lw=lwpast & b>A & A>0 & currentY=currentYpast & ly=lypast & r=rpast & dx=dxpast & currentX=currentXpast & dy=dypast & v=vpast & currentV=currentVpast & w=wpast & x=xpast & y=ypast & (ep > 0) & assert = 0 ->
+[
+/* Translate LaneKeeping_Automaton */
+{
+  state:=0; /* Init: M_Stop*/
+  {
+      { /* Transitions */
+      ?(state=0 & v = 0.0); state:=0;
+      ++
+      ?(state=0 & v > 0.0 & abs(y-lw) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=2;
+      ++
+      ?(state=0 & v > 0.0 & abs(y-lw) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=1;
+      ++
+      ?(state=2 & v = 0.0); state:=0;
+      ++
+      ?(state=3 & v = 0.0); state:=0;
+      ++
+      ?(state=2 & v > 0.0 & abs(y-lw) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=1;
+      ++
+      ?(state=3 & v > 0.0 & abs(y-lw) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=1;
+      ++
+      ?(state=1 & v = 0.0); state:=0;
+      ++
+      ?(state=1 & v > 0.0 & abs(y-lw) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=2;
+      ++
+      ?(state=1 & v > 0.0 & abs(y-lw) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=1;
+      ++
+      ?(state=2 & v > 0.0 & abs(y-lw) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & c = 1.0); state:=3;
+      ++
+      ?(state=3 & v > 0.0 & abs(y-lw) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & c = 0.0); state:=2;
+    }
+    { /* Modes */
+      ?(state=0); apast := a; cpast := c; currentApast := currentA; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;  { /* Mode: M_Stop*/
+      w := 0.0; a := 0.0;
+      t:=0;
+      {x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+      }
+      ++
+      ?(state=1); apast := a; cpast := c; currentApast := currentA; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;  { /* Mode: M_Brake*/
+      a := -b;
+      t:=0;
+      {x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+      }
+      ++
+      ?(state=2); apast := a; cpast := c; currentApast := currentA; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;  { /* Mode: M_Steer-M_Idle*/
+      t:=0;
+      }
+      ++
+      ?(state=3); apast := a; cpast := c; currentApast := currentA; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;  { /* Mode: M_Steer-M_ChangeSteering*/
+      a:= A; w :=*; r :=*; ?r >0 & w*r = v;
+      t:=0;
+      {x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+      }
+    }
+  }*@invariant(v >= 0 & dx^2+dy^2 = 1 & r != 0 & abs(y-ly) + v^2/(2*b) < lw)
+}
+] (abs(y-ly) < lw & assert = 0)
+
+End.
+End.

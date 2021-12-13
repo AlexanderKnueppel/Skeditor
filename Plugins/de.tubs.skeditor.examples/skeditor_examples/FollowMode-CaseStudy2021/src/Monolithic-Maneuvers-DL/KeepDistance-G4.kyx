@@ -1,0 +1,110 @@
+ArchiveEntry "FollowMode/G4-Keep distance to leading vehicle-Monolithic"
+
+Definitions
+   Real A;
+   Real B;
+   Real maxDist;
+   Real vmax;
+   Real vmargin;
+   Real ep;
+End.
+
+ProgramVariables
+   Real a;
+   Real apast;
+   Real c;
+   Real cpast;
+   Real set;
+   Real setpast;
+   Real v;
+   Real vpast;
+   Real x;
+   Real xpast;
+   Real leadingDist;
+   Real leadingDistpast;
+   Real state;
+   Real t;
+   Real assert;
+End.
+
+Problem
+vmargin >= ep*A & v >= 0.0 & v <= vmax  & maxDist >= 0 & B>0 & A>0& x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) <= leadingDist & a=apast & c=cpast & set=setpast & v=vpast & x=xpast & leadingDist=leadingDistpast & (ep > 0) & assert = 0 ->
+[
+/* Translate ACC_Automaton */
+{
+  state:=0; /* Init: M_Init*/
+  {
+    { /* Transitions */
+      ?(state=0 & v = 0.0); state:=0;
+      ++
+      ?(state=1 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= leadingDist & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) <= leadingDist); state:=4;
+      ++
+      ?(state=0 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < leadingDist); state:=2;
+      ++
+      ?(state=0 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= leadingDist & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) <= leadingDist); state:=1;
+      ++
+      ?(state=2 & v = 0.0); state:=0;
+      ++
+      ?(state=3 & v = 0.0); state:=0;
+      ++
+      ?(state=7 & v = 0.0); state:=0;
+      ++
+      ?(state=2 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= leadingDist & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) <= leadingDist); state:=1;
+      ++
+      ?(state=3 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= leadingDist & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) <= leadingDist); state:=1;
+      ++
+      ?(state=7 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= leadingDist & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) <= leadingDist); state:=1;
+      ++
+      ?(state=1 & v = 0.0); state:=0;
+      ++
+      ?(state=4 & v = 0.0); state:=0;
+      ++
+      ?(state=1 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < leadingDist); state:=2;
+      ++
+      ?(state=4 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < leadingDist); state:=2;
+      ++
+      ?(state=2 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < leadingDist & c = 1.0); state:=3;
+      ++
+      ?(state=2 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < leadingDist & c = 2.0); state:=6;
+      ++
+      ?(state=3 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < leadingDist & v >= vmax - vmargin); state:=7;
+      ++
+      ?(state=7 & v != 0.0 & x + maxDist + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < leadingDist & v < vmax - vmargin); state:=3;
+    }
+    { /* Modes */
+      ?(state=0); apast := a; cpast := c; setpast := set; vpast := v; xpast := x; leadingDistpast := leadingDist;  { /* Mode: M_Init*/
+      ?true;
+      }
+      ++
+      ?(state=1); apast := a; cpast := c; setpast := set; vpast := v; xpast := x; leadingDistpast := leadingDist;  { /* Mode: M_Brake-M_Idle*/
+      c:=2;
+      }
+      ++
+      ?(state=2); apast := a; cpast := c; setpast := set; vpast := v; xpast := x; leadingDistpast := leadingDist;  { /* Mode: M_Forward-M_Idle*/
+      c:=1;
+      }
+      ++
+      ?(state=3); apast := a; cpast := c; setpast := set; vpast := v; xpast := x; leadingDistpast := leadingDist;  { /* Mode: M_Forward-M_Accelerate-M_0*/
+      a := A;
+      t:=0;
+      {x'=v,v'=a,t'=1.0 & t <= ep & v >= 0.0 & t <= ep}
+      }
+      ++
+      ?(state=4); apast := a; cpast := c; setpast := set; vpast := v; xpast := x; leadingDistpast := leadingDist;  { /* Mode: M_Brake-M_Brake-M_0*/
+      a := -B;
+      t:=0;
+      {x'=v,v'=a,t'=1.0 & t <= ep & v >= 0.0 & t <= ep}
+      }
+      ++
+      ?(state=7); apast := a; cpast := c; setpast := set; vpast := v; xpast := x; leadingDistpast := leadingDist;  { /* Mode: M_Forward-M_Cruise-M_0*/
+      t:=0;
+      a := 0;
+      {x'=v,v'=a,t'=1.0 & t <= ep & v >= 0.0 & t <= ep}
+      }
+    }
+  }*@invariant(v <= vmax & x <= leadingDist & assert = 0)
+}
+] (v <= vmax & x <= leadingDist & assert = 0)
+
+End.
+End.

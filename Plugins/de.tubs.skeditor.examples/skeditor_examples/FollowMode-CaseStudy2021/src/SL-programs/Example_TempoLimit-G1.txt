@@ -1,0 +1,198 @@
+##########  ///////////////// Exported from Skeditor 0.1
+
+########## Skill TempoLimit
+skill "TempoLimit" : ObservableBehavior {
+/* Empty Skill Description */ 
+	version {
+		major 0
+		minor 1
+	}
+	variables {
+		input {
+			x,v : Real; 
+		}
+		output {
+			a : Real; 
+		}
+	}
+	parameters {
+		vmax: Real;
+	}
+	
+	assumption:
+		v <= vmax
+	;
+	
+	guarantee:
+		v <= vmax
+	;
+	
+	Automaton TempoLimit_Automaton.
+	init M_Exec
+	behavior M_Exec {
+		controller {
+			skip;smode CLD_Automaton[c->1]
+		}
+	}
+	
+	AutomatonEnd.
+}
+
+########### Skill Control longitudinal dynamics
+dyn ODE(a,x,v,t,ep) 
+	requires true;
+	ensures true;
+	:= {x'=v, v'= a, t'=1 & t <= ep && v >= 0}
+
+skill "Control Longitudinal Dynamics" : Action {
+/* Empty Skill Description */ 
+	version {
+		major 0
+		minor 1
+	}
+	variables {
+		input {
+			c,x,v : Real; 
+		}
+		output {
+			a : Real; 
+		}
+	}
+	parameters {
+		vmax, vmargin, A, B : Real;
+	}
+	
+	assumption:
+		v <= vmax && vmargin >= 0 && vmargin >= ep*A
+	;
+	
+	guarantee:
+		v <= vmax
+	;
+	
+	Automaton CLD_Automaton.
+	init M_Idle
+	behavior M_Idle {
+		controller {
+			skip
+		}
+		transitions {
+			on {c==1 && v<= vmax-vmargin} -> M_Accelerate;
+			on {c==1 && v> vmax-vmargin} -> M_Cruise;
+			on {c==2} -> M_Brake;
+		}
+	}
+	
+	behavior M_Accelerate {
+		controller {
+			skip;smode Accelerate_Automaton[set -> A]
+		}
+		dynamics {
+			invoke ODE(a,x,v,t,ep)
+		}
+		transitions {
+			on {v >= vmax-vmargin} -> M_Cruise;
+		}
+	}
+	
+	behavior M_Cruise {
+		controller {
+			skip;smode Accelerate_Automaton[set -> 0]
+		}
+		dynamics {
+			invoke ODE(a,x,v,t,ep)
+		}
+		transitions {
+			on {v < vmax-vmargin} -> M_Accelerate;
+		}
+	}
+	
+	
+	behavior M_Brake {
+		controller {
+			skip;smode Decelerate_Automaton[set -> B]
+		}
+		dynamics {
+			invoke ODE(a,x,v,t,ep)
+		}
+	}
+	AutomatonEnd.
+}
+
+########### Skill Decelerate
+
+skill "Decelerate" : Action {
+/* Empty Skill Description */ 
+	version {
+		major 0
+		minor 1
+	}
+	variables {
+		input {
+			set : Real; 
+		}
+		output {
+			a : Real; 
+		}
+	}
+	parameters {
+		/* empty */
+	}
+	
+	assumption:
+		set >= 0
+	;
+	
+	guarantee:
+		a  == -set
+	;
+	
+	Automaton Decelerate_Automaton.
+	init M_0
+	behavior M_0 {
+		controller {
+			a:=-set
+		}
+	}
+
+	AutomatonEnd.
+}
+
+########### Skill Accelerate
+
+skill "Accelerate" : Action {
+/* Empty Skill Description */ 
+	version {
+		major 0
+		minor 1
+	}
+	variables {
+		input {
+			set : Real; 
+		}
+		output {
+			a : Real; 
+		}
+	}
+	parameters {
+		/* empty */
+	}
+	
+	assumption:
+		set >= 0
+	;
+	
+	guarantee:
+		a  == set
+	;
+	
+	Automaton Accelerate_Automaton.
+	init M_0
+	behavior M_0 {
+		controller {
+			a:=set
+		}
+	}
+
+	AutomatonEnd.
+}
