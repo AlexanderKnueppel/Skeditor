@@ -40,7 +40,6 @@ public class NameEditingSupport extends EditingSupport {
 			@Override
 			protected void doExecute() {
 				parameter.eSet(parameter.eClass().getEStructuralFeature("name"), inputValue.toString());
-
 			}
 		});
 		getViewer().update(element, null);

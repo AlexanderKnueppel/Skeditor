@@ -1,0 +1,87 @@
+ArchiveEntry "FollowMode/TempoLimit-Monolithic-new"
+
+Definitions
+   Real A;
+   Real B;
+   Real vmax;
+   Real vmargin;
+   Real ep;
+End.
+
+ProgramVariables
+   Real a;
+   Real apast;
+   Real c;
+   Real cpast;
+   Real set;
+   Real set2;
+   Real set3;
+   Real setpast;
+   Real v;
+   Real vpast;
+   Real x;
+   Real xpast;
+   Real state;
+   Real t;
+   Real assert;
+End.
+
+Problem
+v <= vmax & vmargin >= ep*A & a=apast & c=cpast & set=setpast & v=vpast & x=xpast & (ep > 0) & assert = 0 ->
+[
+/* Translate TempoLimit_Automaton */
+{
+  state:=0; /* Init: M_Exec-M_Idle*/
+  c := 1.0; /* Binding #1*/
+  set := B; /* Binding #2*/
+  set2 := A; /* Binding #3*/
+  set3 := 0.0; /* Binding #4*/
+  {
+    { /* Transitions */
+      ?(state=0 & true & c = 1.0 & v <= vmax - vmargin); state:=2;
+      ++
+      ?(state=0 & true & c = 1.0 & v > vmax - vmargin); state:=3;
+      ++
+      ?(state=0 & true & c = 2.0); state:=1; /*Not reachable*/
+      ++
+      ?(state=2 & true & v >= vmax - vmargin); state:=3;
+      ++
+      ?(state=3 & true & v < vmax - vmargin); state:=2;
+      ++
+      ?(state=2 & true & v < vmax - vmargin & true); state:=2;
+      ++
+      ?(state=3 & true & v >= vmax - vmargin & true); state:=3;
+    }
+    { /* Modes */
+      ?(state=0); apast := a; cpast := c; setpast := set; vpast := v; xpast := x;  { /* Mode: M_Exec-M_Idle*/
+      ?true;?true;
+      }
+      ++
+      ?(state=1); apast := a; cpast := c; setpast := set; vpast := v; xpast := x;  { /* Mode: M_Exec-M_Brake-M_0*/
+      ?true;?true;
+      a := -setpast;
+      t:=0;
+      {x'=v,v'=a,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+      }
+      ++
+      ?(state=2); apast := a; cpast := c; setpast := set2; vpast := v; xpast := x;  { /* Mode: M_Exec-M_Accelerate-M_0*/
+      ?true;?true;
+      a := setpast;
+      t:=0;
+      {x'=v,v'=a,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+      }
+      ++
+      ?(state=3); apast := a; cpast := c; setpast := set3; vpast := v; xpast := x;  { /* Mode: M_Exec-M_Cruise-M_0*/
+      ?true;?true;
+      a := setpast;
+      t:=0;
+      {x'=v,v'=a,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+      }
+
+    }
+  }*
+}
+] (v <= vmax & assert = 0)
+
+End.
+End.

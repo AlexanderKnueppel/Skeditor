@@ -46,6 +46,7 @@ import de.tubs.skeditor.features.LayoutNodeFeature;
 import de.tubs.skeditor.features.ReconnectionFeature;
 import de.tubs.skeditor.features.RunKeymaeraCheckFeature;
 import de.tubs.skeditor.features.SetRootNodeFeature;
+import de.tubs.skeditor.features.TestFeature;
 import de.tubs.skeditor.features.UpdateFeature;
 
 public class FeatureProvider extends DefaultFeatureProvider {
@@ -123,6 +124,7 @@ public class FeatureProvider extends DefaultFeatureProvider {
 			customFeatures.add(new ChangeCategoryFeature(this, category));
 		}
 		customFeatures.add(new ExportFeature(this));
+		customFeatures.add(new TestFeature(this));
 		customFeatures.add(new AddSafetyRequirementsFeature(this));
 		customFeatures.add(new AddAssumptionFeature(this));
 		customFeatures.add(new RunKeymaeraCheckFeature(this));

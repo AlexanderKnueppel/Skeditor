@@ -1,0 +1,79 @@
+﻿/* Exported from KeYmaera X v4.9.7 */
+
+Theorem "FollowMode/TempoLimit-Monolithic"
+
+Definitions
+   Real A;
+   Real B;
+   Real vmax;
+   Real vmargin;
+   Real ep;
+End.
+
+ProgramVariables
+   Real a;
+   Real apast;
+   Real c;
+   Real cpast;
+   Real set;
+   Real setpast;
+   Real v;
+   Real vpast;
+   Real x;
+   Real xpast;
+   Real state;
+   Real t;
+   Real assert;
+End.
+
+Problem
+v <= vmax-vmargin & a=apast & c=cpast & set=setpast & v=vpast & x=xpast & (ep > 0) & assert = 0 & vmargin >= (ep*A) & A>=0 & B>=0->
+[
+/* Translate TempoLimit_Automaton */
+{
+  state:=0; /* Init: M_Exec-M_Idle*/
+  {
+    { /* Transitions */
+      ?(state=0 & true & c = 1.0); state:=2;
+      ++
+      ?(state=0 & true & c = 2.0); state:=3;
+      ++
+      ?(state=2 & true & v > vmax - vmargin); state:=1;
+      ++
+      ?(state=1 & true & v <= vmax - vmargin); state:=2;
+    }
+    { /* Modes */
+      ?(state=0); apast := a; cpast := c; setpast := set; vpast := v; xpast := x;  { /* Mode: M_Exec-M_Idle*/
+      c:=1;
+      }
+      ++
+      ?(state=1); set := 0; apast := a; cpast := c; setpast := set; vpast := v; xpast := x;  { /* Mode: M_Exec-M_Cruise-M_0*/
+      a := setpast;
+      t:=0;
+      {x'=v,v'=a,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+      }
+      ++
+      ?(state=2); set := A; apast := a; cpast := c; setpast := set; vpast := v; xpast := x;  { /* Mode: M_Exec-M_Accelerate-M_0*/
+        a := setpast;
+      t:=0;
+      {x'=v,v'=a, t'=1 & t <= ep & v >= 0.0 & t <= ep}
+      }
+      ++
+      ?(state=3); set := B; apast := a; cpast := c; setpast := set; vpast := v; xpast := x;  { /* Mode: M_Exec-M_Brake-M_0*/
+      a := -setpast;
+      t:=0;
+      {x'=v,v'=a,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+      }
+
+    }
+  }*@invariant((state=0 -> v <= vmax-vmargin) & (state!=0 -> v <= vmax) & assert = 0)
+}
+] (v <= vmax & assert = 0)
+
+End.
+
+Tactic "FollowMode/TempoLimit-Monolithic: Proof"
+auto
+End.
+
+End.

@@ -1,0 +1,480 @@
+ArchiveEntry "Follow mode-Monolithic"
+
+Definitions
+	 Real A;
+	 Real B;
+	 Real maxDist;
+	 Real r;
+	 Real vmax;
+	 Real lw;
+	 Real vmargin;
+	 Real ep;
+End.
+
+ProgramVariables
+	 Real a;
+	 Real apast;
+	 Real c;
+	 Real cpast;
+	 Real currentA;
+	 Real currentApast;
+	 Real set;
+	 Real setpast;
+	 Real leadingDist;
+	 Real leadingDistpast;
+	 Real lw;
+	 Real lwpast;
+	 Real currentY;
+	 Real currentYpast;
+	 Real ly;
+	 Real lypast;
+	 Real r;
+	 Real rpast;
+	 Real dx;
+	 Real dxpast;
+	 Real currentX;
+	 Real currentXpast;
+	 Real dy;
+	 Real dypast;
+	 Real v;
+	 Real vpast;
+	 Real currentV;
+	 Real currentVpast;
+	 Real w;
+	 Real wpast;
+	 Real x;
+	 Real xpast;
+	 Real y;
+	 Real ypast;
+	 Real state;
+	 Real t;
+	 Real assert;
+End.
+
+Problem
+v >= 0.0 & v <= vmax & maxDist > 0.0 & x + (v)^(2.0) / (2.0 * B) + maxDist <= leadingDist & abs(y - ly) + ((v))^((2.0)) / (2.0 * b) < lw & a=apast & c=cpast & currentA=currentApast & set=setpast & leadingDist=leadingDistpast & lw=lwpast & currentY=currentYpast & ly=lypast & r=rpast & dx=dxpast & currentX=currentXpast & dy=dypast & v=vpast & currentV=currentVpast & w=wpast & x=xpast & y=ypast & (ep > 0) & assert = 0 ->
+[
+/* Translate FollowMode_Automaton */
+{
+	state:=0; /* Init: M_InitFollowMode*/
+	{
+		{ /* Transitions */
+		  ?(state=0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=1;
+		  ++
+		  ?(state=0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=4;
+		  ++
+		  ?(state=1 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=0;
+		  ++
+		  ?(state=3 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=0;
+		  ++
+		  ?(state=23 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=0;
+		  ++
+		  ?(state=24 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=0;
+		  ++
+		  ?(state=15 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=0;
+		  ++
+		  ?(state=2 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=0;
+		  ++
+		  ?(state=12 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=0;
+		  ++
+		  ?(state=16 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=0;
+		  ++
+		  ?(state=22 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist); state:=0;
+		  ++
+		  ?(state=4 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=8 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=9 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=5 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=17 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=13 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=14 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=19 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=21 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=10 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=11 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=25 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=20 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=6 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=7 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=18 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist); state:=0;
+		  ++
+		  ?(state=1 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0); state:=1;
+		  ++
+		  ?(state=1 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist); state:=3;
+		  ++
+		  ?(state=1 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist); state:=2;
+		  ++
+		  ?(state=3 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0); state:=1;
+		  ++
+		  ?(state=23 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0); state:=1;
+		  ++
+		  ?(state=24 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0); state:=1;
+		  ++
+		  ?(state=15 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0); state:=1;
+		  ++
+		  ?(state=3 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist); state:=2;
+		  ++
+		  ?(state=23 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist); state:=2;
+		  ++
+		  ?(state=24 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist); state:=2;
+		  ++
+		  ?(state=15 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist); state:=2;
+		  ++
+		  ?(state=2 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0); state:=1;
+		  ++
+		  ?(state=12 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0); state:=1;
+		  ++
+		  ?(state=16 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0); state:=1;
+		  ++
+		  ?(state=22 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0); state:=1;
+		  ++
+		  ?(state=2 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist); state:=3;
+		  ++
+		  ?(state=12 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist); state:=3;
+		  ++
+		  ?(state=16 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist); state:=3;
+		  ++
+		  ?(state=22 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist); state:=3;
+		  ++
+		  ?(state=2 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist & c = 1.0); state:=12;
+		  ++
+		  ?(state=2 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist & c = 2.0); state:=22;
+		  ++
+		  ?(state=12 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist & v >= vmax - vmargin); state:=16;
+		  ++
+		  ?(state=16 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist & v < vmax - vmargin); state:=12;
+		  ++
+		  ?(state=3 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist & c = 1.0); state:=23;
+		  ++
+		  ?(state=3 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist & c = 2.0); state:=15;
+		  ++
+		  ?(state=23 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist & v >= vmax - vmargin); state:=24;
+		  ++
+		  ?(state=24 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist & v < vmax - vmargin); state:=23;
+		  ++
+		  ?(state=4 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v = 0.0); state:=17;
+		  ++
+		  ?(state=4 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=13;
+		  ++
+		  ?(state=4 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=19;
+		  ++
+		  ?(state=8 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v = 0.0); state:=17;
+		  ++
+		  ?(state=9 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v = 0.0); state:=17;
+		  ++
+		  ?(state=8 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=13;
+		  ++
+		  ?(state=9 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=13;
+		  ++
+		  ?(state=8 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=19;
+		  ++
+		  ?(state=9 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=19;
+		  ++
+		  ?(state=5 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v = 0.0); state:=17;
+		  ++
+		  ?(state=5 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=13;
+		  ++
+		  ?(state=5 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=19;
+		  ++
+		  ?(state=4 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v = 0.0); state:=20;
+		  ++
+		  ?(state=4 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=6;
+		  ++
+		  ?(state=4 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=18;
+		  ++
+		  ?(state=8 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v = 0.0); state:=20;
+		  ++
+		  ?(state=9 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v = 0.0); state:=20;
+		  ++
+		  ?(state=8 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=6;
+		  ++
+		  ?(state=9 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=6;
+		  ++
+		  ?(state=8 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=18;
+		  ++
+		  ?(state=9 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=18;
+		  ++
+		  ?(state=5 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v = 0.0); state:=20;
+		  ++
+		  ?(state=5 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=6;
+		  ++
+		  ?(state=5 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=18;
+		  ++
+		  ?(state=17 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v = 0.0); state:=21;
+		  ++
+		  ?(state=17 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=10;
+		  ++
+		  ?(state=17 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=25;
+		  ++
+		  ?(state=13 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v = 0.0); state:=21;
+		  ++
+		  ?(state=14 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v = 0.0); state:=21;
+		  ++
+		  ?(state=13 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=10;
+		  ++
+		  ?(state=14 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=10;
+		  ++
+		  ?(state=13 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=25;
+		  ++
+		  ?(state=14 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=25;
+		  ++
+		  ?(state=19 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v = 0.0); state:=21;
+		  ++
+		  ?(state=19 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=10;
+		  ++
+		  ?(state=19 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=25;
+		  ++
+		  ?(state=21 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v = 0.0); state:=17;
+		  ++
+		  ?(state=21 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=13;
+		  ++
+		  ?(state=21 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=19;
+		  ++
+		  ?(state=10 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v = 0.0); state:=17;
+		  ++
+		  ?(state=11 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v = 0.0); state:=17;
+		  ++
+		  ?(state=10 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=13;
+		  ++
+		  ?(state=11 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=13;
+		  ++
+		  ?(state=10 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=19;
+		  ++
+		  ?(state=11 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=19;
+		  ++
+		  ?(state=25 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v = 0.0); state:=17;
+		  ++
+		  ?(state=25 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=13;
+		  ++
+		  ?(state=25 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=19;
+		  ++
+		  ?(state=20 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=6;
+		  ++
+		  ?(state=20 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=18;
+		  ++
+		  ?(state=6 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v = 0.0); state:=20;
+		  ++
+		  ?(state=7 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v = 0.0); state:=20;
+		  ++
+		  ?(state=6 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=18;
+		  ++
+		  ?(state=7 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw); state:=18;
+		  ++
+		  ?(state=18 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v = 0.0); state:=20;
+		  ++
+		  ?(state=18 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw); state:=6;
+		  ++
+		  ?(state=6 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & c = 1.0 & true); state:=7;
+		  ++
+		  ?(state=7 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & c = 0.0 & true); state:=6;
+		  ++
+		  ?(state=8 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & c = 1.0); state:=9;
+		  ++
+		  ?(state=9 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 1.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & c = 2.0 & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & c = 0.0); state:=8;
+		  ++
+		  ?(state=10 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & c = 1.0 & true); state:=11;
+		  ++
+		  ?(state=11 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & c = 0.0 & true); state:=10;
+		  ++
+		  ?(state=12 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist & v >= vmax - vmargin & true); state:=12;
+		  ++
+		  ?(state=13 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & c = 1.0 & true); state:=14;
+		  ++
+		  ?(state=14 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & c = 0.0 & true); state:=13;
+		  ++
+		  ?(state=15 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist & true & true); state:=15;
+		  ++
+		  ?(state=16 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist & v < vmax - vmargin & true); state:=16;
+		  ++
+		  ?(state=17 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & true); state:=17;
+		  ++
+		  ?(state=18 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & true); state:=18;
+		  ++
+		  ?(state=19 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v >= vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & true); state:=19;
+		  ++
+		  ?(state=20 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & true & v = 0.0 & true); state:=20;
+		  ++
+		  ?(state=21 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & true); state:=21;
+		  ++
+		  ?(state=22 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist & true & true); state:=22;
+		  ++
+		  ?(state=23 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist & v >= vmax - vmargin & true); state:=23;
+		  ++
+		  ?(state=24 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist > leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) < leadingDist & v != 0.0 & x + (v)^(2.0) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) + dist <= leadingDist & v < vmax - vmargin & true); state:=24;
+		  ++
+		  ?(state=25 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v = 0.0 & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) < lw & x + maxDist + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) >= leadingDist & x + ((v))^((2.0)) / (2.0 * B) + (A / B + 1.0) * (A / 2.0 * ((ep))^((2.0)) + ep * v) <= leadingDist & true & v < vmax - vmargin & v > 0.0 & abs(y - ly) + (v)^(2.0) / (2.0 * b) + (A / b + 1.0) * (A / 2.0 * (ep)^(2.0) + ep * v) >= lw & true); state:=25;
+		}
+		{ /* Modes */
+		  ?(state=0); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_InitFollowMode*/
+			?true;
+			t:=0;
+		  }
+		  ++
+		  ?(state=1); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_KeepDist-M_Init*/
+			?true;?true;
+			t:=0;
+		  }
+		  ++
+		  ?(state=2); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_KeepDist-M_Brake-M_Idle*/
+			?true;?true;?true;
+			t:=0;
+		  }
+		  ++
+		  ?(state=3); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_KeepDist-M_Forward-M_Idle*/
+			?true;?true;?true;
+			t:=0;
+		  }
+		  ++
+		  ?(state=4); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Idle-M_Stop*/
+			?true;?true;?true;w := 0.0;A := 0.0;
+			t:=0;
+			{x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=5); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Idle-M_Brake*/
+			?true;?true;?true;a := -Bpast;
+			t:=0;
+			{x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=6); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Brake-M_Steer-M_Idle-M_0*/
+			?true;?true;?true;?true;?true;a := -setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=7); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Brake-M_Steer-M_ChangeSteering-M_0*/
+			?true;?true;?true;?true;w := *;r := *;?r != 0.0 & w * r = currentV;a := -setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=8); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Idle-M_Steer-M_Idle*/
+			?true;?true;?true;?true;?true;
+			t:=0;
+		  }
+		  ++
+		  ?(state=9); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Idle-M_Steer-M_ChangeSteering*/
+			?true;?true;?true;?true;w := *;r := *;?r != 0.0 & w * r = currentV;
+			t:=0;
+			{x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=10); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Cruise-M_Steer-M_Idle-M_0*/
+			?true;?true;?true;?true;?true;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=11); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Cruise-M_Steer-M_ChangeSteering-M_0*/
+			?true;?true;?true;?true;w := *;r := *;?r != 0.0 & w * r = currentV;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=12); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_KeepDist-M_Brake-M_Accelerate-M_0*/
+			?true;?true;?true;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=13); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Accelerate-M_Steer-M_Idle-M_0*/
+			?true;?true;?true;?true;?true;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=14); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Accelerate-M_Steer-M_ChangeSteering-M_0*/
+			?true;?true;?true;?true;w := *;r := *;?r != 0.0 & w * r = currentV;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=15); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_KeepDist-M_Forward-M_Brake-M_0*/
+			?true;?true;?true;a := -setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=16); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_KeepDist-M_Brake-M_Cruise-M_0*/
+			?true;?true;?true;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=17); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Accelerate-M_Stop-M_0*/
+			?true;?true;?true;w := 0.0;A := 0.0;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=18); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Brake-M_Brake-M_0*/
+			?true;?true;?true;a := -Bpast;a := -setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=19); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Accelerate-M_Brake-M_0*/
+			?true;?true;?true;a := -Bpast;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=20); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Brake-M_Stop-M_0*/
+			?true;?true;?true;w := 0.0;A := 0.0;a := -setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=21); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Cruise-M_Stop-M_0*/
+			?true;?true;?true;w := 0.0;A := 0.0;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=22); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_KeepDist-M_Brake-M_Brake-M_0*/
+			?true;?true;?true;a := -setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=23); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_KeepDist-M_Forward-M_Accelerate-M_0*/
+			?true;?true;?true;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=24); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_KeepDist-M_Forward-M_Cruise-M_0*/
+			?true;?true;?true;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,t'=1 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+		  ++
+		  ?(state=25); apast := a; cpast := c; currentApast := currentA; setpast := set; leadingDistpast := leadingDist; lwpast := lw; currentYpast := currentY; lypast := ly; rpast := r; dxpast := dx; currentXpast := currentX; dypast := dy; vpast := v; currentVpast := currentV; wpast := w; xpast := x; ypast := y;	{ /* Mode: M_FollowShoulder-M_Exec-M_Cruise-M_Brake-M_0*/
+			?true;?true;?true;a := -Bpast;a := setpast;
+			t:=0;
+			{x'=v,v'=a,t'=1.0,x'=v * dx,y'=v * dy,v'=a,dx'=-dy * w,dy'=dx * w,w'=a / r,t'=1 & t <= ep & v >= 0.0 & t <= ep & v >= 0.0 & t <= ep}
+		  }
+
+		}
+	}*
+}
+] (v <= vmax & x + maxDist <= leadingDist & abs(y - ly) <= lw & assert = 0)
+
+End.
+End.

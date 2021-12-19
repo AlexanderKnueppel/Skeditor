@@ -55,6 +55,7 @@ import de.tubs.skeditor.features.ExportFeature;
 import de.tubs.skeditor.features.LaunchKeymaeraFeature;
 import de.tubs.skeditor.features.RunKeymaeraCheckFeature;
 import de.tubs.skeditor.features.SetRootNodeFeature;
+import de.tubs.skeditor.features.TestFeature;
 import de.tubs.skeditor.utils.ConstraintUtil;
 import de.tubs.skeditor.utils.ViewUtil;
 
@@ -76,6 +77,8 @@ public class ToolBehaviorProvider extends DefaultToolBehaviorProvider {
 		
 		for (ICustomFeature customFeature : getFeatureProvider().getCustomFeatures(context)) {
 			if (customFeature instanceof ExportFeature) {
+				entries.add(new ContextMenuEntry(customFeature, context));
+			} if (customFeature instanceof TestFeature) {
 				entries.add(new ContextMenuEntry(customFeature, context));
 			} else if (customFeature instanceof RunKeymaeraCheckFeature) {
 				subMenu.add(new ContextMenuEntry(customFeature, context));

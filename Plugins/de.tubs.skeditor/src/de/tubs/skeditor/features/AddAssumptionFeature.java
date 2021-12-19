@@ -7,16 +7,13 @@ import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
 
 import SkillGraph.Assumption;
 import SkillGraph.Node;
-import SkillGraph.Requirement;
 import SkillGraph.SkillGraphFactory;
-import SkillGraph.Type;
 import de.tubs.skeditor.ImageProvider;
 
 public class AddAssumptionFeature extends AbstractCustomFeature {
 
 	public AddAssumptionFeature(IFeatureProvider fp) {
 		super(fp);
-
 	}
 
 	@Override
@@ -31,7 +28,7 @@ public class AddAssumptionFeature extends AbstractCustomFeature {
 
 	@Override
 	public String getDescription() {
-		return "Add, edit or remove assumptions from a node";
+		return "Add, edit, or remove assumptions from a node";
 	}
 
 	@Override
@@ -53,5 +50,4 @@ public class AddAssumptionFeature extends AbstractCustomFeature {
 		as.setNode(node);
 		node.getAssumptions().add(as);
 	}
-
 }

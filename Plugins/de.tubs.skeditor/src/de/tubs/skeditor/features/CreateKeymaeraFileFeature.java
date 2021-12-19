@@ -23,6 +23,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 import SkillGraph.Node;
 import de.tubs.skeditor.keymaera.assembler.HybridProgramAssembler;
+import de.tubs.skeditor.keymaera.assembler.HybridProgramConstructor;
 
 public class CreateKeymaeraFileFeature extends AbstractCustomFeature {
 
@@ -60,8 +61,8 @@ public class CreateKeymaeraFileFeature extends AbstractCustomFeature {
 
 				if (node.getSDLModel() != null && !node.getSDLModel().isEmpty()) {
 					String HP = "";
-					HP = HybridProgramAssembler.computeProgram(node, inline, !inline);
-
+					//HP = HybridProgramAssembler.computeProgram(node, inline, !inline);
+					HP = HybridProgramConstructor.constructHybridProgram(node, inline, !inline);
 					if (!HP.isEmpty()) {
 						File file = null;
 						try {

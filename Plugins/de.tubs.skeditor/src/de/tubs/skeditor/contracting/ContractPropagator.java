@@ -38,55 +38,55 @@ public class ContractPropagator {
 	public static Contract computeContract(Node node) {
 		String assume = "", safe = "";
 
-		if (GraphUtil.getChildNodes(node).isEmpty()) {
-			if (node.getRequirements().isEmpty()) {
-				safe = "\\true";
-			} else {
-				safe = node.getRequirements().stream().map(n -> n.getTerm().toString())
-						.collect(Collectors.joining(" & "));
-			}
-			
-			if (node.getAssumptions().isEmpty()) {
-				assume = "\\true";
-			} else {
-				assume = node.getAssumptions().stream().map(n -> n.getTerm().toString())
-						.collect(Collectors.joining(" & "));
-			}
-		} else {
-			List<String> assumptions = new ArrayList<String>();
-			List<String> guarantees = new ArrayList<String>();
-			
-			for (Node child : GraphUtil.getChildNodes(node)) {
-				assumptions.add(computeContract(child).getAssumption());
-				guarantees.add(computeContract(child).getGuarantee());
-			}
-			
-			guarantees.addAll(node.getRequirements().stream().map(n -> n.getTerm().toString()).collect(Collectors.toList()));
-			safe = String.join(" & ", guarantees);
-			
-			assumptions.addAll(node.getAssumptions().stream().map(n -> n.getTerm().toString()).collect(Collectors.toList()));
-			
-			assume = "("+safe+") => " + "(" + String.join(" & ", assumptions) + ")";
-			
-		}
-		
-		assume = assume.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
-		safe = safe.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
-		
-		List<SyntaxError> errors = GrammarUtil.tryToParse(assume);
-		errors.addAll(GrammarUtil.tryToParse(safe));
-		if(errors.isEmpty()) {
-			Z3Converter converter = new Z3Converter();
-			assume = converter.simplifyFormula(assume);
-			safe = converter.simplifyFormula(safe);
-		} else {
-			//TODO log errors
-		}
-
-		if(assume.isEmpty())
-			assume = "\\true";
-		if(safe.isEmpty())
-			safe = "\\true";
+//		if (GraphUtil.getChildNodes(node).isEmpty()) {
+//			if (node.getRequirements().isEmpty()) {
+//				safe = "\\true";
+//			} else {
+//				safe = node.getRequirements().stream().map(n -> n.getTerm().toString())
+//						.collect(Collectors.joining(" & "));
+//			}
+//			
+//			if (node.getAssumptions().isEmpty()) {
+//				assume = "\\true";
+//			} else {
+//				assume = node.getAssumptions().stream().map(n -> n.getTerm().toString())
+//						.collect(Collectors.joining(" & "));
+//			}
+//		} else {
+//			List<String> assumptions = new ArrayList<String>();
+//			List<String> guarantees = new ArrayList<String>();
+//			
+//			for (Node child : GraphUtil.getChildNodes(node)) {
+//				assumptions.add(computeContract(child).getAssumption());
+//				guarantees.add(computeContract(child).getGuarantee());
+//			}
+//			
+//			guarantees.addAll(node.getRequirements().stream().map(n -> n.getTerm().toString()).collect(Collectors.toList()));
+//			safe = String.join(" & ", guarantees);
+//			
+//			assumptions.addAll(node.getAssumptions().stream().map(n -> n.getTerm().toString()).collect(Collectors.toList()));
+//			
+//			assume = "("+safe+") => " + "(" + String.join(" & ", assumptions) + ")";
+//			
+//		}
+//		
+//		assume = assume.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
+//		safe = safe.replaceAll("  ", " ").replaceAll("\\\\true & ", "").replaceAll(" & \\\\true", "").trim();
+//		
+//		List<SyntaxError> errors = GrammarUtil.tryToParse(assume);
+//		errors.addAll(GrammarUtil.tryToParse(safe));
+//		if(errors.isEmpty()) {
+//			Z3Converter converter = new Z3Converter();
+//			assume = converter.simplifyFormula(assume);
+//			safe = converter.simplifyFormula(safe);
+//		} else {
+//			//TODO log errors
+//		}
+//
+//		if(assume.isEmpty())
+//			assume = "\\true";
+//		if(safe.isEmpty())
+//			safe = "\\true";
 		
 		return new Contract(assume, safe);
 	}

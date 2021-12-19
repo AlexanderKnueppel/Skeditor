@@ -20,6 +20,8 @@ import SkillGraph.Requirement;
 import de.tubs.skeditor.sdl.Field;
 import de.tubs.skeditor.sdl.Provides;
 import de.tubs.skeditor.sdl.SDLModel;
+import de.tubs.skeditor.sdl.Variable;
+import de.tubs.skeditor.sdl.VariableDeclarations;
 import de.tubs.skeditor.ui.handler.SkillDescriptionLanguageHandler;
 
 public class GraphUtil {
@@ -38,9 +40,15 @@ public class GraphUtil {
 			Graph g = (Graph) node.eContainer();
 			List<Parameter> l = g.getParameterList();
 			if (model.getSkill().getVariables() != null && model.getSkill().getVariables().getProvides() != null) {
-				for (Field f : model.getSkill().getVariables().getProvides().getVariables()) {
-					parameters.addAll(
-							l.stream().filter(e -> e.getAbbreviation().equals(f.getName())).collect(Collectors.toList()));
+
+				List<Variable> fieldList = new ArrayList<Variable>();
+				for (VariableDeclarations vardecl : model.getSkill().getVariables().getProvides().getVardecls()) {
+					fieldList.addAll(vardecl.getVariables());
+				}
+
+				for (Variable f : fieldList) {
+					parameters.addAll(l.stream().filter(e -> e.getAbbreviation().equals(f.getName()))
+							.collect(Collectors.toList()));
 				}
 			}
 		}
@@ -54,6 +62,43 @@ public class GraphUtil {
 		}
 
 		return parameters;
+	}
+
+	public static Set<String> getVariableNames(Node node) {
+		SDLModel model = null;
+
+		Set<String> result = new HashSet<String>();
+		if (node.getSDLModel() != null) {
+			try {
+				model = SkillDescriptionLanguageHandler.textToModel(node.getSDLModel());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (model.getSkill().getVariables() != null && model.getSkill().getVariables().getProvides() != null) {
+				for (VariableDeclarations vardecl : model.getSkill().getVariables().getProvides().getVardecls()) {
+					result.addAll(vardecl.getVariables().stream().map(e -> e.getName()).collect(Collectors.toSet()));
+				}
+			}
+			if (model.getSkill().getVariables() != null && model.getSkill().getVariables().getRequires() != null) {
+				for (VariableDeclarations vardecl : model.getSkill().getVariables().getRequires().getVardecls()) {
+					result.addAll(vardecl.getVariables().stream().map(e -> e.getName()).collect(Collectors.toSet()));
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	public static Set<String> getVariableNames(Graph g) {
+		Set<String> result = new HashSet<String>();
+		
+		for(Node node : g.getNodes()) {
+			result.addAll(getVariableNames(node));
+		}
+		
+		return result;
 	}
 
 	public static Set<Parameter> getCollectedParameters(Node node) {
@@ -72,7 +117,13 @@ public class GraphUtil {
 			for (Parameter p : g.getParameterList()) {
 				// Constants
 				if (model.getSkill().getParameters() != null) {
-					for (Field f : model.getSkill().getParameters().getVariables()) {
+
+					List<Variable> ParamList = new ArrayList<Variable>();
+					for (VariableDeclarations vardecl : model.getSkill().getParameters().getVardecls()) {
+						ParamList.addAll(vardecl.getVariables());
+					}
+
+					for (Variable f : ParamList) {
 						if (p.getAbbreviation().equals(f.getName())) {
 							parameters.add(p);
 						}
@@ -80,7 +131,13 @@ public class GraphUtil {
 				}
 				// Provided variables
 				if (model.getSkill().getVariables() != null) {
-					for (Field f : model.getSkill().getVariables().getProvides().getVariables()) {
+
+					List<Variable> fieldList = new ArrayList<Variable>();
+					for (VariableDeclarations vardecl : model.getSkill().getVariables().getProvides().getVardecls()) {
+						fieldList.addAll(vardecl.getVariables());
+					}
+
+					for (Variable f : fieldList) {
 						if (p.getAbbreviation().equals(f.getName())) {
 							parameters.add(p);
 						}

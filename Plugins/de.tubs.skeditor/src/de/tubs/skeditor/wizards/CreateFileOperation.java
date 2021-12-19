@@ -29,7 +29,10 @@ import org.eclipse.graphiti.ui.services.IExtensionManager;
 import SkillGraph.Category;
 import SkillGraph.Graph;
 import SkillGraph.Node;
+import SkillGraph.Parameter;
 import SkillGraph.SkillGraphFactory;
+import de.tubs.skeditor.utils.ParameterUtil;
+import de.tubs.skeditor.utils.ParameterUtil.GlobalParameter;
 
 public class CreateFileOperation extends RecordingCommand {
 	private TransactionalEditingDomain editingDomain;
@@ -75,6 +78,7 @@ public class CreateFileOperation extends RecordingCommand {
 		node.setCategory(Category.MAIN);
 
 		g.setRootNode(node);
+		ParameterUtil.addGlobalParameters(g);
 
 		// Add graphical representation of the newly created node
 		AddContext addcontext = new AddContext();

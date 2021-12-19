@@ -28,6 +28,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Parameter/defaultValue"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference SkillGraph.ecore#//Parameter/graph"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Parameter/variable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SkillGraph.ecore#//Parameter/available"/>
     </genClasses>
     <genClasses ecoreClass="SkillGraph.ecore#//Graph">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SkillGraph.ecore#//Graph/nodes"/>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<exampleWizard>
+	<contentProvider name="General">
+		<path>Simple</path>
+	</contentProvider>
+	<description>
+		Example showcases parts of a simple vehicle follow mode in five different versions. Images of skill graphs and resulting KeYmaera X files (i.e., verification problem in differential dynamic logic) included. 
+	</description>
+</exampleWizard>

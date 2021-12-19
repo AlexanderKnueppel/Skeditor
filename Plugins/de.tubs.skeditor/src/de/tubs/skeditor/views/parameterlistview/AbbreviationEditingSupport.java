@@ -10,8 +10,11 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
 
 import SkillGraph.Parameter;
+import de.tubs.skeditor.utils.ParameterUtil;
 
 public class AbbreviationEditingSupport extends EditingSupport {
+	
+	public static String INVALID_NAME = "#INVALID#";
 
 	public AbbreviationEditingSupport(ColumnViewer viewer) {
 		super(viewer);
@@ -19,7 +22,8 @@ public class AbbreviationEditingSupport extends EditingSupport {
 
 	@Override
 	protected boolean canEdit(Object element) {
-		return true;
+		Parameter parameter = (Parameter) element;
+		return !parameter.isVariable() && !ParameterUtil.isGlobalParameter(parameter.getAbbreviation());
 	}
 
 	@Override
@@ -39,7 +43,13 @@ public class AbbreviationEditingSupport extends EditingSupport {
 		domain.getCommandStack().execute(new RecordingCommand(domain) {
 			@Override
 			protected void doExecute() {
-				parameter.eSet(parameter.eClass().getEStructuralFeature("abbreviation"), inputValue.toString());
+				String name = inputValue.toString();
+				for (Parameter other : parameter.getGraph().getParameterList()) {
+					if (other != parameter && parameter.getName().equals(name)) {
+						name = INVALID_NAME;
+					}
+				}
+				parameter.eSet(parameter.eClass().getEStructuralFeature("abbreviation"), name);
 
 			}
 		});
