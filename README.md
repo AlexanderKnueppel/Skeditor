@@ -1,3 +1,17 @@
+# Case Study: Vehicle Follow Mode
+
+Files can be found here: [Examples/FollowMode-CaseStudy2021](https://github.com/AlexanderKnueppel/Skeditor/blob/develop/Plugins/de.tubs.skeditor.examples/skeditor_examples/FollowMode-CaseStudy2021)
+
+### Example Hybrid Mode Automaton for Tempo Limit:
+
+[Image of skill graph](https://github.com/AlexanderKnueppel/Skeditor/blob/develop/Plugins/de.tubs.skeditor.examples/skeditor_examples/FollowMode-CaseStudy2021/src/graphs/ControlLong-G1.png)
+
+[Textual description](https://github.com/AlexanderKnueppel/Skeditor/blob/develop/Plugins/de.tubs.skeditor.examples/skeditor_examples/FollowMode-CaseStudy2021/src/SL-programs/Example_TempoLimit-G1.txt)
+
+[KeYmaera X problem file](https://github.com/AlexanderKnueppel/Skeditor/blob/develop/Plugins/de.tubs.skeditor.examples/skeditor_examples/FollowMode-CaseStudy2021/src/Monolithic-Maneuvers-DL/ControlLong-G1-TempoLimit-Monolithic.kyx)
+
+More information coming soon.
+
 # Skeditor v.0.1 (alpha)
 
 <img align="left" alt="Skillgraph" src="/skillgraph.png" width="25%">
