@@ -10,8 +10,6 @@ Files can be found here: [Examples/FollowMode-CaseStudy2021](https://github.com/
 
 [KeYmaera X problem file](https://github.com/AlexanderKnueppel/Skeditor/blob/develop/Plugins/de.tubs.skeditor.examples/skeditor_examples/FollowMode-CaseStudy2021/src/Monolithic-Maneuvers-DL/ControlLong-G1-TempoLimit-Monolithic.kyx)
 
-More information coming soon.
-
 # Skeditor v.0.1 (alpha)
 
 <img align="left" alt="Skillgraph" src="/skillgraph.png" width="25%">
